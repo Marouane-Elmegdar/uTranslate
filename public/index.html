@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>ULearning Translation Review Desk v33</title>
+    <title>ULearning Translation Review Desk v34</title>
     <style>
       /* ULearning Translation Review Desk v16 — namespace-aware key identity */
       :root {
@@ -170,9 +170,10 @@
       .bar-actions {
         display: flex;
         gap: 7px;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         align-items: center;
         justify-content: flex-end;
+        min-width: 0;
       }
       .bar-actions button {
         font-size: 11px;
@@ -210,11 +211,101 @@
         background: #ffe5e2;
         border-color: #d9928b;
       }
+      .project-menu {
+        position: relative;
+      }
+      .project-menu summary {
+        list-style: none;
+        cursor: pointer;
+        user-select: none;
+        border: 1px solid #52617a;
+        border-radius: 9px;
+        background: #243653;
+        color: #edf3ff;
+        padding: 7px 10px;
+        font-size: 11px;
+        font-weight: 650;
+        white-space: nowrap;
+      }
+      .project-menu summary::-webkit-details-marker {
+        display: none;
+      }
+      .project-menu summary::after {
+        content: "\25BE";
+        margin-left: 7px;
+        color: #b9c7dc;
+      }
+      .project-menu[open] summary {
+        background: #314664;
+        border-color: #8090aa;
+      }
+      .project-menu-popover {
+        position: absolute;
+        z-index: 50;
+        top: calc(100% + 8px);
+        right: 0;
+        width: 230px;
+        padding: 7px;
+        border: 1px solid #cbd5e3;
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0 14px 30px rgba(8, 18, 35, 0.24);
+      }
+      .project-menu-popover button {
+        display: block;
+        width: 100%;
+        padding: 9px 10px;
+        border: 0;
+        border-radius: 7px;
+        background: transparent;
+        color: var(--ink);
+        text-align: left;
+        font-size: 12px;
+      }
+      .project-menu-popover button:hover {
+        background: #f0f4fa;
+      }
+      .project-menu-popover .danger-utility {
+        color: var(--red);
+      }
+      .project-menu-popover .danger-utility:hover {
+        background: var(--redbg);
+      }
       .top-autosave {
-        font-size: 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        max-width: 118px;
         color: #cbd7eb;
-        max-width: 600px;
-        overflow-wrap: anywhere;
+        font-size: 10px;
+        line-height: 1.2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: help;
+      }
+      .top-autosave.error {
+        cursor: pointer;
+      }
+      .top-autosave.error:hover,
+      .top-autosave.error:focus-visible {
+        color: #fff;
+        text-decoration: underline;
+        outline: none;
+      }
+      .top-autosave::before {
+        content: "";
+        flex: none;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #91a0b6;
+      }
+      .top-autosave.ok::before {
+        background: #62d391;
+      }
+      .top-autosave.error::before {
+        background: #ff8b82;
       }
       .item.review-accepted {
         border-color: #8fc9aa;
@@ -318,6 +409,49 @@
         display: block;
         margin-bottom: 5px;
       }
+      .sidebar-help {
+        margin-top: 18px;
+        border: 1px solid #354a6c;
+        border-radius: 9px;
+        background: #1e3151;
+      }
+      .sidebar-help summary {
+        list-style: none;
+        cursor: pointer;
+        padding: 10px 11px;
+        color: #dce6f6;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .sidebar-help summary::-webkit-details-marker {
+        display: none;
+      }
+      .sidebar-help summary::after {
+        content: "+";
+        float: right;
+        color: #93a4c0;
+      }
+      .sidebar-help[open] summary::after {
+        content: "\2212";
+      }
+      .sidebar-help-content {
+        border-top: 1px solid #354a6c;
+        padding: 4px 11px 11px;
+      }
+      .sidebar-help .sidebox {
+        margin: 0;
+        padding: 10px 0 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+      }
+      .sidebar-help .sidebox + .sidebox {
+        margin-top: 10px;
+        border-top: 1px solid #354a6c;
+      }
+      .mobile-nav-toggle {
+        display: none;
+      }
       .main {
         padding: 25px 27px 45px;
         min-width: 0;
@@ -352,17 +486,31 @@
         flex-wrap: wrap;
       }
       .stats {
-        display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: 10px;
+        display: flex;
+        align-items: stretch;
+        gap: 0;
         margin-bottom: 14px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
       }
       .stat {
-        background: white;
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        padding: 13px 15px;
+        display: grid;
+        grid-template-columns: auto auto;
+        align-content: center;
+        align-items: baseline;
+        column-gap: 7px;
+        flex: 1 1 0;
+        background: transparent;
+        border: 0;
+        border-right: 1px solid var(--line);
+        border-radius: 0;
+        padding: 10px 13px;
         min-width: 0;
+      }
+      .stat:last-child {
+        border-right: 0;
       }
       .stat.clickable {
         cursor: pointer;
@@ -389,19 +537,42 @@
         color: #b8f0cf;
       }
       .stat label {
-        display: block;
+        display: inline;
         color: var(--muted);
         font-size: 11px;
+        white-space: nowrap;
       }
       .stat strong {
-        display: block;
-        font-size: 23px;
-        letter-spacing: -0.04em;
-        margin-top: 3px;
+        display: inline;
+        font-size: 17px;
+        letter-spacing: 0;
+        margin: 0;
       }
       .stat small {
+        grid-column: 1 / -1;
         font-size: 10px;
         color: #8c99ac;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .progress-stat {
+        position: relative;
+        padding-bottom: 13px;
+      }
+      .progress-stat::after {
+        content: "";
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        bottom: 6px;
+        height: 3px;
+        border-radius: 3px;
+        background: linear-gradient(
+          to right,
+          var(--blue) 0 var(--progress, 0%),
+          #e3e9f2 var(--progress, 0%) 100%
+        );
       }
       .toolbar {
         background: white;
@@ -925,14 +1096,21 @@
         .main {
           padding: 19px 15px;
         }
-        .stats {
-          grid-template-columns: repeat(3, minmax(0, 1fr));
+        .stat {
+          grid-template-columns: 1fr;
+          row-gap: 2px;
+        }
+        .stat small {
+          display: none;
         }
         .cols {
           grid-template-columns: 1fr 1fr;
         }
         .cols .panelwrap:first-child {
           grid-column: 1/-1;
+        }
+        .toolbar .search {
+          flex: 1 1 100%;
         }
       }
       @media (max-width: 700px) {
@@ -941,6 +1119,30 @@
         }
         aside {
           display: none;
+          position: static;
+          width: 100%;
+          height: auto;
+          max-height: 72vh;
+          padding: 12px 13px;
+        }
+        .layout.mobile-nav-open aside {
+          display: block;
+        }
+        .mobile-nav-toggle {
+          display: flex;
+          width: calc(100% - 20px);
+          margin: 10px 10px 0;
+          align-items: center;
+          justify-content: space-between;
+          border-color: #cbd5e3;
+          background: #fff;
+        }
+        .mobile-nav-toggle::after {
+          content: "\25BE";
+          color: var(--muted);
+        }
+        .mobile-nav-toggle[aria-expanded="true"]::after {
+          content: "\25B4";
         }
         .main {
           padding: 15px 10px;
@@ -952,11 +1154,23 @@
           margin-top: 12px;
         }
         .stats {
+          display: grid;
           grid-template-columns: repeat(2, minmax(0, 1fr));
+          overflow: visible;
+          border: 0;
           gap: 7px;
+          background: transparent;
         }
         .stat {
+          display: grid;
           padding: 10px;
+          border: 1px solid var(--line);
+          border-radius: 8px;
+          background: #fff;
+        }
+        .stat:last-child {
+          grid-column: 1 / -1;
+          border-right: 1px solid var(--line);
         }
         .stat strong {
           font-size: 21px;
@@ -975,7 +1189,10 @@
           margin-top: 8px;
         }
         .appbar {
-          padding: 0 12px;
+          height: auto;
+          min-height: 62px;
+          padding: 8px 12px;
+          flex-wrap: wrap;
         }
         .appbar .tag {
           display: none;
@@ -983,7 +1200,18 @@
         .appbar .brand-text {
           display: none;
         }
-        .bar-actions button:nth-child(2) {
+        .bar-actions {
+          flex: 1 1 100%;
+          justify-content: flex-start;
+          flex-wrap: wrap;
+        }
+        .top-autosave {
+          display: none;
+        }
+        .top-autosave.error {
+          display: inline-flex;
+        }
+        .live-language-label span {
           display: none;
         }
         .head h1 {
@@ -1465,7 +1693,8 @@
             <p class="setup-hint" id="setupRestoreHint">
               Already reviewed this project before? Restore a progress backup
               instead of importing the Tolgee and proposal JSON files again. The
-              backup includes your decisions and saved screenshot data.
+              backup includes decisions and screenshot metadata. Image files are
+              intentionally omitted; reselect the screenshot folder to view them.
             </p>
             <div class="setup-status" id="setupJsonStatus">
               JSON files not imported yet.
@@ -1517,24 +1746,26 @@
             aria-label="ULearning"
           ></span>
           <span class="brand-text">Review Desk</span>
-          <span class="tag">LOCAL TOOL</span>
         </div>
         <div class="bar-actions">
-          <!-- Workflow order: import, configure saving, backup/restore, destructive reset, final export. -->
+          <!-- Keep daily review actions visible; maintenance actions live in the Project menu. -->
           <button id="importFilesTop" class="action-import">
             Import JSON files
-          </button>
-          <button id="autosaveFileTop" class="utility">
-            Change saving location
           </button>
           <button id="replaceTermsTop" class="utility">
             Replace glossary terms
           </button>
-          <button id="backupTop" class="utility">Download backup</button>
-          <button id="restoreTop" class="utility">Restore backup</button>
-          <button id="resetTop" class="utility danger-utility">
-            Clear workspace
-          </button>
+          <details class="project-menu" id="projectMenu">
+            <summary id="projectMenuLabel">Project</summary>
+            <div class="project-menu-popover">
+              <button id="autosaveFileTop">Change saving location</button>
+              <button id="backupTop">Download backup</button>
+              <button id="restoreTop">Restore backup</button>
+              <button id="resetTop" class="danger-utility">
+                Clear workspace
+              </button>
+            </div>
+          </details>
           <label class="live-language-label" for="liveToolLanguage"
             ><span id="liveLanguageLabelText">Interface</span>
             <select id="liveToolLanguage" aria-label="Tool interface language">
@@ -1543,8 +1774,11 @@
             </select>
           </label>
           <span id="autosaveFileStatus" class="top-autosave"
-            >Choose any saving folder; the tool folder uses save/, other folders
-            receive the project JSON directly</span
+            title="Choose any saving folder; the tool folder uses save/, other folders receive the project JSON directly"
+            role="button"
+            tabindex="0"
+            aria-label="Show local saving status details"
+            >Local saving</span
           >
           <button id="exportTop" class="primary action-export">
             Export Tolgee Update JSON
@@ -1552,13 +1786,19 @@
         </div>
       </header>
       <div class="layout">
-        <aside>
+        <button
+          type="button"
+          class="mobile-nav-toggle"
+          id="mobileNavToggle"
+          aria-expanded="false"
+          aria-controls="reviewSidebar"
+        >
+          Review views
+        </button>
+        <aside id="reviewSidebar">
           <div class="navtitle" id="navTitle">Review views</div>
           <button class="nav nav-all active" data-view="all">
             All strings <span class="count" id="nAll">0</span>
-          </button>
-          <button class="nav" data-view="reviewed">
-            Reviewed keys <span class="count" id="nReviewed">0</span>
           </button>
           <button class="nav" data-view="unchanged">
             Unchanged proposals <span class="count" id="nUnchanged">0</span>
@@ -1576,19 +1816,24 @@
             Unable to translate
             <span class="count" id="nUntranslatable">0</span>
           </button>
-          <div class="sidebox">
-            <b>Safe hand-off workflow</b>1. Import the original Tolgee JSON
-            export.<br />2. Import ChatGPT proposals.<br />3. Decide page by
-            page.<br />4. Export the Tolgee Update JSON and use your separate
-            authorized Tolgee workflow to apply approved changes.<br /><br />No
-            AI/API calls or Tolgee credentials are used in this HTML file.
-          </div>
-          <div class="sidebox">
-            <b>Progress is local</b>Auto-saves in this browser profile. Optional
-            file autosave writes the project JSON in your selected folder (or in
-            save/ if you select the tool folder). Download a progress backup
-            before switching devices or clearing browser data.
-          </div>
+          <details class="sidebar-help">
+            <summary id="sidebarHelpLabel">Help &amp; local storage</summary>
+            <div class="sidebar-help-content">
+              <div class="sidebox">
+                <b>Safe hand-off workflow</b>1. Import the original Tolgee JSON
+                export.<br />2. Import ChatGPT proposals.<br />3. Decide page by
+                page.<br />4. Export the Tolgee Update JSON and use your separate
+                authorized Tolgee workflow to apply approved changes.<br /><br />No
+                AI/API calls or Tolgee credentials are used in this HTML file.
+              </div>
+              <div class="sidebox">
+                <b>Progress is local</b>Auto-saves in this browser profile.
+                Optional file autosave writes the project JSON in your selected
+                folder (or in save/ if you select the tool folder). Download a
+                progress backup before switching devices or clearing browser data.
+              </div>
+            </div>
+          </details>
         </aside>
         <main class="main">
           <div class="head">
@@ -1652,7 +1897,7 @@
               ><small>Original English retained</small>
             </div>
             <div
-              class="stat clickable"
+              class="stat clickable progress-stat"
               role="button"
               tabindex="0"
               data-stat-view="pending"
@@ -1946,6 +2191,7 @@
         </div>
         <div class="modalfoot">
           <button id="cancelReplaceTerms">Close</button>
+          <button id="downloadGlossaryJson">Download glossary JSON</button>
           <button id="applyTermReplacement" class="primary" disabled>
             Replace and save rule
           </button>
@@ -1992,7 +2238,7 @@
     />
     <div class="toast" id="toast"></div>
     <script>
-      // ULearning Translation Review Desk v33 — scoped replacement for proposals and every decided final value
+      // ULearning Translation Review Desk v34 — compact controls with visible saving diagnostics
       "use strict";
       const $ = (id) => document.getElementById(id);
       const esc = (s) =>
@@ -2321,7 +2567,7 @@
           languageHint:
             "Choose the languages before importing. These settings label the source and target correctly and determine the target language in the update export. They do not translate content.",
           restoreHint:
-            "Already reviewed this project before? Restore a progress backup instead of importing the Tolgee and proposal JSON files again. The backup includes your decisions and saved screenshot data.",
+            "Already reviewed this project before? Restore a progress backup instead of importing the Tolgee and proposal JSON files again. The backup includes decisions and screenshot metadata. Image files are intentionally omitted; reselect the screenshot folder to view them.",
           liveLanguage: "Interface",
         },
         zh: {
@@ -2430,7 +2676,7 @@
           languageHint:
             "请在导入前选择语言。这些设置用于正确标记源文本和目标译文，并决定更新导出中的目标语言；不会自动翻译内容。",
           restoreHint:
-            "如果之前审核过此项目，可以恢复进度备份，无需重新导入 Tolgee 和提案 JSON。备份包含审核决定和已保存的截图数据。",
+            "如果之前审核过此项目，可以恢复进度备份，无需重新导入 Tolgee 和提案 JSON。备份包含审核决定和截图元数据，但不包含图片文件；如需查看图片，请重新选择截图文件夹。",
           liveLanguage: "界面语言",
         },
       };
@@ -2488,6 +2734,17 @@
         text("resetTop", "clear");
         text("exportTop", "export");
         text("liveLanguageLabelText", "liveLanguage");
+        const projectMenuLabel = $("projectMenuLabel");
+        if (projectMenuLabel)
+          projectMenuLabel.textContent = zh ? "项目" : "Project";
+        const sidebarHelpLabel = $("sidebarHelpLabel");
+        if (sidebarHelpLabel)
+          sidebarHelpLabel.textContent = zh
+            ? "帮助和本地存储"
+            : "Help & local storage";
+        const mobileNavToggle = $("mobileNavToggle");
+        if (mobileNavToggle)
+          mobileNavToggle.textContent = zh ? "审核视图" : "Review views";
         const liveLanguage = $("liveToolLanguage");
         if (liveLanguage) liveLanguage.value = languageConfig.toolLanguage;
         const navMap = {
@@ -2660,6 +2917,10 @@
             : `Saved ${languageLabel(languageConfig.targetCode)} glossary`,
         );
         text("cancelReplaceTerms", zh ? "关闭" : "Close");
+        text(
+          "downloadGlossaryJson",
+          zh ? "下载术语表 JSON" : "Download glossary JSON",
+        );
         text(
           "applyTermReplacement",
           zh ? "替换并保存规则" : "Replace and save rule",
@@ -2853,11 +3114,16 @@
         return `${base}#${String(keyId)}`;
       }
       const STORE_KEY = "ulearning-translation-review-fallback-v1";
-      function notify(msg) {
+      let lastAutosaveStatusMessage = "";
+      let lastAutosaveErrorNotified = "";
+      function notify(msg, duration = 2600) {
         $("toast").textContent = msg;
         $("toast").classList.add("show");
         clearTimeout(notify.t);
-        notify.t = setTimeout(() => $("toast").classList.remove("show"), 2600);
+        notify.t = setTimeout(
+          () => $("toast").classList.remove("show"),
+          duration,
+        );
       }
       function openDB() {
         return new Promise((resolve) => {
@@ -3019,15 +3285,48 @@
           });
         return autosaveDirectoryHandle;
       }
-      async function persist() {
-        const payload = {
+      function rowsWithoutScreenshotImages(sourceRows = rows) {
+        return (Array.isArray(sourceRows) ? sourceRows : []).map((row) => {
+          if (!row || typeof row !== "object") return row;
+          return {
+            ...row,
+            screenshots: Array.isArray(row.screenshots)
+              ? row.screenshots.map((screenshot) => {
+                  if (!screenshot || typeof screenshot !== "object")
+                    return screenshot;
+                  const { _previewDataUrl, ...metadata } = screenshot;
+                  return metadata;
+                })
+              : [],
+          };
+        });
+      }
+      function workspaceSnapshot({
+        backup = false,
+        persistedRows = rowsWithoutScreenshotImages(),
+      } = {}) {
+        const snapshot = {
           tolgee,
-          rows,
+          rows: persistedRows,
           currentView,
           pageSize: $("pageSize").value,
           languageConfig,
-          savedAt: new Date().toISOString(),
+          screenshot_images_included: false,
+          screenshot_restore_note:
+            "Screenshot metadata is preserved. Reselect the screenshot folder to view images.",
         };
+        if (backup) {
+          snapshot.backup_schema_version = 1;
+          snapshot.backed_up_at = new Date().toISOString();
+        } else snapshot.savedAt = new Date().toISOString();
+        return snapshot;
+      }
+      async function persist() {
+        const persistedRows = rowsWithoutScreenshotImages();
+        const payload = workspaceSnapshot({ persistedRows });
+        const backupPayload = tolgee
+          ? workspaceSnapshot({ backup: true, persistedRows })
+          : null;
         persistQueue = persistQueue.then(async () => {
           let browserSaved = false;
           try {
@@ -3065,19 +3364,7 @@
                 );
               const writable = await autosaveFileHandle.createWritable();
               await writable.write(
-                JSON.stringify(
-                  {
-                    backup_schema_version: 1,
-                    backed_up_at: new Date().toISOString(),
-                    tolgee,
-                    rows,
-                    currentView,
-                    pageSize: $("pageSize").value,
-                    languageConfig,
-                  },
-                  null,
-                  2,
-                ),
+                JSON.stringify(backupPayload, null, 2),
               );
               await writable.close();
               lastSavedAt = new Date();
@@ -3111,19 +3398,7 @@
               });
               const writable = await fileHandle.createWritable();
               await writable.write(
-                JSON.stringify(
-                  {
-                    backup_schema_version: 1,
-                    backed_up_at: new Date().toISOString(),
-                    tolgee,
-                    rows,
-                    currentView,
-                    pageSize: $("pageSize").value,
-                    languageConfig,
-                  },
-                  null,
-                  2,
-                ),
+                JSON.stringify(backupPayload, null, 2),
               );
               await writable.close();
               lastSavedAt = new Date();
@@ -3147,12 +3422,50 @@
       }
       function setAutosaveStatus(message, kind = "") {
         const el = $("autosaveFileStatus");
+        lastAutosaveStatusMessage = message;
         if (el) {
-          el.textContent = message;
+          el.title = message;
+          el.setAttribute("aria-label", message);
+          el.textContent =
+            kind === "error"
+              ? "Saving issue"
+              : kind === "ok"
+                ? "Saved locally"
+                : "Local saving";
           el.className =
             "autosave-status top-autosave" + (kind ? " " + kind : "");
         }
+        if (kind === "error" && message !== lastAutosaveErrorNotified) {
+          lastAutosaveErrorNotified = message;
+          notify(
+            `Saving issue: ${message} Click “Saving issue” to show this reason again.`,
+            8000,
+          );
+        } else if (kind !== "error") {
+          lastAutosaveErrorNotified = "";
+        }
       }
+      function showAutosaveStatusDetails() {
+        const el = $("autosaveFileStatus");
+        const message =
+          lastAutosaveStatusMessage ||
+          el?.title ||
+          "Local saving status is not available yet.";
+        notify(
+          `${el?.classList.contains("error") ? "Saving issue: " : "Saving status: "}${message}`,
+          8000,
+        );
+      }
+      $("autosaveFileStatus").addEventListener(
+        "click",
+        showAutosaveStatusDetails,
+      );
+      $("autosaveFileStatus").addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          showAutosaveStatusDetails();
+        }
+      });
       async function chooseAutosaveFile(fromSetup = false) {
         if (!window.showDirectoryPicker) {
           if (fromSetup) {
@@ -3820,6 +4133,9 @@
           ? Math.round((done / pool.length) * 100)
           : 0;
         $("progress").textContent = percent + "%";
+        const progressStat = document.querySelector(".progress-stat");
+        if (progressStat)
+          progressStat.style.setProperty("--progress", percent + "%");
         $("progressText").textContent =
           languageConfig.toolLanguage === "zh"
             ? `${done} / ${pool.length} 条${progressVerb}`
@@ -3828,7 +4144,7 @@
         $("nApproved").textContent = approved;
         $("nRejected").textContent = rejected;
         $("nUnchanged").textContent = rows.filter(isUnchangedProposal).length;
-        $("nReviewed").textContent = reviewed;
+        if ($("nReviewed")) $("nReviewed").textContent = reviewed;
         $("nUntranslatable").textContent = rows.filter(
           (r) => r.unable_to_translate,
         ).length;
@@ -4230,6 +4546,43 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
               )
               .join("")
           : `<div class="glossary-empty">${languageConfig.toolLanguage === "zh" ? "当前目标语言尚无已保存规则。" : "No saved rules for the current target language."}</div>`;
+        const downloadButton = $("downloadGlossaryJson");
+        if (downloadButton)
+          downloadButton.disabled = replacementGlossary.length === 0;
+      }
+      function exportReplacementGlossary() {
+        const rules = normalizeReplacementGlossary(replacementGlossary);
+        if (!rules.length) {
+          notify(
+            languageConfig.toolLanguage === "zh"
+              ? "还没有可下载的术语规则。"
+              : "There are no saved glossary rules to download.",
+          );
+          return;
+        }
+        const languages = [...
+          new Set(rules.map((entry) => entry.target_language)),
+        ].sort();
+        const payload = {
+          schema_version: 1,
+          glossary_type: "target_term_replacement_rules",
+          exported_at: new Date().toISOString(),
+          current_target_language: currentGlossaryLanguage(),
+          language_count: languages.length,
+          rule_count: rules.length,
+          languages,
+          rules,
+        };
+        download(
+          "ulearning_translation_replacement_glossary.json",
+          JSON.stringify(payload, null, 2),
+        );
+        notify(
+          languageConfig.toolLanguage === "zh"
+            ? `已下载 ${rules.length} 条术语规则（${languages.length} 种目标语言）。`
+            : `Glossary JSON downloaded with ${rules.length} rule${rules.length === 1 ? "" : "s"} across ${languages.length} target language${languages.length === 1 ? "" : "s"}.`,
+          6000,
+        );
       }
       function openTermReplacement() {
         $("replaceFind").value = "";
@@ -4577,26 +4930,29 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           `Tolgee update JSON exported: ${updates.length} translation update${updates.length === 1 ? "" : "s"}; ${reviewed_keys.length} reviewed key${reviewed_keys.length === 1 ? "" : "s"} included for status updates.`,
         );
       }
-      /* Backups preserve the complete review workspace, including screenshot data. */
+      /* Backups preserve decisions and screenshot metadata, but omit image data to remain reliable. */
       function exportBackup() {
-        const payload = {
-          backup_schema_version: 1,
-          backed_up_at: new Date().toISOString(),
-          tolgee,
-          rows,
-          currentView,
-          pageSize: $("pageSize").value,
-          languageConfig,
-        };
-        download(
-          "ulearning_translation_review_progress_backup.json",
-          JSON.stringify(payload, null, 2),
-        );
-        notify(
-          languageConfig.toolLanguage === "zh"
-            ? "已下载进度备份。"
-            : "Progress backup downloaded.",
-        );
+        try {
+          const payload = workspaceSnapshot({ backup: true });
+          download(
+            "ulearning_translation_review_progress_backup.json",
+            JSON.stringify(payload, null, 2),
+          );
+          notify(
+            languageConfig.toolLanguage === "zh"
+              ? "已下载进度备份。审核决定和截图元数据已保留；图片文件未包含。"
+              : "Progress backup downloaded. Decisions and screenshot metadata are preserved; image files are omitted.",
+            6000,
+          );
+        } catch (error) {
+          notify(
+            (languageConfig.toolLanguage === "zh"
+              ? "无法创建进度备份："
+              : "Could not create progress backup: ") +
+              (error.message || "unknown error"),
+            8000,
+          );
+        }
       }
       function importBackup(data) {
         if (
@@ -4609,7 +4965,7 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
             "This does not look like a progress backup exported by this tool.",
           );
         tolgee = data.tolgee;
-        rows = data.rows;
+        rows = rowsWithoutScreenshotImages(data.rows);
         languageConfig = {
           ...languageConfig,
           ...(data.languageConfig || tolgee.review_config || {}),
@@ -4819,13 +5175,15 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
       setupRestoreInput.id = "setupRestoreInput";
       document.body.appendChild(setupRestoreInput);
       async function finishRestoredSetup() {
-        setupScreenshotsHandled = true;
+        setupScreenshotsHandled = screenshotReferenceCount() === 0;
         refreshSetup();
         $("setupJsonStatus").textContent =
           `Restored ${rows.length} reviewed entries from ${tolgee.project?.name || "project"} (ID ${tolgee.project?.id ?? "—"}).`;
         $("setupJsonStatus").className = "setup-status ok";
         $("setupScreenshotStatus").textContent =
-          "Screenshot data and review decisions were restored from the backup; no separate screenshot import is needed unless images are missing.";
+          languageConfig.toolLanguage === "zh"
+            ? "审核决定和截图元数据已恢复。图片文件未包含在备份中；如需查看截图，请在“导入 JSON 文件”中重新选择截图文件夹。"
+            : "Review decisions and screenshot metadata were restored. Image files are not included in backups; use Import JSON files to reselect the screenshot folder when you need to view them.";
         $("setupScreenshotStatus").className = "setup-status ok";
         $("setupSkipScreenshots").hidden = true;
         finishSetup(true);
@@ -5038,6 +5396,7 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
         proposalReplacementPreview,
       );
       $("applyTermReplacement").onclick = applyTermReplacement;
+      $("downloadGlossaryJson").onclick = exportReplacementGlossary;
       $("replaceTermsModal").addEventListener("click", (event) => {
         if (event.target.id === "replaceTermsModal")
           $("replaceTermsModal").classList.remove("open");
@@ -5222,7 +5581,32 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
       document
         .querySelectorAll(".nav[data-view]")
         .forEach((b) =>
-          b.addEventListener("click", () => setView(b.dataset.view)),
+          b.addEventListener("click", () => {
+            setView(b.dataset.view);
+            const layout = document.querySelector(".layout");
+            if (layout?.classList.contains("mobile-nav-open")) {
+              layout.classList.remove("mobile-nav-open");
+              $("mobileNavToggle")?.setAttribute("aria-expanded", "false");
+            }
+          }),
+        );
+      $("mobileNavToggle")?.addEventListener("click", () => {
+        const layout = document.querySelector(".layout");
+        if (!layout) return;
+        const open = layout.classList.toggle("mobile-nav-open");
+        $("mobileNavToggle").setAttribute("aria-expanded", String(open));
+      });
+      document.addEventListener("click", (event) => {
+        const menu = $("projectMenu");
+        if (menu?.open && !menu.contains(event.target)) menu.open = false;
+      });
+      document
+        .querySelectorAll(".project-menu-popover button")
+        .forEach((button) =>
+          button.addEventListener("click", () => {
+            const menu = $("projectMenu");
+            if (menu) menu.open = false;
+          }),
         );
       function movePage(n) {
         let arr = visibleRows(),
