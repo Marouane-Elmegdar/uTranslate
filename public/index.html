@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>ULearning Translation Review Desk v34</title>
+    <title>ULearning Translation Review Desk v39</title>
     <style>
       /* ULearning Translation Review Desk v16 — namespace-aware key identity */
       :root {
@@ -393,6 +393,23 @@
         background: #334a70;
         padding: 2px 7px;
         border-radius: 20px;
+      }
+      .nav-group-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin: 15px 10px 6px;
+        color: #93a4c0;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .nav-divider {
+        height: 1px;
+        margin: 14px 10px;
+        background: #354a6c;
       }
       .sidebox {
         font-size: 12px;
@@ -1022,35 +1039,6 @@
         letter-spacing: 0.04em;
         margin-bottom: 8px;
       }
-      .screenshot-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 10px;
-      }
-      .screenshot-figure {
-        margin: 0;
-        min-width: 0;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        overflow: hidden;
-        background: white;
-      }
-      .screenshot-figure img {
-        display: block;
-        width: 100%;
-        height: auto;
-        max-height: 320px;
-        object-fit: contain;
-        object-position: top;
-        background: #edf1f7;
-        cursor: zoom-in;
-      }
-      .screenshot-caption {
-        padding: 7px 9px;
-        font-size: 11px;
-        color: var(--muted);
-        overflow-wrap: anywhere;
-      }
       .screenshot-missing {
         font-size: 12px;
         color: var(--amber);
@@ -1071,6 +1059,24 @@
       .screenshot-modal .modalbody {
         text-align: center;
       }
+      .screenshot-stage {
+        display: grid;
+        grid-template-columns: 44px minmax(0, 1fr) 44px;
+        align-items: center;
+        gap: 10px;
+      }
+      .screenshot-nav {
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border-radius: 50%;
+        font-size: 28px;
+        line-height: 1;
+      }
+      .screenshot-nav:disabled {
+        opacity: 0.32;
+        cursor: default;
+      }
       .screenshot-modal-image {
         display: block;
         max-width: 100%;
@@ -1082,12 +1088,11 @@
         background: #edf1f7;
         border-radius: 8px;
       }
-      .screenshot-modal-caption {
-        font-size: 12px;
-        color: var(--muted);
+      .screenshot-modal-counter {
+        font-size: 13px;
+        font-weight: 750;
+        color: var(--ink);
         margin-top: 10px;
-        white-space: pre-wrap;
-        overflow-wrap: anywhere;
       }
       @media (max-width: 1100px) {
         .layout {
@@ -1532,12 +1537,11 @@
           inset 0 1px 0 rgba(255, 255, 255, 0.13);
       }
 
-      /* v28: multi-select decision dropdown */
-      .decision-filter {
+      .search-scope {
         position: relative;
         min-width: 190px;
       }
-      .decision-filter-trigger {
+      .search-scope-trigger {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -1552,12 +1556,12 @@
         padding: 9px 10px;
         cursor: pointer;
       }
-      .decision-filter-trigger:hover,
-      .decision-filter-trigger[aria-expanded="true"] {
+      .search-scope-trigger:hover,
+      .search-scope-trigger[aria-expanded="true"] {
         border-color: #9aadd0;
         box-shadow: 0 3px 10px #1c315012;
       }
-      .decision-filter-menu {
+      .search-scope-menu {
         display: none;
         position: absolute;
         top: calc(100% + 7px);
@@ -1572,10 +1576,10 @@
         box-shadow: 0 12px 32px #14233c24;
         z-index: 25;
       }
-      .decision-filter.open .decision-filter-menu {
+      .search-scope.open .search-scope-menu {
         display: block;
       }
-      .decision-filter-option {
+      .search-scope-option {
         display: flex;
         align-items: center;
         gap: 9px;
@@ -1585,16 +1589,16 @@
         color: #35445d;
         cursor: pointer;
       }
-      .decision-filter-option:hover {
+      .search-scope-option:hover {
         background: #f3f6fb;
       }
-      .decision-filter-option input {
+      .search-scope-option input {
         margin: 0;
         accent-color: var(--blue);
         width: 15px;
         height: 15px;
       }
-      .decision-filter-menu .filter-clear {
+      .search-scope-menu .filter-clear {
         width: 100%;
         margin-bottom: 5px;
         text-align: left;
@@ -1606,8 +1610,232 @@
         cursor: pointer;
         font-size: 12px;
       }
-      .decision-filter-menu .filter-clear:hover {
+      .search-scope-menu .filter-clear:hover {
         background: #eaf0fa;
+      }
+      .icu-tools {
+        margin-top: 14px;
+      }
+      .icu-tools-launch {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .icu-tools-panel {
+        margin-top: 8px;
+        padding: 14px;
+        border: 1px solid #cfd7e3;
+        border-radius: 6px;
+        background: #f7f9fc;
+      }
+      .icu-tools-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 8px;
+      }
+      .icu-tools-head strong {
+        font-size: 14px;
+      }
+      .icu-badge {
+        min-width: 72px;
+        padding: 3px 8px;
+        border-radius: 999px;
+        background: #e7edf5;
+        color: #41526a;
+        font-size: 11px;
+        font-weight: 700;
+        text-align: center;
+      }
+      .icu-badge.valid {
+        background: #d9f2e5;
+        color: #17613c;
+      }
+      .icu-badge.invalid {
+        background: #fde3e0;
+        color: #9b2f27;
+      }
+      .icu-key-setting {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px solid #d7dee8;
+        border-radius: 6px;
+        background: #fff;
+        color: #33445b;
+        cursor: pointer;
+      }
+      .icu-key-setting input {
+        width: 18px;
+        height: 18px;
+        margin: 1px 0 0;
+        flex: 0 0 auto;
+      }
+      .icu-key-setting span {
+        min-width: 0;
+      }
+      .icu-key-setting strong,
+      .icu-key-setting small {
+        display: block;
+      }
+      .icu-key-setting strong {
+        font-size: 12px;
+      }
+      .icu-key-setting small {
+        margin-top: 3px;
+        color: #65758a;
+        font-size: 11px;
+        line-height: 1.4;
+      }
+      .icu-key-setting.disabled {
+        background: #f1f4f8;
+        cursor: default;
+      }
+      .icu-builder-grid {
+        display: grid;
+        grid-template-columns: minmax(150px, 1fr) minmax(150px, 1fr);
+        gap: 10px;
+        margin: 10px 0;
+      }
+      .icu-builder-grid label,
+      .icu-test-label {
+        display: grid;
+        gap: 5px;
+        color: #44546a;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .icu-builder-grid input,
+      .icu-builder-grid select,
+      .icu-test-label input {
+        width: 100%;
+      }
+      .icu-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 10px 0;
+      }
+      .icu-branch-editor {
+        display: grid;
+        gap: 9px;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid #d7dee8;
+      }
+      .icu-branch-editor h4 {
+        margin: 0;
+        font-size: 13px;
+      }
+      .icu-rule-section {
+        display: grid;
+        gap: 8px;
+        padding: 10px;
+        border: 1px solid #d7dee8;
+        border-radius: 6px;
+        background: #fff;
+      }
+      .icu-rule-section + .icu-rule-section {
+        margin-top: 4px;
+      }
+      .icu-rule-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        color: #17365f;
+        font-size: 13px;
+        font-weight: 800;
+      }
+      .icu-rule-kind,
+      .icu-card-preview-note {
+        color: #65758a;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .icu-card-preview-note {
+        direction: ltr;
+        text-align: left;
+        unicode-bidi: isolate;
+      }
+      .icu-view-toggle {
+        min-height: 28px;
+        padding: 4px 9px;
+        font-size: 11px;
+      }
+      .icu-branch-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+      }
+      .icu-branch-grid label {
+        display: grid;
+        gap: 4px;
+        color: #44546a;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .icu-branch-grid textarea {
+        width: 100%;
+        min-height: 72px;
+        resize: vertical;
+        unicode-bidi: plaintext;
+      }
+      .icu-branch-grid textarea[dir="rtl"],
+      #editText[dir="rtl"],
+      #icuTestValues[dir="rtl"] {
+        direction: rtl;
+        text-align: right;
+      }
+      .icu-preview-output[dir="rtl"] {
+        direction: rtl;
+        text-align: right;
+        unicode-bidi: isolate;
+      }
+      .panel[dir="rtl"] {
+        direction: rtl;
+        text-align: right;
+        unicode-bidi: plaintext;
+      }
+      .icu-result {
+        min-height: 34px;
+        margin-top: 10px;
+        padding: 8px 10px;
+        border-left: 3px solid #8b99aa;
+        background: #eef2f6;
+        color: #34445a;
+        font-size: 12px;
+        white-space: pre-wrap;
+      }
+      .icu-result.valid {
+        border-left-color: #24875b;
+        background: #eaf7f0;
+        color: #185b3e;
+      }
+      .icu-result.invalid {
+        border-left-color: #c5473d;
+        background: #fff0ee;
+        color: #8f2d27;
+      }
+      .icu-preview-output {
+        margin-top: 8px;
+        padding: 10px;
+        border: 1px solid #cfd7e3;
+        border-radius: 4px;
+        background: #fff;
+        color: #1f2937;
+        white-space: pre-wrap;
+      }
+      @media (max-width: 640px) {
+        .icu-builder-grid {
+          grid-template-columns: 1fr;
+        }
+        .icu-branch-grid {
+          grid-template-columns: 1fr;
+        }
       }
     </style>
   </head>
@@ -1781,7 +2009,7 @@
             >Local saving</span
           >
           <button id="exportTop" class="primary action-export">
-            Export Tolgee Update JSON
+            Export review package
           </button>
         </div>
       </header>
@@ -1800,9 +2028,20 @@
           <button class="nav nav-all active" data-view="all">
             All strings <span class="count" id="nAll">0</span>
           </button>
+          <div class="nav-group-label" id="unchangedGroupLabel">
+            Unchanged proposal review
+          </div>
           <button class="nav" data-view="unchanged">
             Unchanged proposals <span class="count" id="nUnchanged">0</span>
           </button>
+          <button class="nav" data-view="checkedUnchanged">
+            Checked unchanged proposals
+            <span class="count" id="nCheckedUnchanged">0</span>
+          </button>
+          <div class="nav-divider" aria-hidden="true"></div>
+          <div class="nav-group-label" id="changedGroupLabel">
+            Changed proposal review
+          </div>
           <button class="nav" data-view="pending">
             Pending review <span class="count" id="nPending">0</span>
           </button>
@@ -1812,6 +2051,8 @@
           <button class="nav" data-view="rejected">
             Rejected <span class="count" id="nRejected">0</span>
           </button>
+          <div class="nav-divider" aria-hidden="true"></div>
+          <div class="nav-group-label" id="attentionGroupLabel">Attention</div>
           <button class="nav" data-view="untranslatable">
             Unable to translate
             <span class="count" id="nUntranslatable">0</span>
@@ -1844,8 +2085,8 @@
               <h1 id="projectTitle">Translation review workspace</h1>
               <p>
                 Compare the Chinese source, existing translation, and proposal.
-                Accept, reject, or edit each suggestion. Export only approved
-                changes in Tolgee update_translations format.
+                Accept, reject, or edit each suggestion. Export a final JSON in
+                the original structure and entry order.
               </p>
             </div>
           </div>
@@ -1914,64 +2155,61 @@
                 placeholder="Search Chinese, English, key, context, or reviewer note…"
               />
             </div>
-            <div class="decision-filter" id="decisionFilter">
+            <div class="search-scope" id="searchScope">
               <button
                 type="button"
-                class="decision-filter-trigger"
-                id="decisionFilterTrigger"
+                class="search-scope-trigger"
+                id="searchScopeTrigger"
                 aria-haspopup="true"
                 aria-expanded="false"
               >
-                <span id="decisionFilterCaption">Any decision</span
+                <span id="searchScopeCaption">Search in: all text</span
                 ><span aria-hidden="true">▾</span>
               </button>
               <div
-                class="decision-filter-menu"
-                id="decisionFilterMenu"
+                class="search-scope-menu"
+                id="searchScopeMenu"
                 role="group"
-                aria-label="Decision filters"
+                aria-label="Search text fields"
               >
                 <button
                   type="button"
                   class="filter-clear"
-                  id="clearDecisionFilters"
+                  id="selectAllSearchScopes"
                 >
-                  Clear selection · show any decision
+                  Select all text fields
                 </button>
-                <label class="decision-filter-option"
+                <label class="search-scope-option"
                   ><input
                     type="checkbox"
-                    value="pending"
-                    data-filter-label="pendingFilter"
-                  /><span>Pending</span></label
+                    value="source"
+                    data-search-label="searchSource"
+                    checked
+                  /><span>Source text</span></label
                 >
-                <label class="decision-filter-option"
+                <label class="search-scope-option"
                   ><input
                     type="checkbox"
-                    value="acceptedEdited"
-                    data-filter-label="acceptedFilter"
-                  /><span>Accepted / edited</span></label
+                    value="original"
+                    data-search-label="searchOriginal"
+                    checked
+                  /><span>Original translation</span></label
                 >
-                <label class="decision-filter-option"
+                <label class="search-scope-option"
                   ><input
                     type="checkbox"
-                    value="rejected"
-                    data-filter-label="rejectedFilter"
-                  /><span>Rejected</span></label
+                    value="proposal"
+                    data-search-label="searchProposal"
+                    checked
+                  /><span>ChatGPT proposal</span></label
                 >
-                <label class="decision-filter-option"
+                <label class="search-scope-option"
                   ><input
                     type="checkbox"
-                    value="unchanged"
-                    data-filter-label="unchangedFilter"
-                  /><span>No proposal / unchanged</span></label
-                >
-                <label class="decision-filter-option"
-                  ><input
-                    type="checkbox"
-                    value="tolgeeReviewed"
-                    data-filter-label="reviewedFilter"
-                  /><span>Tolgee status: Reviewed</span></label
+                    value="final"
+                    data-search-label="searchFinal"
+                    checked
+                  /><span>Final result</span></label
                 >
               </div>
             </div>
@@ -1987,12 +2225,6 @@
               title="Shows entries where ChatGPT indicates that a person must clarify the meaning, context, or intended wording before a reliable translation can be chosen."
               ><input type="checkbox" id="onlyIssues" /> Human clarification
               needed</label
-            >
-            <label
-              class="toggle"
-              title="Shows entries explicitly flagged as not understood or not safely translatable by ChatGPT."
-              ><input type="checkbox" id="onlyUntranslatable" /> Unable to
-              translate</label
             >
             <select id="sort">
               <option value="source">Source order</option>
@@ -2116,6 +2348,63 @@
         </div>
       </div>
     </div>
+    <div
+      class="modalbg"
+      id="restoreBackupModal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="restoreBackupTitle"
+    >
+      <div class="modal">
+        <div class="modalhead">
+          <h2 id="restoreBackupTitle">Restore review progress</h2>
+          <button id="closeRestoreBackup" aria-label="Close">✕</button>
+        </div>
+        <div class="modalbody">
+          <p id="restoreBackupIntro">
+            Select the progress backup JSON. You may also select the screenshots
+            folder now so screenshot images are available immediately.
+          </p>
+          <div class="drop">
+            <label for="restoreBackupFile" id="restoreBackupFileLabel"
+              >Progress backup JSON (required)</label
+            >
+            <input
+              type="file"
+              id="restoreBackupFile"
+              accept=".json,application/json"
+            />
+          </div>
+          <div class="drop">
+            <label for="restoreScreenshotsFolder" id="restoreScreenshotsLabel"
+              >Screenshots folder (optional)</label
+            >
+            <input
+              type="file"
+              id="restoreScreenshotsFolder"
+              accept="image/*"
+              webkitdirectory
+              directory
+              multiple
+            />
+            <small id="restoreScreenshotsHelp"
+              >You can continue without this folder. Screenshot metadata remains
+              in the backup, but images will stay unavailable until loaded.</small
+            >
+          </div>
+          <div
+            id="restoreBackupError"
+            style="color: #a12d2d; font-size: 12px; white-space: pre-wrap"
+          ></div>
+        </div>
+        <div class="modalfoot">
+          <button id="cancelRestoreBackup">Cancel</button>
+          <button class="primary" id="continueRestoreBackup" disabled>
+            Continue restore
+          </button>
+        </div>
+      </div>
+    </div>
     <div class="modalbg" id="editModal">
       <div class="modal">
         <div class="modalhead">
@@ -2142,6 +2431,71 @@
             >Final target translation to export</label
           ><textarea id="editText" class="editarea"></textarea>
           <div id="placeholderWarning"></div>
+          <section class="icu-tools" aria-labelledby="icuToolsTitle">
+            <button type="button" id="toggleIcuTools" class="icu-tools-launch">
+              Add ICU
+            </button>
+            <div id="icuToolsPanel" class="icu-tools-panel hidden">
+              <div class="icu-tools-head">
+              <strong id="icuToolsTitle">ICU plural tools</strong>
+              <span id="icuStatusBadge" class="icu-badge">Simple text</span>
+              </div>
+            <p id="icuToolsHelp" style="font-size: 12px; margin: 0">
+              Add one plural rule for each quantity variable, then test and
+              validate the combined message before saving.
+            </p>
+            <label class="icu-key-setting" id="tolgeePluralSetting" for="enableTolgeePluralForms">
+              <input id="enableTolgeePluralForms" type="checkbox" disabled />
+              <span>
+                <strong id="tolgeePluralSettingLabel">Enable Tolgee Use plural forms when pushed</strong>
+                <small id="tolgeePluralSettingHelp">Available only for a valid ICU message with exactly one plural rule.</small>
+              </span>
+            </label>
+            <div class="icu-builder-grid">
+              <label for="icuVariableName"
+                ><span id="icuVariableLabel">Quantity variable</span
+                ><input
+                  id="icuVariableName"
+                  type="text"
+                  value="count"
+                  autocomplete="off"
+                  spellcheck="false"
+              /></label>
+              <label for="icuRuleType"
+                ><span id="icuRuleTypeLabel">Rule type</span
+                ><select id="icuRuleType">
+                  <option value="plural" selected>Cardinal plural</option>
+                  <option value="selectordinal">Ordinal plural</option>
+                </select></label
+              >
+            </div>
+            <div class="icu-actions">
+              <button type="button" id="createIcuRule">
+                Add ICU rule
+              </button>
+              <button type="button" id="validateIcuRule">
+                Validate ICU
+              </button>
+            </div>
+            <div id="icuBranchEditor" class="icu-branch-editor hidden"></div>
+            <label class="icu-test-label" for="icuTestValues"
+              ><span id="icuTestValuesLabel">Preview values as JSON</span
+              ><input
+                id="icuTestValues"
+                type="text"
+                value='{"count": 1}'
+                autocomplete="off"
+                spellcheck="false"
+            /></label>
+            <div class="icu-actions">
+              <button type="button" id="previewIcuRule">Preview result</button>
+            </div>
+            <div id="icuValidationResult" class="icu-result">
+              This translation does not contain an ICU rule.
+            </div>
+            <div id="icuPreviewOutput" class="icu-preview-output hidden"></div>
+            </div>
+          </section>
           <p style="font-size: 12px; margin: 8px 0 0">
             Choose either starting point, then edit the text above. Saving sets
             the final target translation to your edited text.
@@ -2211,15 +2565,34 @@
           <button id="closeScreenshot" aria-label="Close screenshot">✕</button>
         </div>
         <div class="modalbody">
-          <img
-            id="screenshotModalImage"
-            class="screenshot-modal-image"
-            alt="Tolgee entry screenshot"
-          />
-          <div
-            id="screenshotModalCaption"
-            class="screenshot-modal-caption"
-          ></div>
+          <div class="screenshot-stage">
+            <button
+              type="button"
+              id="previousScreenshot"
+              class="screenshot-nav"
+              aria-label="Previous screenshot"
+              title="Previous screenshot"
+            >
+              ‹
+            </button>
+            <img
+              id="screenshotModalImage"
+              class="screenshot-modal-image"
+              alt="Tolgee entry screenshot"
+            />
+            <button
+              type="button"
+              id="nextScreenshot"
+              class="screenshot-nav"
+              aria-label="Next screenshot"
+              title="Next screenshot"
+            >
+              ›
+            </button>
+          </div>
+          <div id="screenshotModalCounter" class="screenshot-modal-counter">
+            1 / 1
+          </div>
         </div>
         <div class="modalfoot">
           <button id="closeScreenshotBottom">Close</button>
@@ -2237,8 +2610,9 @@
       aria-label="Choose screenshots folder"
     />
     <div class="toast" id="toast"></div>
+    <script src="./icu-bundle.js"></script>
     <script>
-      // ULearning Translation Review Desk v34 — compact controls with visible saving diagnostics
+      // ULearning Translation Review Desk v39 — Arabic RTL previews with multi-rule ICU editing
       "use strict";
       const $ = (id) => document.getElementById(id);
       const esc = (s) =>
@@ -2254,6 +2628,248 @@
             })[c],
         );
       const clone = (x) => JSON.parse(JSON.stringify(x));
+      const ICU = window.UTranslateICU;
+      if (!ICU)
+        throw Error("The embedded ICU validation library could not be loaded.");
+      function looksLikeIcuRule(value) {
+        return /\{\s*[^,{}]+\s*,\s*(?:plural|select|selectordinal)\s*,/i.test(
+          String(value ?? ""),
+        );
+      }
+      function tolgeePluralEligibility(value) {
+        try {
+          const analysis = ICU.analyze(String(value ?? ""), icuLocale("target"));
+          const rules = Array.isArray(analysis.rules) ? analysis.rules : [];
+          if (
+            !analysis.isIcu ||
+            rules.length !== 1 ||
+            !["plural", "selectordinal"].includes(rules[0].type)
+          )
+            return {
+              eligible: false,
+              variable: null,
+              type: null,
+              reason:
+                "Tolgee plural mode requires exactly one cardinal or ordinal plural rule.",
+            };
+          return {
+            eligible: true,
+            variable: rules[0].variable,
+            type: rules[0].type,
+            reason: "",
+          };
+        } catch (error) {
+          return {
+            eligible: false,
+            variable: null,
+            type: null,
+            reason: String(error.message || error),
+          };
+        }
+      }
+      const RTL_LANGUAGE_CODES = new Set([
+        "ar",
+        "fa",
+        "he",
+        "ur",
+        "ps",
+        "sd",
+        "ku",
+        "ug",
+        "yi",
+      ]);
+      function isRtlLanguage(language = languageConfig.targetCode) {
+        return RTL_LANGUAGE_CODES.has(
+          String(language || "").toLowerCase().split("-")[0],
+        );
+      }
+      function hasRtlScript(value) {
+        return /[\u0590-\u08FF\uFB1D-\uFDFF\uFE70-\uFEFC]/.test(
+          String(value ?? ""),
+        );
+      }
+      function stripBidiControls(value) {
+        return String(value ?? "").replace(/[\u061C\u200E\u200F\u202A-\u202E\u2066-\u2069]/g, "");
+      }
+      // Keep numeric/Latin placeholders together when an ICU message is shown in RTL text.
+      // The controls are invisible and are only added to exported RTL ICU messages.
+      function protectRtlIcuBidi(value, language = languageConfig.targetCode) {
+        const text = String(value ?? "");
+        if (!isRtlLanguage(language) || !looksLikeIcuRule(text)) return text;
+        let protectedBranches = 0;
+        const branchProtected = text.replace(
+          /((?:zero|one|two|few|many|other|=\d+)\s*\{)((?:[^{}]|\{[A-Za-z_][A-Za-z0-9_.-]*\})*)(\})/g,
+          (match, open, body, close) => {
+            if (/\u2066|\u2067/.test(body)) return match;
+            protectedBranches += 1;
+            return `${open}\u2066${body}\u2069${close}`;
+          },
+        );
+        if (protectedBranches) return branchProtected;
+        return text.replace(
+          /(?<![\u2066\u2067])\{([A-Za-z_][A-Za-z0-9_.-]*)\}(?![\u2069])/g,
+          "\u2066{$1}\u2069",
+        );
+      }
+      function icuLocale(kind = "target") {
+        return (
+          exactLanguageTag(kind) ||
+          (kind === "base"
+            ? languageConfig.baseCode
+            : languageConfig.targetCode) ||
+          "en"
+        );
+      }
+      function validateIcuTranslation(row, value) {
+        const text = String(value ?? "");
+        const suspectedIcu = looksLikeIcuRule(text);
+        let candidate;
+        try {
+          candidate = ICU.analyze(text, icuLocale("target"));
+        } catch (error) {
+          return {
+            isIcu: suspectedIcu,
+            valid: !suspectedIcu,
+            error: suspectedIcu ? String(error.message || error) : "",
+            analysis: null,
+          };
+        }
+        if (!candidate.isIcu)
+          return { isIcu: false, valid: true, error: "", analysis: candidate };
+
+        let source;
+        try {
+          source = ICU.analyze(String(row?.chinese ?? ""), icuLocale("base"));
+        } catch (error) {
+          return {
+            isIcu: true,
+            valid: false,
+            error: `The source text cannot be checked as ICU: ${error.message || error}`,
+            analysis: candidate,
+          };
+        }
+        const sourceArgs = source.arguments || {};
+        const targetArgs = candidate.arguments || {};
+        const missing = Object.keys(sourceArgs).filter(
+          (name) => !Object.prototype.hasOwnProperty.call(targetArgs, name),
+        );
+        const added = Object.keys(targetArgs).filter(
+          (name) => !Object.prototype.hasOwnProperty.call(sourceArgs, name),
+        );
+        if (missing.length)
+          return {
+            isIcu: true,
+            valid: false,
+            error: `The ICU translation is missing source variable${missing.length === 1 ? "" : "s"}: ${missing.join(", ")}.`,
+            analysis: candidate,
+          };
+        if (added.length)
+          return {
+            isIcu: true,
+            valid: false,
+            error: `The ICU translation adds variable${added.length === 1 ? "" : "s"} not present in the source: ${added.join(", ")}.`,
+            analysis: candidate,
+          };
+        for (const [name, sourceType] of Object.entries(sourceArgs)) {
+          const targetType = targetArgs[name];
+          if (
+            ["date", "time", "select", "plural", "selectordinal"].includes(
+              sourceType,
+            ) &&
+            sourceType !== targetType
+          )
+            return {
+              isIcu: true,
+              valid: false,
+              error: `Variable "${name}" is ${sourceType} in the source but ${targetType} in the target.`,
+              analysis: candidate,
+            };
+        }
+        return { isIcu: true, valid: true, error: "", analysis: candidate };
+      }
+      function serializeIcuLiteral(value, inPlural = false) {
+        let output = String(value ?? "")
+          .replace(/'/g, "''")
+          .replace(/[{}]/g, (character) => `'${character}'`);
+        if (inPlural) output = output.replace(/#/g, "'#'");
+        return output;
+      }
+      function serializeIcuElement(element, inPlural = false) {
+        if (!element || typeof element !== "object") return null;
+        if (element.type === 0)
+          return serializeIcuLiteral(element.value, inPlural);
+        if (element.type === 1) return `{${element.value}}`;
+        if (element.type === 7) return "#";
+        if (element.type === 5 || element.type === 6) {
+          const ruleType =
+            element.type === 5
+              ? "select"
+              : element.pluralType === "ordinal"
+                ? "selectordinal"
+                : "plural";
+          const offset =
+            element.type === 6 && element.offset
+              ? ` offset:${element.offset}`
+              : "";
+          const options = Object.entries(element.options || {})
+            .map(([selector, option]) => {
+              const body = serializeIcuElements(
+                option.value,
+                element.type === 6,
+              );
+              return body == null ? null : `${selector} {${body}}`;
+            });
+          if (options.some((option) => option == null)) return null;
+          return `{${element.value}, ${ruleType},${offset} ${options.join(" ")}}`;
+        }
+        return null;
+      }
+      function serializeIcuElements(elements, inPlural = false) {
+        const output = (elements || []).map((element) =>
+          serializeIcuElement(element, inPlural),
+        );
+        return output.some((part) => part == null) ? null : output.join("");
+      }
+      function icuSampleValues(value, sampleNumber = 2) {
+        try {
+          const analysis = ICU.analyze(String(value ?? ""), icuLocale("target"));
+          return Object.fromEntries(
+            Object.entries(analysis.arguments || {}).map(([name, type]) => [
+              name,
+              type === "select" ? "other" : sampleNumber,
+            ]),
+          );
+        } catch (_) {
+          return {};
+        }
+      }
+      function cardIcuView(value, showRaw = false) {
+        const text = String(value ?? "");
+        if (!looksLikeIcuRule(text) || showRaw)
+          return { text: stripBidiControls(text), note: "", preview: false };
+        try {
+          const values = icuSampleValues(text, 6);
+          const formatted = ICU.format(
+            protectRtlIcuBidi(text),
+            icuLocale("target"),
+            values,
+          );
+          const assignments = Object.entries(values)
+            .map(([name, sample]) => `${name}=${sample}`)
+            .join(", ");
+          return {
+            text: stripBidiControls(formatted),
+            note: assignments
+              ? `${languageConfig.toolLanguage === "zh" ? "示例" : "Sample"}: ${assignments}`
+              : languageConfig.toolLanguage === "zh"
+                ? "ICU 预览"
+                : "ICU preview",
+            preview: true,
+          };
+        } catch (_) {
+          return { text: stripBidiControls(text), note: "", preview: false };
+        }
+      }
       const DB_NAME = "ulearning-translation-review",
         DB_VERSION = 1,
         STORE = "workspace";
@@ -2261,10 +2877,17 @@
         "ulearning-translation-review-proposal-glossary-v1";
       let db = null,
         tolgee = null,
+        originalTolgeeJson = null,
         rows = [],
         currentView = "pending",
         page = 1,
         activeEditKey = null,
+        activeIcuToolsExpanded = false,
+        restoreModalContext = "workspace",
+        activeScreenshotKey = null,
+        activeScreenshotIndexes = [],
+        activeScreenshotPosition = 0,
+        activePluralModeDraft = false,
         importedAt = null,
         proposalCount = 0,
         autosaveDirectoryHandle = null,
@@ -2272,6 +2895,7 @@
         persistQueue = Promise.resolve(),
         lastSavedAt = null,
         setupScreenshotsHandled = false,
+        icuRawVisible = new Set(),
         replacementGlossary = storedReplacementGlossary();
       let languageConfig = {
         baseCode: "zh",
@@ -2316,6 +2940,39 @@
           });
         });
         return [...byIdentity.values()];
+      }
+      function normalizedPluralModeRequest(value) {
+        if (
+          !value ||
+          value.action !== "enable" ||
+          typeof value.plural_arg_name !== "string" ||
+          !value.plural_arg_name.trim()
+        )
+          return null;
+        return {
+          action: "enable",
+          plural_arg_name: value.plural_arg_name.trim(),
+          rule_type: ["plural", "selectordinal"].includes(value.rule_type)
+            ? value.rule_type
+            : "plural",
+        };
+      }
+      function normalizePersistedRow(row) {
+        if (!row || typeof row !== "object") return row;
+        return {
+          ...row,
+          _originalIsPlural:
+            typeof row._originalIsPlural === "boolean"
+              ? row._originalIsPlural
+              : null,
+          _originalPluralArgName:
+            typeof row._originalPluralArgName === "string"
+              ? row._originalPluralArgName
+              : null,
+          pluralModeRequest: normalizedPluralModeRequest(
+            row.pluralModeRequest,
+          ),
+        };
       }
       function storedReplacementGlossary() {
         try {
@@ -2385,7 +3042,8 @@
         if (
           typeof value !== "string" ||
           !["en", "es", "pt"].includes(lang) ||
-          !value
+          !value ||
+          looksLikeIcuRule(value)
         )
           return value;
         const protectedParts = [];
@@ -2487,6 +3145,7 @@
           accepted: "Accepted / edited",
           rejected: "Rejected",
           unchanged: "Unchanged proposals",
+          checkedUnchanged: "Checked unchanged proposals",
           reviewed: "Reviewed keys",
           untranslatable: "Unable to translate",
           all: "All strings",
@@ -2494,22 +3153,34 @@
           replaceTerms: "Replace glossary terms",
           chooseToolFolder: "Change saving location",
           backup: "Download backup",
+          report: "Download review report",
           restoreTop: "Restore backup",
           clear: "Clear workspace",
-          export: "Export update JSON",
+          export: "Export review package",
           loaded: "All strings",
           pendingStat: "Pending review",
           approvedStat: "Accepted / edited",
           rejectedStat: "Rejected",
           progress: "Decision progress",
-          search: "Search source, target, key, context, or reviewer note…",
-          anyDecision: "Any decision",
-          pendingFilter: "Pending",
-          acceptedFilter: "Accepted",
-          rejectedFilter: "Rejected",
-          editedFilter: "Edited",
-          unchangedFilter: "No proposal / unchanged",
-          reviewedFilter: "Tolgee status: Reviewed",
+          search: "Search selected text fields…",
+          searchInAll: "Search in: all text",
+          searchInCount: "Search in {count} fields",
+          searchSource: "Source text",
+          searchOriginal: "Original translation",
+          searchProposal: "ChatGPT proposal",
+          searchFinal: "Final result",
+          selectAllSearch: "Select all text fields",
+          unchangedGroup: "Unchanged proposal review",
+          changedGroup: "Changed proposal review",
+          attentionGroup: "Attention",
+          restoreTitle: "Restore review progress",
+          restoreIntro:
+            "Select the progress backup JSON. You may also select the screenshots folder now so screenshot images are available immediately.",
+          restoreFile: "Progress backup JSON (required)",
+          restoreScreenshots: "Screenshots folder (optional)",
+          restoreScreenshotsHelp:
+            "You can continue without this folder. Screenshot metadata remains in the backup, but images will stay unavailable until loaded.",
+          continueRestore: "Continue restore",
           anyConfidence: "Any confidence",
           low: "Low (<70)",
           medium: "Medium (70–89)",
@@ -2559,7 +3230,7 @@
           tryFilter: "Try another filter or search term.",
           noSourceLoaded: "Import the Tolgee JSON to begin.",
           reviewIntro:
-            "Compare the source, existing translation, and proposal. Accept, reject, or edit each suggestion. Export approved changes for your separate authorized Tolgee workflow.",
+            "Compare the source, existing translation, and proposal. Accept, reject, or edit each suggestion. Export one review package containing the final JSON and matching report.",
           exportTarget: "Export target-language update JSON",
           setupFootnote:
             "Your data stays in this browser and the local folder you choose. The tool does not connect to Tolgee or call an AI service.",
@@ -2596,6 +3267,7 @@
           accepted: "已接受 / 已编辑",
           rejected: "已拒绝",
           unchanged: "未更改的提案",
+          checkedUnchanged: "已检查的未更改提案",
           reviewed: "已审核条目",
           untranslatable: "无法翻译",
           all: "全部字符串",
@@ -2603,22 +3275,34 @@
           replaceTerms: "替换术语表术语",
           chooseToolFolder: "更改保存位置",
           backup: "下载备份",
+          report: "下载审核报告",
           restoreTop: "恢复备份",
           clear: "清空工作区",
-          export: "导出更新 JSON",
+          export: "导出审核包",
           loaded: "全部字符串",
           pendingStat: "待审核",
           approvedStat: "已接受 / 已编辑",
           rejectedStat: "已拒绝",
           progress: "审核进度",
-          search: "搜索源文、目标译文、键名、上下文或审核备注…",
-          anyDecision: "所有决定",
-          pendingFilter: "待审核",
-          acceptedFilter: "已接受",
-          rejectedFilter: "已拒绝",
-          editedFilter: "已编辑",
-          unchangedFilter: "无提案 / 未更改",
-          reviewedFilter: "Tolgee 状态：已审核",
+          search: "搜索所选文本字段…",
+          searchInAll: "搜索范围：全部文本",
+          searchInCount: "搜索 {count} 个字段",
+          searchSource: "源文本",
+          searchOriginal: "原始译文",
+          searchProposal: "ChatGPT 提案",
+          searchFinal: "最终结果",
+          selectAllSearch: "选择全部文本字段",
+          unchangedGroup: "未更改提案审核",
+          changedGroup: "已更改提案审核",
+          attentionGroup: "需要关注",
+          restoreTitle: "恢复审核进度",
+          restoreIntro:
+            "请选择进度备份 JSON。也可以同时选择截图文件夹，以便恢复后立即查看截图。",
+          restoreFile: "进度备份 JSON（必需）",
+          restoreScreenshots: "截图文件夹（可选）",
+          restoreScreenshotsHelp:
+            "无需选择截图文件夹也可以继续。截图元数据仍会保留，但图片在加载前不可用。",
+          continueRestore: "继续恢复",
           anyConfidence: "所有置信度",
           low: "低（<70）",
           medium: "中（70–89）",
@@ -2668,7 +3352,7 @@
           tryFilter: "请尝试其他筛选条件或搜索词。",
           noSourceLoaded: "请先导入 Tolgee JSON。",
           reviewIntro:
-            "对照源文本、现有译文和提案。逐条接受、拒绝或编辑建议，然后导出已批准的更改，并通过单独授权的 Tolgee 工作流应用。",
+            "对照源文本、现有译文和提案。逐条接受、拒绝或编辑建议，然后导出包含最终 JSON 和匹配审核报告的审核包。",
           exportTarget: "导出目标语言更新 JSON",
           setupFootnote:
             "数据保存在当前浏览器和您选择的本地文件夹中。本工具不会连接 Tolgee，也不会调用 AI 服务。",
@@ -2753,6 +3437,7 @@
           accepted: "accepted",
           rejected: "rejected",
           unchanged: "unchanged",
+          checkedUnchanged: "checkedUnchanged",
           reviewed: "reviewed",
           untranslatable: "untranslatable",
           all: "all",
@@ -2764,6 +3449,9 @@
           b.childNodes[0].textContent = tr(key) + " ";
         });
         text("navTitle", "navTitle");
+        text("unchangedGroupLabel", "unchangedGroup");
+        text("changedGroupLabel", "changedGroup");
+        text("attentionGroupLabel", "attentionGroup");
         const head = document.querySelector(".head .eyebrow");
         if (head)
           head.textContent = `${languageLabel(languageConfig.baseCode)} → ${languageLabel(languageConfig.targetCode)} · ${zh ? "人工审核" : "Human-in-the-loop"}`;
@@ -2833,19 +3521,15 @@
               if (o) o.textContent = tr(key);
             }
         }
-        document.querySelectorAll("[data-filter-label]").forEach((el) => {
-          const key = el.dataset.filterLabel;
+        document.querySelectorAll("[data-search-label]").forEach((el) => {
+          const key = el.dataset.searchLabel;
           const label = el.parentElement?.querySelector("span");
           if (label) label.textContent = tr(key);
         });
-        if ($("clearDecisionFilters"))
-          $("clearDecisionFilters").textContent = zh
-            ? "清除选择 · 显示所有决定"
-            : "Clear selection · show any decision";
-        updateDecisionFilterCaption();
+        text("selectAllSearchScopes", "selectAllSearch");
+        updateSearchScopeCaption();
         const toggles = document.querySelectorAll(".toggle");
         if (toggles[0]) setTrailingText(toggles[0], tr("clarification"));
-        if (toggles[1]) setTrailingText(toggles[1], tr("unable"));
         for (const id of [
           "firstPage",
           "prevPage",
@@ -2881,6 +3565,45 @@
         text("saveEdit", "saveEdit");
         text("cancelEdit", "cancel");
         text("closeEdit", zh ? "✕" : "✕");
+        updateIcuToolsVisibility();
+        text("icuToolsTitle", zh ? "ICU 复数工具" : "ICU plural tools");
+        text(
+          "icuToolsHelp",
+          zh
+            ? "为每个数量变量添加一条复数规则，然后在保存前测试并验证组合消息。"
+            : "Add one plural rule for each quantity variable, then test and validate the combined message before saving.",
+        );
+        text("icuVariableLabel", zh ? "数量变量" : "Quantity variable");
+        text("icuRuleTypeLabel", zh ? "规则类型" : "Rule type");
+        text("createIcuRule", zh ? "添加 ICU 规则" : "Add ICU rule");
+        text("validateIcuRule", zh ? "验证 ICU" : "Validate ICU");
+        text(
+          "icuTestValuesLabel",
+          zh ? "用 JSON 输入预览值" : "Preview values as JSON",
+        );
+        text("previewIcuRule", zh ? "预览结果" : "Preview result");
+        text(
+          "tolgeePluralSettingLabel",
+          zh
+            ? "Tolgee“使用复数形式”（自动）"
+            : "Tolgee Use plural forms (automatic)",
+        );
+        text("restoreBackupTitle", "restoreTitle");
+        text("restoreBackupIntro", "restoreIntro");
+        text("restoreBackupFileLabel", "restoreFile");
+        text("restoreScreenshotsLabel", "restoreScreenshots");
+        text("restoreScreenshotsHelp", "restoreScreenshotsHelp");
+        text("continueRestoreBackup", "continueRestore");
+        text("cancelRestoreBackup", "cancel");
+        const icuRuleType = $("icuRuleType");
+        if (icuRuleType) {
+          icuRuleType.options[0].textContent = zh
+            ? "基数复数"
+            : "Cardinal plural";
+          icuRuleType.options[1].textContent = zh
+            ? "序数复数"
+            : "Ordinal plural";
+        }
         text(
           "replaceTermsTitle",
           zh ? "替换目标语言术语" : "Replace target-language terms",
@@ -2981,6 +3704,18 @@
         const screenshotTitle = $("screenshotModalTitle");
         if (screenshotTitle && !$("screenshotModal").classList.contains("open"))
           screenshotTitle.textContent = zh ? "条目截图" : "Entry screenshot";
+        const previousScreenshot = $("previousScreenshot");
+        const nextScreenshot = $("nextScreenshot");
+        if (previousScreenshot) {
+          const label = zh ? "上一张截图" : "Previous screenshot";
+          previousScreenshot.title = label;
+          previousScreenshot.setAttribute("aria-label", label);
+        }
+        if (nextScreenshot) {
+          const label = zh ? "下一张截图" : "Next screenshot";
+          nextScreenshot.title = label;
+          nextScreenshot.setAttribute("aria-label", label);
+        }
       }
       function setTrailingText(el, value) {
         for (let i = el.childNodes.length - 1; i >= 0; i--) {
@@ -3178,16 +3913,6 @@
               reject(tx.error || Error("Could not remember the tool folder"));
           });
       }
-      async function storeFileHandle(handle) {
-        if (db)
-          await new Promise((resolve, reject) => {
-            const tx = db.transaction(STORE, "readwrite");
-            tx.objectStore(STORE).put(handle, "autosaveFileHandle");
-            tx.oncomplete = resolve;
-            tx.onerror = () =>
-              reject(tx.error || Error("Could not remember the backup file"));
-          });
-      }
       async function clearStoredHandle(key) {
         if (db)
           await new Promise((resolve) => {
@@ -3196,54 +3921,6 @@
             tx.oncomplete = resolve;
             tx.onerror = resolve;
           });
-      }
-      async function rememberBackupFile(handle) {
-        autosaveFileHandle = handle;
-        autosaveDirectoryHandle = null;
-        await storeFileHandle(handle);
-        await clearStoredHandle("autosaveDirectoryHandle");
-        setAutosaveStatus(
-          "Autosaving directly to backup file: " +
-            (handle.name || "selected JSON"),
-          "ok",
-        );
-      }
-      async function restoreBackupUsingFileHandle(handle) {
-        let permission = await handle.queryPermission({ mode: "readwrite" });
-        if (permission !== "granted")
-          permission = await handle.requestPermission({ mode: "readwrite" });
-        if (permission !== "granted")
-          throw Error(
-            "Write permission was not granted for the selected backup file. The backup was not changed.",
-          );
-        const backup = await readFile(await handle.getFile());
-        if (
-          !backup ||
-          backup.backup_schema_version !== 1 ||
-          !backup.tolgee ||
-          !Array.isArray(backup.rows)
-        )
-          throw Error(
-            "This file is not a valid Translation Review Desk progress backup. Choose a JSON created by Download backup or the tool's save/ folder.",
-          );
-        await rememberBackupFile(handle);
-        importBackup(backup);
-        await persist();
-        return backup;
-      }
-      async function pickAndRestoreBackup() {
-        if (!window.showOpenFilePicker) return null;
-        const handles = await window.showOpenFilePicker({
-          multiple: false,
-          types: [
-            {
-              description: "Translation Review Desk progress backup",
-              accept: { "application/json": [".json"] },
-            },
-          ],
-        });
-        if (!handles || !handles[0]) return null;
-        return await restoreBackupUsingFileHandle(handles[0]);
       }
       async function hasFileInDirectory(handle, name) {
         try {
@@ -3307,6 +3984,7 @@
       } = {}) {
         const snapshot = {
           tolgee,
+          originalTolgeeJson,
           rows: persistedRows,
           currentView,
           pageSize: $("pageSize").value,
@@ -3682,6 +4360,19 @@
             translation_state_raw: x.translation_state_raw ?? "",
             _originalTranslationState: x.translation_state ?? "",
             _originalTranslationStateRaw: x.translation_state_raw ?? "",
+            _originalIsPlural:
+              typeof x.is_plural === "boolean"
+                ? x.is_plural
+                : typeof x.isPlural === "boolean"
+                  ? x.isPlural
+                  : null,
+            _originalPluralArgName:
+              typeof x.plural_arg_name === "string"
+                ? x.plural_arg_name
+                : typeof x.pluralArgName === "string"
+                  ? x.pluralArgName
+                  : null,
+            pluralModeRequest: null,
             context_description: x.context_description ?? "",
             screenshots: Array.isArray(x.screenshots)
               ? x.screenshots.map((sc) => ({ ...sc, _previewDataUrl: null }))
@@ -3908,6 +4599,7 @@
           r.decision = r.proposal === r.english ? "unchanged" : "pending";
           r.decisionAt = null;
           r.finalEnglish = undefined;
+          checkPlaceholders(r);
           matched++;
         }
         proposalCount = matched;
@@ -3928,6 +4620,22 @@
         return JSON.stringify(a) === JSON.stringify(b);
       }
       function checkPlaceholders(r) {
+        const proposalIcu = validateIcuTranslation(r, r.proposal);
+        const existingHasIcu = looksLikeIcuRule(r.english);
+        if (existingHasIcu && !proposalIcu.isIcu) {
+          r.icuProposal = true;
+          r.icuProposalError = "The proposal removes the existing ICU rule.";
+          r.placeholderMismatch = true;
+          return true;
+        }
+        if (proposalIcu.isIcu) {
+          r.icuProposal = true;
+          r.icuProposalError = proposalIcu.valid ? "" : proposalIcu.error;
+          r.placeholderMismatch = !proposalIcu.valid;
+          return r.placeholderMismatch;
+        }
+        r.icuProposal = false;
+        r.icuProposalError = "";
         let original = placeholders(r.english),
           candidate = placeholders(r.proposal);
         r.placeholderMismatch =
@@ -3964,75 +4672,84 @@
           r._proposalImported && hasProposal(r) && r.proposal === r.english
         );
       }
+      function isCheckedUnchangedProposal(r) {
+        return (
+          isUnchangedProposal(r) &&
+          ["accepted", "edited"].includes(statusOf(r))
+        );
+      }
+      function isUncheckedUnchangedProposal(r) {
+        return (
+          isUnchangedProposal(r) &&
+          !r.unable_to_translate &&
+          !isCheckedUnchangedProposal(r)
+        );
+      }
       function hasReviewDecision(r) {
         return ["accepted", "rejected", "edited"].includes(statusOf(r));
       }
       function visibleRows() {
         let q = $("q").value.trim().toLowerCase(),
-          filters = selectedDecisionFilters(),
+          searchScopes = selectedSearchScopes(),
           c = $("confidence").value,
-          issues = $("onlyIssues").checked,
-          untrans = $("onlyUntranslatable").checked;
+          issues = $("onlyIssues").checked;
         let arr = rows.filter((r) => {
           let s = statusOf(r);
           const decided = ["accepted", "rejected", "edited"].includes(s);
           if (
             currentView === "needs" &&
-            (decided ||
+            (r.unable_to_translate ||
+              decided ||
               !(
                 (differs(r) && s === "pending") ||
                 r.clarification_needed ||
                 r.placeholderMismatch ||
                 r.proposalSourceMismatch ||
-                r.proposalExistingMismatch ||
-                r.unable_to_translate
+                r.proposalExistingMismatch
               ))
           )
             return false;
-          if (currentView === "pending" && (!differs(r) || s !== "pending"))
+          if (
+            currentView === "pending" &&
+            (!differs(r) || s !== "pending" || r.unable_to_translate)
+          )
             return false;
-          if (currentView === "accepted" && !["accepted", "edited"].includes(s))
+          if (
+            currentView === "accepted" &&
+            (!["accepted", "edited"].includes(s) ||
+              isUnchangedProposal(r) ||
+              r.unable_to_translate)
+          )
             return false;
-          if (currentView === "rejected" && s !== "rejected") return false;
-          if (currentView === "unchanged" && !isUnchangedProposal(r))
+          if (
+            currentView === "rejected" &&
+            (s !== "rejected" || r.unable_to_translate)
+          )
+            return false;
+          if (
+            currentView === "unchanged" &&
+            !isUncheckedUnchangedProposal(r)
+          )
+            return false;
+          if (
+            currentView === "checkedUnchanged" &&
+            (!isCheckedUnchangedProposal(r) || r.unable_to_translate)
+          )
             return false;
           if (currentView === "reviewed" && !hasReviewDecision(r)) return false;
           if (currentView === "untranslatable" && !r.unable_to_translate)
             return false;
-          if (
-            filters.length &&
-            !filters.some((f) =>
-              f === "pending"
-                ? s === "pending"
-                : f === "acceptedEdited"
-                  ? ["accepted", "edited"].includes(s)
-                  : f === "rejected"
-                    ? s === "rejected"
-                    : f === "unchanged"
-                      ? isUnchangedProposal(r)
-                      : f === "tolgeeReviewed"
-                        ? isTolgeeReviewed(r)
-                        : false,
-            )
-          )
-            return false;
           if (c !== "any" && scoreBand(r) !== c) return false;
           if (issues && !r.clarification_needed) return false;
-          if (untrans && !r.unable_to_translate) return false;
           if (q) {
-            let hay = [
-              r.key,
-              r.object_id,
-              r.key_id,
-              r.namespace,
-              r.chinese,
-              r.english,
-              r.proposal,
-              r.reason,
-              r.context_description,
-              r.issue_category,
-              r.translation_state,
-            ]
+            const searchable = {
+              source: r.chinese,
+              original: r.english,
+              proposal: r.proposal,
+              final: finalEnglish(r),
+            };
+            let hay = searchScopes
+              .map((scope) => searchable[scope])
               .join(" ")
               .toLowerCase();
             if (!hay.includes(q)) return false;
@@ -4043,6 +4760,7 @@
         if (
           currentView === "accepted" ||
           currentView === "rejected" ||
+          currentView === "checkedUnchanged" ||
           currentView === "untranslatable"
         )
           arr.sort((a, b) => {
@@ -4068,12 +4786,24 @@
         const decisions = rows.filter(proposalDecided).length,
           has = rows.filter(differs).length,
           pending = rows.filter(
-            (r) => statusOf(r) === "pending" && differs(r),
+            (r) =>
+              statusOf(r) === "pending" &&
+              differs(r) &&
+              !r.unable_to_translate,
           ).length,
           approved = rows.filter((r) =>
             ["accepted", "edited"].includes(statusOf(r)),
           ).length,
+          acceptedQueue = rows.filter(
+            (r) =>
+              ["accepted", "edited"].includes(statusOf(r)) &&
+              !isUnchangedProposal(r) &&
+              !r.unable_to_translate,
+          ).length,
           rejected = rows.filter((r) => statusOf(r) === "rejected").length,
+          rejectedQueue = rows.filter(
+            (r) => statusOf(r) === "rejected" && !r.unable_to_translate,
+          ).length,
           reviewed = rows.filter(hasReviewDecision).length;
         $("total").textContent = rows.length;
         $("pending").textContent = pending;
@@ -4084,12 +4814,14 @@
           progressVerb =
             languageConfig.toolLanguage === "zh" ? "已审核" : "reviewed";
         if (currentView === "pending") {
-          pool = rows.filter(differs);
+          pool = rows.filter((r) => differs(r) && !r.unable_to_translate);
           done = pool.filter(proposalDecided).length;
           progressVerb =
             languageConfig.toolLanguage === "zh" ? "已决定" : "decided";
         } else if (currentView === "unchanged") {
-          pool = rows.filter(isUnchangedProposal);
+          pool = rows.filter(
+            (r) => isUnchangedProposal(r) && !r.unable_to_translate,
+          );
           done = pool.filter((r) =>
             ["accepted", "edited"].includes(statusOf(r)),
           ).length;
@@ -4097,8 +4829,22 @@
             languageConfig.toolLanguage === "zh"
               ? "已接受或编辑"
               : "accepted or edited";
+        } else if (currentView === "checkedUnchanged") {
+          pool = rows.filter(
+            (r) => isUnchangedProposal(r) && !r.unable_to_translate,
+          );
+          done = pool.filter(isCheckedUnchangedProposal).length;
+          progressVerb =
+            languageConfig.toolLanguage === "zh"
+              ? "已检查"
+              : "checked";
         } else if (currentView === "accepted") {
-          pool = rows.filter(differs);
+          pool = rows.filter(
+            (r) =>
+              differs(r) &&
+              !isUnchangedProposal(r) &&
+              !r.unable_to_translate,
+          );
           done = pool.filter((r) =>
             ["accepted", "edited"].includes(statusOf(r)),
           ).length;
@@ -4107,19 +4853,19 @@
               ? "已接受或编辑"
               : "accepted or edited";
         } else if (currentView === "rejected") {
-          pool = rows.filter(differs);
+          pool = rows.filter((r) => differs(r) && !r.unable_to_translate);
           done = pool.filter((r) => statusOf(r) === "rejected").length;
           progressVerb =
             languageConfig.toolLanguage === "zh" ? "已拒绝" : "rejected";
         } else if (currentView === "needs") {
           pool = rows.filter(
             (r) =>
-              differs(r) ||
-              r.clarification_needed ||
-              r.placeholderMismatch ||
-              r.proposalSourceMismatch ||
-              r.proposalExistingMismatch ||
-              r.unable_to_translate,
+              !r.unable_to_translate &&
+              (differs(r) ||
+                r.clarification_needed ||
+                r.placeholderMismatch ||
+                r.proposalSourceMismatch ||
+                r.proposalExistingMismatch),
           );
           done = pool.filter(hasReviewDecision).length;
         } else if (currentView === "untranslatable") {
@@ -4141,9 +4887,16 @@
             ? `${done} / ${pool.length} 条${progressVerb}`
             : `${done} of ${pool.length} ${progressVerb}`;
         $("nPending").textContent = pending;
-        $("nApproved").textContent = approved;
-        $("nRejected").textContent = rejected;
-        $("nUnchanged").textContent = rows.filter(isUnchangedProposal).length;
+        $("nApproved").textContent = acceptedQueue;
+        $("nRejected").textContent = rejectedQueue;
+        const uncheckedUnchangedCount = rows.filter(
+          isUncheckedUnchangedProposal,
+        ).length;
+        const checkedUnchangedCount = rows.filter(
+          (r) => isCheckedUnchangedProposal(r) && !r.unable_to_translate,
+        ).length;
+        $("nUnchanged").textContent = uncheckedUnchangedCount;
+        $("nCheckedUnchanged").textContent = checkedUnchangedCount;
         if ($("nReviewed")) $("nReviewed").textContent = reviewed;
         $("nUntranslatable").textContent = rows.filter(
           (r) => r.unable_to_translate,
@@ -4257,24 +5010,36 @@
           .filter((x) => x.sc._previewDataUrl);
         let html = `<div class="screenshots"><div class="screenshots-title">${esc(tr("screenshots"))} · ${shots.length}</div>`;
         if (ready.length) {
-          html +=
-            '<div class="screenshot-actions">' +
-            ready
-              .map(
-                ({ sc, index }) =>
-                  `<button type="button" class="small" data-act="showScreenshot" data-key="${esc(rowIdentity(r))}" data-shot-index="${index}">${esc(tr("showScreenshot"))}${ready.length > 1 ? ` ${index + 1}` : ""}</button>`,
-              )
-              .join("") +
-            "</div>";
+          html += `<div class="screenshot-actions"><button type="button" class="small" data-act="showScreenshot" data-key="${esc(rowIdentity(r))}" data-shot-index="${ready[0].index}">${esc(tr("showScreenshot"))}${ready.length > 1 ? ` · ${ready.length}` : ""}</button></div>`;
         }
         if (ready.length < shots.length)
           html += `<div class="screenshot-missing">${shots.length - ready.length} screenshot(s) have metadata but no loaded image. Select the screenshot folder during import to display them.</div>`;
         return html + "</div>";
       }
+      function renderActiveScreenshot() {
+        const r = findRow(activeScreenshotKey);
+        const index = activeScreenshotIndexes[activeScreenshotPosition];
+        const sc = r?.screenshots?.[index];
+        if (!sc?._previewDataUrl) {
+          closeScreenshot();
+          return;
+        }
+        $("screenshotModalTitle").textContent = `${languageConfig.toolLanguage === "zh" ? "截图" : "Screenshot"} · ${r.key}`;
+        $("screenshotModalImage").src = sc._previewDataUrl;
+        $("screenshotModalImage").alt =
+          sc.original_text || sc.filename || "Tolgee entry screenshot";
+        $("screenshotModalCounter").textContent =
+          `${activeScreenshotPosition + 1} / ${activeScreenshotIndexes.length}`;
+        $("previousScreenshot").disabled = activeScreenshotPosition === 0;
+        $("nextScreenshot").disabled =
+          activeScreenshotPosition === activeScreenshotIndexes.length - 1;
+      }
       function showScreenshot(key, index) {
         const r = findRow(key);
-        const sc = r?.screenshots?.[Number(index)];
-        if (!sc?._previewDataUrl) {
+        const readyIndexes = (r?.screenshots || [])
+          .map((sc, shotIndex) => (sc?._previewDataUrl ? shotIndex : null))
+          .filter((shotIndex) => shotIndex != null);
+        if (!readyIndexes.length) {
           notify(
             languageConfig.toolLanguage === "zh"
               ? "尚未加载此截图。请重新导入截图文件夹。"
@@ -4282,26 +5047,29 @@
           );
           return;
         }
-        $("screenshotModalTitle").textContent = `Screenshot · ${r.key}`;
-        $("screenshotModalImage").src = sc._previewDataUrl;
-        $("screenshotModalImage").alt =
-          sc.original_text || sc.filename || "Tolgee entry screenshot";
-        const details = [
-          sc.filename ||
-            sc._loadedFilename ||
-            `Screenshot ${Number(index) + 1}`,
-          sc.width && sc.height ? `${sc.width} × ${sc.height}` : "",
-          sc.key_position
-            ? `Key position: x ${sc.key_position.x}, y ${sc.key_position.y}, ${sc.key_position.width} × ${sc.key_position.height}`
-            : "",
-          sc.original_text ? `Original text: ${sc.original_text}` : "",
-        ].filter(Boolean);
-        $("screenshotModalCaption").textContent = details.join("\n");
+        activeScreenshotKey = key;
+        activeScreenshotIndexes = readyIndexes;
+        const requestedPosition = readyIndexes.indexOf(Number(index));
+        activeScreenshotPosition = requestedPosition >= 0 ? requestedPosition : 0;
+        renderActiveScreenshot();
         $("screenshotModal").classList.add("open");
+      }
+      function navigateScreenshot(offset) {
+        const nextPosition = activeScreenshotPosition + offset;
+        if (
+          nextPosition < 0 ||
+          nextPosition >= activeScreenshotIndexes.length
+        )
+          return;
+        activeScreenshotPosition = nextPosition;
+        renderActiveScreenshot();
       }
       function closeScreenshot() {
         $("screenshotModal").classList.remove("open");
         $("screenshotModalImage").removeAttribute("src");
+        activeScreenshotKey = null;
+        activeScreenshotIndexes = [];
+        activeScreenshotPosition = 0;
       }
 
       function cardHTML(r) {
@@ -4310,6 +5078,26 @@
           targetName = languageLabel(languageConfig.targetCode),
           zhUI = languageConfig.toolLanguage === "zh",
           unchangedProposal = isUnchangedProposal(r);
+        const targetDirAttr = isRtlLanguage() ? ' dir="rtl"' : "";
+        const hasIcu = [r.english, r.proposal, finalEnglish(r)].some(
+          looksLikeIcuRule,
+        );
+        const showRawIcu = icuRawVisible.has(rowIdentity(r));
+        const icuChip = hasIcu
+          ? `<span class="chip conf" title="This entry contains an ICU MessageFormat rule.">ICU</span>`
+          : "";
+        const pluralModeRequest = normalizedPluralModeRequest(
+          r.pluralModeRequest,
+        );
+        const tolgeePluralChip =
+          r._originalIsPlural === true
+            ? `<span class="chip conf" title="Tolgee Use plural forms is already enabled for this key.">${esc(zhUI ? "Tolgee 复数已启用" : "Tolgee plural enabled")}</span>`
+            : pluralModeRequest
+              ? `<span class="chip conf" title="The push report will request this key-level Tolgee setting.">${esc(zhUI ? `推送时启用复数：${pluralModeRequest.plural_arg_name}` : `Enable plural on push: ${pluralModeRequest.plural_arg_name}`)}</span>`
+              : "";
+        const icuViewButton = hasIcu
+          ? `<button type="button" class="small icu-view-toggle" data-act="toggleIcuView" data-key="${esc(rowIdentity(r))}">${esc(showRawIcu ? (zhUI ? "显示预览" : "Show preview") : zhUI ? "显示 ICU" : "Show ICU")}</button>`
+          : "";
         const conf = Number.isFinite(r.confidence)
           ? `<span class="chip conf">${zhUI ? "置信度估计" : "Confidence estimate"}: ${r.confidence}/100</span>`
           : `<span class="chip conf">${zhUI ? "无置信度估计" : "No confidence estimate"}</span>`;
@@ -4323,7 +5111,7 @@
           }[s] || s;
         let warning =
           (r.placeholderMismatch
-            ? `<div class="placeholder-warning">⚠ ${zhUI ? "占位符/标签检查：提案与现有目标译文中的占位符或标签不同，请在接受前核对。" : "Placeholder/tag check: the proposal contains a different set of placeholders or tags than the existing target translation. Verify before accepting."}</div>`
+            ? `<div class="placeholder-warning">⚠ ${esc(r.icuProposalError || (zhUI ? "占位符/标签检查：提案与现有目标译文中的占位符或标签不同，请在接受前核对。" : "Placeholder/tag check: the proposal contains a different set of placeholders or tags than the existing target translation. Verify before accepting."))}</div>`
             : "") +
           (r.proposalSourceMismatch
             ? `<div class="placeholder-warning">⚠ ${zhUI ? "提案源文本与导入的 Tolgee 源文本不同，请检查键匹配。" : "Proposal source text differs from the imported Tolgee source. Verify key matching."}</div>`
@@ -4333,6 +5121,26 @@
             : "");
         const proposalText = hasProposal(r) ? r.proposal : tr("noProposal");
         const selected = finalEnglish(r);
+        const existingView = cardIcuView(r.english, showRawIcu);
+        const proposalView = cardIcuView(proposalText, showRawIcu);
+        const finalView = cardIcuView(selected, showRawIcu);
+        const panelDirectionAttr = (sourceValue, view) => {
+          if (showRawIcu && looksLikeIcuRule(sourceValue))
+            return ' dir="ltr"';
+          return hasRtlScript(view.text) ||
+            (isRtlLanguage() && view.preview)
+            ? ' dir="rtl"'
+            : ' dir="ltr"';
+        };
+        const existingPanelDirAttr = panelDirectionAttr(
+          r.english,
+          existingView,
+        );
+        const proposalPanelDirAttr = panelDirectionAttr(
+          proposalText,
+          proposalView,
+        );
+        const finalPanelDirAttr = panelDirectionAttr(selected, finalView);
         const decisionText =
           s === "accepted"
             ? zhUI
@@ -4377,12 +5185,12 @@
               : s === "edited"
                 ? " review-edited"
                 : "";
-        const existingPanel = `<div class="panelwrap"><div class="label">${esc((zhUI ? "现有 " : "EXISTING ") + targetName.toUpperCase() + " · " + (zhUI ? "原译文" : "ORIGINAL"))}</div><div class="panel edit-source" role="button" tabindex="0" title="${esc(zhUI ? "点击后从原有目标译文开始编辑" : "Click to edit starting from the original target translation")}" data-act="editOriginal" data-key="${esc(rowIdentity(r))}">${esc(r.english || "") || `<span class="missing">${esc(tr("emptyTarget"))}</span>`}</div><div class="edit-hint">${esc(tr("clickOriginal"))}</div></div>`;
+        const existingPanel = `<div class="panelwrap"${targetDirAttr}><div class="label">${esc((zhUI ? "现有 " : "EXISTING ") + targetName.toUpperCase() + " · " + (zhUI ? "原译文" : "ORIGINAL"))}</div><div class="panel edit-source"${existingPanelDirAttr} role="button" tabindex="0" title="${esc(zhUI ? "点击后从原有目标译文开始编辑" : "Click to edit starting from the original target translation")}" data-act="editOriginal" data-key="${esc(rowIdentity(r))}">${esc(existingView.text || "") || `<span class="missing">${esc(tr("emptyTarget"))}</span>`}${existingView.note ? `<div class="icu-card-preview-note">${esc(existingView.note)}</div>` : ""}</div><div class="edit-hint">${esc(tr("clickOriginal"))}</div></div>`;
         const proposalPanel = unchangedProposal
           ? ""
-          : `<div class="panelwrap"><div class="label">${esc(zhUI ? "CHATGPT 翻译提案" : "CHATGPT " + tr("proposal"))}</div><div class="panel proposal edit-source" role="button" tabindex="0" title="${esc(zhUI ? "点击后从 ChatGPT 提案开始编辑" : "Click to edit starting from the ChatGPT proposal")}" data-act="editProposal" data-key="${esc(rowIdentity(r))}">${esc(proposalText)}</div><div class="edit-hint">${esc(tr("clickProposal"))}</div>${warning}</div>`;
-        const finalPanel = `<div class="panelwrap"><div class="label">${esc((zhUI ? "最终" : "FINAL") + " " + targetName.toUpperCase() + " · " + tr("exportResult"))}</div><div class="panel">${esc(selected || "") || `<span class="missing">${esc(tr("emptyTarget"))}</span>`}</div><div class="finalnote" style="margin-top:6px">${esc(decisionText)}</div></div>`;
-        return `<article class="item${reviewedClass}${unchangedProposal ? " item-unchanged-proposal" : ""}"><div class="itemhead"><div style="min-width:0"><div class="source-line"><div class="zh">${esc(r.chinese || tr("noSource"))}</div><button type="button" class="copy-source" data-act="copySource" data-key="${esc(rowIdentity(r))}" title="${esc(zhUI ? "复制显示的源文本" : `Copy displayed ${baseName} source text`)}">${esc(zhUI ? "复制源文" : `Copy ${baseName}`)}</button></div><div class="key" title="Tolgee key: ${esc(r.key)} · Object ID: ${esc(r.object_id ?? "—")} · ID: ${esc(r.key_id ?? "—")}">${esc(r.key)}${r.namespace ? ` · namespace: ${esc(r.namespace)}` : ""}${r.object_id ? ` · object: ${esc(r.object_id)}` : ""} · ID: ${esc(r.key_id ?? "—")}</div></div><div class="chips"><span class="chip ${esc(s)}">${esc(statusLabel)}</span>${conf}<span class="chip">Tolgee: ${esc(r.translation_state || "unknown")}</span>${r.clarification_needed ? `<span class="chip pending" title="A human needs to clarify the meaning or context.">${esc(tr("clarificationNeeded"))}</span>` : ""}${r.unable_to_translate ? '<span class="chip bad">Unable to translate</span>' : ""}</div></div>
+          : `<div class="panelwrap"${targetDirAttr}><div class="label">${esc(zhUI ? "CHATGPT 翻译提案" : "CHATGPT " + tr("proposal"))}</div><div class="panel proposal edit-source"${proposalPanelDirAttr} role="button" tabindex="0" title="${esc(zhUI ? "点击后从 ChatGPT 提案开始编辑" : "Click to edit starting from the ChatGPT proposal")}" data-act="editProposal" data-key="${esc(rowIdentity(r))}">${esc(proposalView.text)}${proposalView.note ? `<div class="icu-card-preview-note">${esc(proposalView.note)}</div>` : ""}</div><div class="edit-hint">${esc(tr("clickProposal"))}</div>${warning}</div>`;
+        const finalPanel = `<div class="panelwrap"${targetDirAttr}><div class="label">${esc((zhUI ? "最终" : "FINAL") + " " + targetName.toUpperCase() + " · " + tr("exportResult"))}</div><div class="panel edit-source"${finalPanelDirAttr} role="button" tabindex="0" title="${esc(zhUI ? "编辑当前最终译文" : "Edit the current final translation")}" data-act="editFinal" data-key="${esc(rowIdentity(r))}">${esc(finalView.text || "") || `<span class="missing">${esc(tr("emptyTarget"))}</span>`}${finalView.note ? `<div class="icu-card-preview-note">${esc(finalView.note)}</div>` : ""}</div><div class="finalnote" style="margin-top:6px">${esc(decisionText)}</div></div>`;
+        return `<article class="item${reviewedClass}${unchangedProposal ? " item-unchanged-proposal" : ""}"><div class="itemhead"><div style="min-width:0"><div class="source-line"><div class="zh">${esc(r.chinese || tr("noSource"))}</div><button type="button" class="copy-source" data-act="copySource" data-key="${esc(rowIdentity(r))}" title="${esc(zhUI ? "复制显示的源文本" : `Copy displayed ${baseName} source text`)}">${esc(zhUI ? "复制源文" : `Copy ${baseName}`)}</button></div><div class="key" title="Tolgee key: ${esc(r.key)} · Object ID: ${esc(r.object_id ?? "—")} · ID: ${esc(r.key_id ?? "—")}">${esc(r.key)}${r.namespace ? ` · namespace: ${esc(r.namespace)}` : ""}${r.object_id ? ` · object: ${esc(r.object_id)}` : ""} · ID: ${esc(r.key_id ?? "—")}</div></div><div class="chips"><span class="chip ${esc(s)}">${esc(statusLabel)}</span>${conf}${icuChip}${tolgeePluralChip}${icuViewButton}<span class="chip">Tolgee: ${esc(r.translation_state || "unknown")}</span>${r.clarification_needed ? `<span class="chip pending" title="A human needs to clarify the meaning or context.">${esc(tr("clarificationNeeded"))}</span>` : ""}${r.unable_to_translate ? '<span class="chip bad">Unable to translate</span>' : ""}</div></div>
  <div class="cols ${unchangedProposal ? "cols-unchanged" : ""}">${existingPanel}${proposalPanel}${finalPanel}</div>
  ${r.reason ? `<div class="reason"><b>${esc(r.issue_category || (zhUI ? "审核备注" : "Reviewer note"))}:</b> ${esc(r.reason)}</div>` : ""}${screenshotHTML(r)}<details class="context"><summary>${esc(tr("context"))}</summary><div>${esc(r.context_description || "(No context description)")}
 
@@ -4424,9 +5232,26 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
         const find = $("replaceFind").value;
         const replacement = $("replaceWith").value;
         const scope = $("replaceScope").value;
+        const icuSkippedRows = find
+          ? rows.filter((row) => {
+              const proposalMatch =
+                hasProposal(row) && row.proposal.includes(find);
+              const finalMatch =
+                scope === "all" &&
+                ["accepted", "edited", "rejected"].includes(statusOf(row)) &&
+                finalEnglish(row).includes(find);
+              return (
+                (proposalMatch || finalMatch) &&
+                [row.proposal, finalEnglish(row)].some(looksLikeIcuRule)
+              );
+            })
+          : [];
         const proposalMatchingRows = find
           ? rows.filter(
-              (row) => hasProposal(row) && row.proposal.includes(find),
+              (row) =>
+                hasProposal(row) &&
+                row.proposal.includes(find) &&
+                !looksLikeIcuRule(row.proposal),
             )
           : [];
         const finalMatchingRows =
@@ -4436,7 +5261,8 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
                   ["accepted", "edited", "rejected"].includes(
                     statusOf(row),
                   ) &&
-                  finalEnglish(row).includes(find),
+                  finalEnglish(row).includes(find) &&
+                  !looksLikeIcuRule(finalEnglish(row)),
               )
             : [];
         const matchingRows = [
@@ -4490,6 +5316,12 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
             ? "输入术语以预览受影响的条目。"
             : "Enter a term to preview affected entries.";
           applyButton.disabled = true;
+        } else if (!matchingRows.length && icuSkippedRows.length) {
+          preview.className = "replace-preview warning";
+          preview.textContent = zh
+            ? `有 ${icuSkippedRows.length} 个匹配的 ICU 条目受到保护。请在 ICU 编辑器中手动更改分支文本。`
+            : `${icuSkippedRows.length} matching ICU entr${icuSkippedRows.length === 1 ? "y is" : "ies are"} protected. Edit branch text manually in the ICU editor.`;
+          applyButton.disabled = true;
         } else if (!matchingRows.length) {
           preview.className = "replace-preview warning";
           preview.textContent = zh
@@ -4512,7 +5344,7 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           preview.className = "replace-preview ok";
           preview.textContent = zh
             ? `${affectedRows.length} 个条目将被更改：提案中 ${proposalOccurrences} 处精确匹配${finalOccurrences ? `，以及 ${finalAffectedRows.length} 条已决定的最终译文中 ${finalOccurrences} 处精确匹配` : ""}。${skippedRows.length ? ` ${skippedRows.length} 条非待审核提案因当前范围而跳过。` : ""}审核决定不会更改。`
-            : `${affectedRows.length} entr${affectedRows.length === 1 ? "y" : "ies"} will change: ${proposalOccurrences} exact proposal occurrence${proposalOccurrences === 1 ? "" : "s"}${finalOccurrences ? ` and ${finalOccurrences} occurrence${finalOccurrences === 1 ? "" : "s"} in ${finalAffectedRows.length} decided final translation${finalAffectedRows.length === 1 ? "" : "s"}` : ""}.${skippedRows.length ? ` ${skippedRows.length} non-pending proposal${skippedRows.length === 1 ? " is" : "s are"} skipped by the current scope.` : ""} Review decisions will not change.`;
+            : `${affectedRows.length} entr${affectedRows.length === 1 ? "y" : "ies"} will change: ${proposalOccurrences} exact proposal occurrence${proposalOccurrences === 1 ? "" : "s"}${finalOccurrences ? ` and ${finalOccurrences} occurrence${finalOccurrences === 1 ? "" : "s"} in ${finalAffectedRows.length} decided final translation${finalAffectedRows.length === 1 ? "" : "s"}` : ""}.${skippedRows.length ? ` ${skippedRows.length} non-pending proposal${skippedRows.length === 1 ? " is" : "s are"} skipped by the current scope.` : ""}${icuSkippedRows.length ? ` ${icuSkippedRows.length} ICU entr${icuSkippedRows.length === 1 ? "y is" : "ies are"} protected and must be edited manually.` : ""} Review decisions will not change.`;
           applyButton.disabled = false;
         }
         return {
@@ -4529,6 +5361,7 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           proposalOccurrences,
           finalOccurrences,
           occurrences,
+          icuSkippedRows,
         };
       }
       function renderReplacementGlossary() {
@@ -4637,9 +5470,19 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
             : `${preview.occurrences} occurrence${preview.occurrences === 1 ? "" : "s"} replaced across ${preview.affectedRows.length} entr${preview.affectedRows.length === 1 ? "y" : "ies"}; glossary rule saved.`,
         );
       }
+      function clearUnableFlag(r) {
+        r.unable_to_translate = false;
+        r.attentionAt = null;
+      }
       function act(key, action) {
         const r = findRow(key);
         if (!r) return;
+        if (action === "toggleIcuView") {
+          if (icuRawVisible.has(key)) icuRawVisible.delete(key);
+          else icuRawVisible.add(key);
+          render();
+          return;
+        }
         if (action === "copySource") {
           copyText(r.chinese || "").then(
             () =>
@@ -4672,19 +5515,28 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           return;
         } else if (action === "acceptUnchanged") {
           if (!isUnchangedProposal(r)) return;
+          clearUnableFlag(r);
           r.decision = "accepted";
           r.decisionAt = new Date().toISOString();
           r.finalEnglish = undefined;
+          r.pluralModeRequest = null;
           markReviewed(r);
           notify(
             languageConfig.toolLanguage === "zh"
-              ? "已接受原有译文并标记为已审核。"
-              : "Existing translation accepted and marked REVIEWED.",
+              ? "已接受原有译文，并移至“已检查的未更改提案”。"
+              : "Existing translation accepted and moved to Checked unchanged proposals.",
           );
         } else if (action === "accept") {
+          const icuCheck = validateIcuTranslation(r, r.proposal);
+          if (icuCheck.isIcu && !icuCheck.valid) {
+            notify(`Cannot accept this ICU proposal: ${icuCheck.error}`, 7000);
+            return;
+          }
+          clearUnableFlag(r);
           r.decision = "accepted";
           r.decisionAt = new Date().toISOString();
           r.finalEnglish = r.proposal;
+          r.pluralModeRequest = null;
           markReviewed(r);
           checkPlaceholders(r);
           notify(
@@ -4693,9 +5545,11 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
               : "Proposal accepted and moved to Accepted / edited.",
           );
         } else if (action === "reject") {
+          clearUnableFlag(r);
           r.decision = "rejected";
           r.decisionAt = new Date().toISOString();
           r.finalEnglish = undefined;
+          r.pluralModeRequest = null;
           markReviewed(r);
           notify(
             languageConfig.toolLanguage === "zh"
@@ -4706,18 +5560,28 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           r.decision = differs(r) ? "pending" : "unchanged";
           r.decisionAt = null;
           r.finalEnglish = undefined;
+          r.pluralModeRequest = null;
           restoreOriginalTranslationState(r);
           notify(
             languageConfig.toolLanguage === "zh"
               ? "已撤销决定，条目已返回待审核列表。"
               : "Decision undone; the entry returned to the pending queue.",
           );
-        } else if (["edit", "editProposal", "editOriginal"].includes(action)) {
+        } else if (
+          ["edit", "editFinal", "editProposal", "editOriginal"].includes(
+            action,
+          )
+        ) {
           activeEditKey = key;
+          activePluralModeDraft =
+            r._originalIsPlural === true ||
+            normalizedPluralModeRequest(r.pluralModeRequest) != null;
           $("editMeta").textContent =
             `${languageConfig.toolLanguage === "zh" ? "键名" : "Key"}: ${r.key} · ${languageLabel(languageConfig.baseCode)}: ${r.chinese}`;
           let seed =
-            action === "editProposal"
+            action === "editFinal"
+              ? finalEnglish(r)
+              : action === "editProposal"
               ? hasProposal(r)
                 ? r.proposal
                 : r.english
@@ -4729,7 +5593,48 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
                     ? r.proposal
                     : r.english;
           $("editText").value = seed;
+          activeIcuToolsExpanded = looksLikeIcuRule(seed);
+          updateIcuToolsVisibility();
+          let sourceAnalysis = { arguments: {} };
+          try {
+            sourceAnalysis = ICU.analyze(
+              String(r.chinese ?? ""),
+              icuLocale("base"),
+            );
+          } catch {}
+          let targetAnalysis = { arguments: {}, rules: [] };
+          try {
+            targetAnalysis = ICU.analyze(String(seed ?? ""), icuLocale("target"));
+          } catch {}
+          const sourceVariables = Object.keys(sourceAnalysis.arguments || {});
+          const managedVariables = new Set(
+            (targetAnalysis.rules || []).map((rule) => rule.variable),
+          );
+          const previewVariables = [
+            ...new Set([
+              ...sourceVariables,
+              ...Object.keys(targetAnalysis.arguments || {}),
+            ]),
+          ];
+          const suggestedVariable =
+            sourceVariables.find((name) => !managedVariables.has(name)) ||
+            sourceVariables[0] ||
+            previewVariables[0] ||
+            "count";
+          $("icuVariableName").value = suggestedVariable;
+          $("icuTestValues").value = JSON.stringify(
+            Object.fromEntries(
+              (previewVariables.length
+                ? previewVariables
+                : [suggestedVariable]
+              ).map((name) => [name, 1]),
+            ),
+          );
+          $("icuPreviewOutput").classList.add("hidden");
+          $("icuPreviewOutput").textContent = "";
+          applyIcuEditorDirection();
           showPlaceholderWarning(r, $("editText").value);
+          renderIcuBranchEditor(r, $("editText").value);
           $("editModal").classList.add("open");
           return;
         }
@@ -4738,35 +5643,430 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
         persist();
       }
       function showPlaceholderWarning(r, value) {
+        const icuCheck = validateIcuTranslation(r, value);
+        const badge = $("icuStatusBadge");
+        const result = $("icuValidationResult");
+        badge.className = `icu-badge${icuCheck.isIcu ? icuCheck.valid ? " valid" : " invalid" : ""}`;
+        badge.textContent = icuCheck.isIcu
+          ? icuCheck.valid
+            ? "Valid ICU"
+            : "Invalid ICU"
+          : "Simple text";
+        result.className = `icu-result${icuCheck.isIcu ? icuCheck.valid ? " valid" : " invalid" : ""}`;
+        result.textContent = icuCheck.isIcu
+          ? icuCheck.valid
+            ? `Valid ICU message. ${icuCheck.analysis.rules.length} rule${icuCheck.analysis.rules.length === 1 ? "" : "s"}: ${icuCheck.analysis.rules.map((rule) => `${rule.variable} (${rule.type})`).join(", ")}.`
+            : `ICU error: ${icuCheck.error}`
+          : "This translation does not contain an ICU rule.";
+        $("saveEdit").disabled = icuCheck.isIcu && !icuCheck.valid;
+        refreshTolgeePluralControl(r, value);
+        if (icuCheck.isIcu) {
+          $("placeholderWarning").innerHTML = "";
+          return icuCheck;
+        }
         const before = placeholders(r.english),
           after = placeholders(value);
         $("placeholderWarning").innerHTML = sameArray(before, after)
           ? ""
           : `<div class="placeholder-warning">⚠ Placeholder/tag difference from original English. Original: ${esc(before.join(" · ") || "(none)")}; edited: ${esc(after.join(" · ") || "(none)")}. Save only if intentional.</div>`;
+        return icuCheck;
       }
-      $("editText").addEventListener("input", () => {
+      function updateIcuToolsVisibility() {
+        const panel = $("icuToolsPanel");
+        const trigger = $("toggleIcuTools");
+        if (!panel || !trigger) return;
+        const expanded = !!activeIcuToolsExpanded;
+        panel.classList.toggle("hidden", !expanded);
+        trigger.setAttribute("aria-expanded", String(expanded));
+        trigger.textContent = expanded
+          ? languageConfig.toolLanguage === "zh"
+            ? "隐藏 ICU"
+            : "Hide ICU"
+          : languageConfig.toolLanguage === "zh"
+            ? "添加 ICU"
+            : "Add ICU";
+      }
+      function refreshTolgeePluralControl(r, value) {
+        const setting = $("tolgeePluralSetting");
+        const checkbox = $("enableTolgeePluralForms");
+        const help = $("tolgeePluralSettingHelp");
+        if (!setting || !checkbox || !help) return;
+        const zh = languageConfig.toolLanguage === "zh";
+        const originalEnabled = r?._originalIsPlural === true;
+        const eligibility = tolgeePluralEligibility(value);
+        activePluralModeDraft = eligibility.eligible;
+        checkbox.checked = activePluralModeDraft;
+        checkbox.disabled = true;
+        setting.classList.add("disabled");
+        if (!eligibility.eligible) {
+          help.textContent = zh
+            ? originalEnabled
+              ? "当前内容没有恰好一条有效复数规则，因此自动指示器已关闭。Tolgee 中原有的设置不会由本工具自动移除。"
+              : "没有复数规则或存在多条复数规则，因此此设置自动关闭。"
+            : originalEnabled
+              ? "The current text does not have exactly one valid plural rule, so the automatic indicator is off. This tool will not remove an existing Tolgee setting."
+              : "This is automatically off when there is no plural rule or more than one plural rule.";
+          return;
+        }
+        help.textContent = originalEnabled
+          ? zh
+            ? `检测到一条有效复数规则（变量“${eligibility.variable}”）；Tolgee 已启用此设置。`
+            : `Exactly one valid plural rule was detected for “${eligibility.variable}”; Tolgee already has this setting enabled.`
+          : zh
+            ? `检测到一条有效复数规则（变量“${eligibility.variable}”）；审核报告将自动请求启用 Tolgee 设置。`
+            : `Exactly one valid plural rule was detected for “${eligibility.variable}”; the review report will automatically request the Tolgee setting.`;
+      }
+      let icuBranchModel = null;
+      function simpleIcuBranchText(elements) {
+        let output = "";
+        for (const element of elements || []) {
+          if (element.type === 0) output += element.value;
+          else if (element.type === 1) output += `{${element.value}}`;
+          else if (element.type === 7) output += "#";
+          else return null;
+        }
+        return stripBidiControls(output);
+      }
+      function renderIcuBranchEditor(r, value) {
+        const editor = $("icuBranchEditor");
+        const check = validateIcuTranslation(r, value);
+        const ast = check.analysis?.ast;
+        const ruleModels = [];
+        if (check.isIcu && check.valid && Array.isArray(ast)) {
+          ast.forEach((element, elementIndex) => {
+            if (element?.type !== 6) return;
+            const branches = Object.entries(element.options || {}).map(
+              ([selector, option]) => ({
+                selector,
+                text: simpleIcuBranchText(option.value),
+              }),
+            );
+            if (branches.every((branch) => branch.text != null))
+              ruleModels.push({
+                elementIndex,
+                variable: element.value,
+                type:
+                  element.pluralType === "ordinal"
+                    ? "selectordinal"
+                    : "plural",
+                selectors: branches.map((branch) => branch.selector),
+                branches,
+              });
+          });
+        }
+        const serializable =
+          Array.isArray(ast) &&
+          ast.every((element) => serializeIcuElement(element) != null);
+        if (!ruleModels.length || !serializable) {
+          editor.classList.add("hidden");
+          editor.innerHTML = "";
+          icuBranchModel = null;
+          return;
+        }
+        icuBranchModel = {
+          ast,
+          rules: ruleModels,
+        };
+        const zh = languageConfig.toolLanguage === "zh";
+        const branchDir = isRtlLanguage() ? "rtl" : "ltr";
+        editor.innerHTML = `<h4>${esc(zh ? "分别填写每个变量的复数分支" : "Edit plural branches for each variable")}</h4>${ruleModels
+          .map(
+            (model, ruleIndex) =>
+              `<section class="icu-rule-section" data-icu-rule-section="${ruleIndex}"><div class="icu-rule-heading"><span>${esc(model.variable)}</span><span class="icu-rule-kind">${esc(model.type === "selectordinal" ? "Ordinal plural" : "Cardinal plural")}</span></div><div class="icu-branch-grid">${model.branches
+                .map((branch) => {
+                  const mixedBranch =
+                    branchDir === "rtl" &&
+                    /[A-Za-z0-9]/.test(branch.text || "");
+                  const fieldDir = mixedBranch ? "ltr" : branchDir;
+                  return `<label dir="${fieldDir}">${esc(branch.selector)}<textarea data-icu-rule-index="${ruleIndex}" data-icu-branch="${esc(branch.selector)}" dir="${fieldDir}">${esc(branch.text)}</textarea></label>`;
+                })
+                .join("")}</div></section>`,
+          )
+          .join("")}`;
+        editor.classList.remove("hidden");
+      }
+      function applyIcuEditorDirection() {
+        const rtl = isRtlLanguage();
+        const mixedIcu = rtl && looksLikeIcuRule($("editText").value);
+        const direction = mixedIcu ? "ltr" : rtl ? "rtl" : "ltr";
+        $("editText").dir = direction;
+        $("editText").style.direction = direction;
+        $("icuTestValues").dir = "ltr";
+        $("icuTestValues").style.direction = "ltr";
+        $("icuPreviewOutput").dir = rtl ? "rtl" : "ltr";
+        $("icuPreviewOutput").classList.toggle("rtl", rtl);
+      }
+      $("icuBranchEditor").addEventListener("input", (event) => {
+        if (!event.target.matches("[data-icu-branch]") || !icuBranchModel)
+          return;
+        if (isRtlLanguage()) {
+          const mixedBranch = /[A-Za-z0-9]/.test(event.target.value || "");
+          const fieldDirection = mixedBranch ? "ltr" : "rtl";
+          event.target.dir = fieldDirection;
+          if (event.target.parentElement) event.target.parentElement.dir = fieldDirection;
+        }
+        const branchText = Object.fromEntries(
+          [...$("icuBranchEditor").querySelectorAll("[data-icu-branch]")].map(
+            (field) => [
+              `${field.dataset.icuRuleIndex}\u0000${field.dataset.icuBranch}`,
+              field.value,
+            ],
+          ),
+        );
+        const rulesByElement = new Map(
+          icuBranchModel.rules.map((model, ruleIndex) => [
+            model.elementIndex,
+            { model, ruleIndex },
+          ]),
+        );
+        const rebuilt = icuBranchModel.ast.map((element, elementIndex) => {
+          const managed = rulesByElement.get(elementIndex);
+          if (!managed) return serializeIcuElement(element);
+          const { model, ruleIndex } = managed;
+          return `{${model.variable}, ${model.type}, ${model.selectors
+            .map(
+              (selector) =>
+                `${selector} {${branchText[`${ruleIndex}\u0000${selector}`] ?? ""}}`,
+            )
+            .join(" ")}}`;
+        });
+        if (rebuilt.some((part) => part == null)) return;
+        $("editText").value = rebuilt.join("");
         const r = findRow(activeEditKey);
         if (r) showPlaceholderWarning(r, $("editText").value);
+      });
+      $("editText").addEventListener("input", () => {
+        const r = findRow(activeEditKey);
+        if (r) {
+          showPlaceholderWarning(r, $("editText").value);
+          renderIcuBranchEditor(r, $("editText").value);
+          applyIcuEditorDirection();
+        }
       });
       $("editFromProposal").onclick = () => {
         const r = findRow(activeEditKey);
         if (!r) return;
         $("editText").value = hasProposal(r) ? r.proposal : r.english;
+        if (looksLikeIcuRule($("editText").value))
+          activeIcuToolsExpanded = true;
+        updateIcuToolsVisibility();
         showPlaceholderWarning(r, $("editText").value);
+        renderIcuBranchEditor(r, $("editText").value);
+        applyIcuEditorDirection();
       };
       $("editFromOriginal").onclick = () => {
         const r = findRow(activeEditKey);
         if (!r) return;
         $("editText").value = r.english;
+        if (looksLikeIcuRule($("editText").value))
+          activeIcuToolsExpanded = true;
+        updateIcuToolsVisibility();
         showPlaceholderWarning(r, $("editText").value);
+        renderIcuBranchEditor(r, $("editText").value);
+        applyIcuEditorDirection();
+      };
+      function splitIcuConnector(value) {
+        const text = String(value ?? "");
+        const match = text.match(
+          /^(.*?)(\s+(?:and|or|with|et|y|e|und)\s+|\s+و\s*|\s*&\s*|[和与及])$/i,
+        );
+        return match
+          ? { phrase: match[1], connector: match[2] }
+          : { phrase: text, connector: "" };
+      }
+      function addTopLevelIcuRule(value, variable, ruleType) {
+        const analysis = ICU.analyze(String(value ?? ""), icuLocale("target"));
+        if (
+          (analysis.rules || []).some(
+            (rule) => rule.variable === variable && rule.type === ruleType,
+          )
+        )
+          return { value: String(value ?? ""), alreadyManaged: true };
+        const ast = analysis.ast || [];
+        const argumentIndex = ast.findIndex(
+          (element) => element?.type === 1 && element.value === variable,
+        );
+        if (argumentIndex < 0) {
+          if (Object.prototype.hasOwnProperty.call(analysis.arguments, variable))
+            throw Error(
+              `{${variable}} is inside another ICU branch. Start from the original translation, then add each quantity variable as a separate rule.`,
+            );
+          throw Error(
+            `The target translation does not contain {${variable}}. Add that placeholder before creating its ICU rule.`,
+          );
+        }
+        let segmentEnd = argumentIndex + 1;
+        let connector = "";
+        const followingLiteral = ast[segmentEnd]?.type === 0
+          ? ast[segmentEnd]
+          : null;
+        if (followingLiteral) {
+          const hasFollowingExpression = segmentEnd + 1 < ast.length;
+          const split = hasFollowingExpression
+            ? splitIcuConnector(followingLiteral.value)
+            : { phrase: followingLiteral.value, connector: "" };
+          ast[segmentEnd] = { ...followingLiteral, value: split.phrase };
+          connector = split.connector;
+          segmentEnd += 1;
+        }
+        const segment = serializeIcuElements(
+          ast.slice(argumentIndex, segmentEnd),
+        );
+        const before = serializeIcuElements(ast.slice(0, argumentIndex));
+        const after = serializeIcuElements(ast.slice(segmentEnd));
+        if (segment == null || before == null || after == null)
+          throw Error(
+            "This message contains ICU syntax that the visual rule builder cannot safely rewrite. Edit the raw ICU message instead.",
+          );
+        const ordinal = ruleType === "selectordinal";
+        const selectors = ICU.pluralCategories(
+          icuLocale("target"),
+          ordinal ? "ordinal" : "cardinal",
+        );
+        const rule = `{${variable}, ${ruleType}, ${selectors
+          .map((selector) => `${selector} {${segment}}`)
+          .join(" ")}}`;
+        return {
+          value: `${before}${rule}${serializeIcuLiteral(connector)}${after}`,
+          alreadyManaged: false,
+        };
+      }
+      $("toggleIcuTools").onclick = () => {
+        activeIcuToolsExpanded = !activeIcuToolsExpanded;
+        updateIcuToolsVisibility();
+      };
+      $("createIcuRule").onclick = () => {
+        const r = findRow(activeEditKey);
+        if (!r) return;
+        if (tolgee?.project?.icu_placeholders_enabled === false) {
+          notify(
+            "ICU creation is blocked because this Tolgee project has ICU placeholders disabled. Ask a project administrator to enable them first.",
+            8000,
+          );
+          return;
+        }
+        const current = $("editText").value;
+        const variable = $("icuVariableName").value.trim();
+        try {
+          const source = ICU.analyze(
+            String(r.chinese ?? ""),
+            icuLocale("base"),
+          );
+          if (!Object.prototype.hasOwnProperty.call(source.arguments, variable))
+            throw Error(
+              `The source text does not contain {${variable}}. Use a variable already supplied by the application.`,
+            );
+          const ruleType = $("icuRuleType").value;
+          const added = addTopLevelIcuRule(
+            current,
+            variable,
+            ruleType,
+          );
+          $("editText").value = added.value;
+          let previewValues = {};
+          try {
+            previewValues = JSON.parse($("icuTestValues").value || "{}");
+          } catch {}
+          const combinedAnalysis = ICU.analyze(
+            $("editText").value,
+            icuLocale("target"),
+          );
+          Object.keys(combinedAnalysis.arguments || {}).forEach((name) => {
+            if (!Object.prototype.hasOwnProperty.call(previewValues, name))
+              previewValues[name] = 1;
+          });
+          $("icuTestValues").value = JSON.stringify(previewValues);
+          showPlaceholderWarning(r, $("editText").value);
+          renderIcuBranchEditor(r, $("editText").value);
+          applyIcuEditorDirection();
+          const managedVariables = new Set(
+            (combinedAnalysis.rules || []).map((rule) => rule.variable),
+          );
+          const nextVariable = Object.keys(source.arguments || {}).find(
+            (name) => !managedVariables.has(name),
+          );
+          if (nextVariable) $("icuVariableName").value = nextVariable;
+          notify(
+            added.alreadyManaged
+              ? `${variable} already has an ICU rule. Its branch editor is shown below.`
+              : nextVariable
+                ? `ICU rule for ${variable} added. Add ${nextVariable} next, or edit the branches below.`
+                : tolgee?.project?.icu_placeholders_enabled == null
+                  ? "ICU rule added. Confirm Tolgee ICU placeholders are enabled before pushing."
+                  : "ICU rule added. Edit each branch, preview the combined message, then save.",
+            6500,
+          );
+        } catch (error) {
+          const result = $("icuValidationResult");
+          result.className = "icu-result invalid";
+          result.textContent = `Could not create ICU: ${error.message || error}`;
+          notify(`Could not create ICU: ${error.message || error}`, 6500);
+        }
+      };
+      $("validateIcuRule").onclick = () => {
+        const r = findRow(activeEditKey);
+        if (r) {
+          showPlaceholderWarning(r, $("editText").value);
+          renderIcuBranchEditor(r, $("editText").value);
+        }
+      };
+      $("previewIcuRule").onclick = () => {
+        const r = findRow(activeEditKey);
+        if (!r) return;
+        const check = showPlaceholderWarning(r, $("editText").value);
+        const output = $("icuPreviewOutput");
+        output.classList.remove("hidden");
+        if (!check.isIcu || !check.valid) {
+          output.textContent = check.isIcu
+            ? "Fix the ICU error before previewing."
+            : "Create an ICU rule before previewing.";
+          return;
+        }
+        try {
+          const values = JSON.parse($("icuTestValues").value || "{}");
+          output.textContent = ICU.format(
+            protectRtlIcuBidi($("editText").value),
+            icuLocale("target"),
+            values,
+          );
+          applyIcuEditorDirection();
+        } catch (error) {
+          output.textContent = `Preview error: ${error.message || error}`;
+        }
       };
       $("saveEdit").onclick = () => {
         const r = findRow(activeEditKey);
         if (!r) return;
+        const icuCheck = showPlaceholderWarning(r, $("editText").value);
+        if (icuCheck.isIcu && !icuCheck.valid) {
+          notify(`Fix the ICU error before saving: ${icuCheck.error}`, 7000);
+          return;
+        }
+        const pluralEligibility = tolgeePluralEligibility($("editText").value);
+        if (
+          r._originalIsPlural !== true &&
+          activePluralModeDraft &&
+          !pluralEligibility.eligible
+        ) {
+          notify(
+            "Tolgee Use plural forms can only be requested for exactly one valid plural rule.",
+            7000,
+          );
+          return;
+        }
+        r.pluralModeRequest =
+          r._originalIsPlural !== true && activePluralModeDraft
+            ? {
+                action: "enable",
+                plural_arg_name: pluralEligibility.variable,
+                rule_type: pluralEligibility.type,
+              }
+            : null;
         r.finalEnglish = sentenceCaseTranslation(
           $("editText").value,
           languageConfig.targetCode,
         );
+        clearUnableFlag(r);
         r.decision = "edited";
         r.decisionAt = new Date().toISOString();
         markReviewed(r);
@@ -4780,20 +6080,30 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
         );
       };
       ["closeEdit", "cancelEdit"].forEach(
-        (id) => ($(id).onclick = () => $("editModal").classList.remove("open")),
+        (id) =>
+          ($(id).onclick = () => {
+            $("editModal").classList.remove("open");
+            activeIcuToolsExpanded = false;
+            updateIcuToolsVisibility();
+          }),
       );
       ["closeScreenshot", "closeScreenshotBottom"].forEach((id) =>
         $(id).addEventListener("click", closeScreenshot),
+      );
+      $("previousScreenshot").addEventListener("click", () =>
+        navigateScreenshot(-1),
+      );
+      $("nextScreenshot").addEventListener("click", () =>
+        navigateScreenshot(1),
       );
       $("screenshotModal").addEventListener("click", (e) => {
         if (e.target.id === "screenshotModal") closeScreenshot();
       });
       document.addEventListener("keydown", (e) => {
-        if (
-          e.key === "Escape" &&
-          $("screenshotModal").classList.contains("open")
-        )
-          closeScreenshot();
+        if (!$("screenshotModal").classList.contains("open")) return;
+        if (e.key === "Escape") closeScreenshot();
+        if (e.key === "ArrowLeft") navigateScreenshot(-1);
+        if (e.key === "ArrowRight") navigateScreenshot(1);
       });
       $("list").addEventListener("click", (e) => {
         let b = e.target.closest("[data-act]");
@@ -4814,8 +6124,10 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
         }
       });
       function download(filename, content, mime = "application/json") {
-        let blob = new Blob([content], { type: mime }),
-          url = URL.createObjectURL(blob),
+        downloadBlob(filename, new Blob([content], { type: mime }));
+      }
+      function downloadBlob(filename, blob) {
+        let url = URL.createObjectURL(blob),
           a = document.createElement("a");
         a.href = url;
         a.download = filename;
@@ -4824,111 +6136,439 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
         a.remove();
         setTimeout(() => URL.revokeObjectURL(url), 1000);
       }
-      /* Export a compact Tolgee update payload plus explicit review-state instructions. */
-      function exportTolgee() {
-        if (!tolgee) {
-          notify(
-            languageConfig.toolLanguage === "zh"
-              ? "请先导入 Tolgee JSON 文件。"
-              : "Import a Tolgee JSON file first.",
-          );
-          return;
+      const ZIP_CRC32_TABLE = (() => {
+        const table = new Uint32Array(256);
+        for (let n = 0; n < 256; n++) {
+          let value = n;
+          for (let bit = 0; bit < 8; bit++)
+            value = value & 1 ? 0xedb88320 ^ (value >>> 1) : value >>> 1;
+          table[n] = value >>> 0;
         }
-        const selectedForTranslationUpdate = rows.filter(
-          (r) =>
-            ["accepted", "edited"].includes(statusOf(r)) ||
-            (statusOf(r) === "rejected" &&
-              typeof r.finalEnglish === "string"),
+        return table;
+      })();
+      function zipCrc32(bytes) {
+        let crc = 0xffffffff;
+        for (const byte of bytes)
+          crc = ZIP_CRC32_TABLE[(crc ^ byte) & 0xff] ^ (crc >>> 8);
+        return (crc ^ 0xffffffff) >>> 0;
+      }
+      function zipDateTime(date = new Date()) {
+        const year = Math.max(1980, date.getFullYear());
+        return {
+          time:
+            (date.getHours() << 11) |
+            (date.getMinutes() << 5) |
+            Math.floor(date.getSeconds() / 2),
+          date:
+            ((year - 1980) << 9) |
+            ((date.getMonth() + 1) << 5) |
+            date.getDate(),
+        };
+      }
+      function buildStoredZip(files) {
+        const encoder = new TextEncoder();
+        const stamp = zipDateTime();
+        const localParts = [];
+        const centralParts = [];
+        let localOffset = 0;
+        let centralSize = 0;
+        files.forEach(({ name, content }) => {
+          const nameBytes = encoder.encode(name);
+          const data = encoder.encode(content);
+          const crc = zipCrc32(data);
+          const localHeader = new Uint8Array(30);
+          const localView = new DataView(localHeader.buffer);
+          localView.setUint32(0, 0x04034b50, true);
+          localView.setUint16(4, 20, true);
+          localView.setUint16(6, 0x0800, true);
+          localView.setUint16(8, 0, true);
+          localView.setUint16(10, stamp.time, true);
+          localView.setUint16(12, stamp.date, true);
+          localView.setUint32(14, crc, true);
+          localView.setUint32(18, data.length, true);
+          localView.setUint32(22, data.length, true);
+          localView.setUint16(26, nameBytes.length, true);
+          localView.setUint16(28, 0, true);
+          localParts.push(localHeader, nameBytes, data);
+
+          const centralHeader = new Uint8Array(46);
+          const centralView = new DataView(centralHeader.buffer);
+          centralView.setUint32(0, 0x02014b50, true);
+          centralView.setUint16(4, 20, true);
+          centralView.setUint16(6, 20, true);
+          centralView.setUint16(8, 0x0800, true);
+          centralView.setUint16(10, 0, true);
+          centralView.setUint16(12, stamp.time, true);
+          centralView.setUint16(14, stamp.date, true);
+          centralView.setUint32(16, crc, true);
+          centralView.setUint32(20, data.length, true);
+          centralView.setUint32(24, data.length, true);
+          centralView.setUint16(28, nameBytes.length, true);
+          centralView.setUint16(30, 0, true);
+          centralView.setUint16(32, 0, true);
+          centralView.setUint16(34, 0, true);
+          centralView.setUint16(36, 0, true);
+          centralView.setUint32(38, 0, true);
+          centralView.setUint32(42, localOffset, true);
+          centralParts.push(centralHeader, nameBytes);
+          localOffset += localHeader.length + nameBytes.length + data.length;
+          centralSize += centralHeader.length + nameBytes.length;
+        });
+        const end = new Uint8Array(22);
+        const endView = new DataView(end.buffer);
+        endView.setUint32(0, 0x06054b50, true);
+        endView.setUint16(4, 0, true);
+        endView.setUint16(6, 0, true);
+        endView.setUint16(8, files.length, true);
+        endView.setUint16(10, files.length, true);
+        endView.setUint32(12, centralSize, true);
+        endView.setUint32(16, localOffset, true);
+        endView.setUint16(20, 0, true);
+        return new Blob([...localParts, ...centralParts, end], {
+          type: "application/zip",
+        });
+      }
+      function sourceDocumentFallback(document) {
+        const source = clone(document || {});
+        // Older saves predate pristine-source storage and only added this
+        // tool-owned root field to the imported document.
+        delete source.review_config;
+        return source;
+      }
+      function safeProjectFilename(project, suffix, extension = "json") {
+        const id = String(project?.id ?? "")
+          .replace(/[^\w\-]+/g, "_")
+          .replace(/^_+|_+$/g, "");
+        const name = String(project?.name || "tolgee")
+          .replace(/[^\w\-]+/g, "_")
+          .replace(/^_+|_+$/g, "");
+        const stem = ["tolgee", id, name && name !== "tolgee" ? name : ""]
+          .filter(Boolean)
+          .join("_");
+        return `${stem}_${suffix}.${extension}`;
+      }
+      function finalTargetValue(row) {
+        const status = statusOf(row);
+        const usesSelectedFinal =
+          ["accepted", "edited"].includes(status) ||
+          (status === "rejected" && typeof row.finalEnglish === "string");
+        const selected = usesSelectedFinal ? finalEnglish(row) : row.english;
+        return String(
+          protectRtlIcuBidi(
+            sentenceCaseTranslation(selected, languageConfig.targetCode) ?? "",
+            languageConfig.targetCode,
+          ),
         );
-        // Include casing-only updates for imported translations, even when their proposals were not accepted.
-        const casingOnly = rows.filter(
-          (r) =>
-            typeof r._originalEnglish === "string" &&
-            sentenceCaseTranslation(
-              r._originalEnglish,
-              languageConfig.targetCode,
-            ) !== r._originalEnglish,
+      }
+      function buildFinalDocumentAndReport() {
+        if (!tolgee || !Array.isArray(rows))
+          throw Error("Import a Tolgee JSON file first.");
+        const finalDocument = clone(
+          originalTolgeeJson || sourceDocumentFallback(tolgee),
         );
-        const updateRows = [
-          ...new Set([...selectedForTranslationUpdate, ...casingOnly]),
-        ];
-        const updates = updateRows
-          .map((r) => {
-            const usesFinalValue =
-              ["accepted", "edited"].includes(statusOf(r)) ||
-              (statusOf(r) === "rejected" &&
-                typeof r.finalEnglish === "string");
-            const value = usesFinalValue ? finalEnglish(r) : r.english;
-            return {
-              object_id: r.object_id ?? null,
-              key_id: r.key_id ?? null,
-              key: r.key,
-              namespace: r.namespace ?? null,
-              expected_current_value: String(
-                r._originalEnglish ?? r.english ?? "",
-              ),
-              new_value: String(
-                sentenceCaseTranslation(value, languageConfig.targetCode) ?? "",
-              ),
-            };
-          })
-          .filter((u) => u.new_value !== u.expected_current_value);
-        const excluded = rows.length - updates.length;
-        // A review-state-only export is still useful even when no English value changed.
-        const reviewed_keys = rows
-          .filter((r) =>
-            ["accepted", "rejected", "edited"].includes(statusOf(r)),
+        const projectId = String(finalDocument.project?.id ?? "").trim();
+        if (!projectId)
+          throw Error("The original JSON is missing project.id.");
+        finalDocument.project = {
+          ...(finalDocument.project || {}),
+          branch: `${projectId}-branch`,
+        };
+        if (!Array.isArray(finalDocument.translations))
+          throw Error("The original JSON no longer contains translations[].");
+        if (finalDocument.translations.length !== rows.length)
+          throw Error(
+            `Export stopped because the original JSON has ${finalDocument.translations.length} entries but the review workspace has ${rows.length}.`,
+          );
+
+        const byKeyId = new Map();
+        const byObjectId = new Map();
+        const byOriginalIndex = new Map();
+        rows.forEach((row) => {
+          if (row.key_id != null && String(row.key_id).trim() !== "")
+            byKeyId.set(String(row.key_id), row);
+          if (row.object_id != null && String(row.object_id).trim() !== "")
+            byObjectId.set(String(row.object_id), row);
+          if (Number.isInteger(row.originalIndex))
+            byOriginalIndex.set(row.originalIndex, row);
+        });
+        const usedRows = new Set();
+        const records = [];
+        finalDocument.translations.forEach((entry, index) => {
+          if (!entry || typeof entry !== "object")
+            throw Error(`Invalid original translation entry at index ${index}.`);
+          let row =
+            entry.key_id != null
+              ? byKeyId.get(String(entry.key_id))
+              : null;
+          if (!row && entry.object_id != null)
+            row = byObjectId.get(String(entry.object_id));
+          if (!row) row = byOriginalIndex.get(index);
+          if (!row)
+            throw Error(
+              `Could not safely match original translation entry ${index + 1}.`,
+            );
+          if (
+            usedRows.has(row) ||
+            String(entry.key ?? "") !== String(row.key ?? "") ||
+            String(entry.namespace ?? "") !== String(row.namespace ?? "") ||
+            (entry.key_id != null &&
+              row.key_id != null &&
+              String(entry.key_id) !== String(row.key_id))
           )
-          .map((r) => ({
-            object_id: r.object_id ?? null,
-            key_id: r.key_id ?? null,
-            key: r.key,
-            namespace: r.namespace ?? null,
-            translation_state: "REVIEWED",
-            translation_state_raw: "REVIEWED",
-          }));
-        if (!updates.length && !reviewed_keys.length) {
-          notify(
-            languageConfig.toolLanguage === "zh"
-              ? "暂无可导出的更改。请审核条目，或接受/编辑与当前目标译文不同的提案。"
-              : "Nothing to export yet. Review entries or accept/edit a proposal that differs from the current target translation.",
+            throw Error(
+              `Identity validation failed for original translation entry ${index + 1}.`,
+            );
+          usedRows.add(row);
+          const targetField = [
+            row._targetField,
+            ...languageFieldCandidates(languageConfig.targetCode, "target"),
+          ].find(
+            (field) =>
+              field && Object.prototype.hasOwnProperty.call(entry, field),
           );
-          return;
-        }
-        const sourceProject = tolgee.project || {};
-        const rawId = sourceProject.id;
-        const numericId =
-          rawId !== null &&
-          rawId !== undefined &&
-          String(rawId).trim() !== "" &&
-          !Number.isNaN(Number(rawId))
-            ? Number(rawId)
-            : rawId;
-        // Push workflows should apply this state separately from translation-value updates.
-        const exportBranch = `${String(rawId)}-duplicate`;
-        const out = {
+          if (!targetField)
+            throw Error(
+              `Export stopped because target field is missing for ${row.object_id || row.key}.`,
+            );
+          const originalTarget = String(
+            row._originalEnglish ?? entry[targetField] ?? "",
+          );
+          const finalTarget = finalTargetValue(row);
+          const status = statusOf(row);
+          const reviewed = ["accepted", "rejected", "edited"].includes(status);
+          const acceptedUnchanged =
+            status === "accepted" &&
+            row.proposal === row.english &&
+            typeof row.finalEnglish !== "string";
+          const targetChanged = finalTarget !== originalTarget;
+          const icuCheck = validateIcuTranslation(row, finalTarget);
+          if (targetChanged && icuCheck.isIcu && !icuCheck.valid)
+            throw Error(
+              `Export stopped because ICU is invalid for ${row.namespace ? `${row.namespace}.` : ""}${row.key}: ${icuCheck.error}`,
+            );
+          const icuCreated =
+            targetChanged &&
+            !looksLikeIcuRule(originalTarget) &&
+            icuCheck.isIcu &&
+            icuCheck.valid;
+          const pluralEligibility = tolgeePluralEligibility(finalTarget);
+          const pluralModeRequest = normalizedPluralModeRequest(
+            row.pluralModeRequest,
+          );
+          if (
+            pluralModeRequest &&
+            (!pluralEligibility.eligible ||
+              pluralModeRequest.plural_arg_name !==
+                pluralEligibility.variable ||
+              pluralModeRequest.rule_type !== pluralEligibility.type)
+          )
+            throw Error(
+              `Export stopped because the Tolgee plural-mode request is no longer compatible with the ICU message for ${row.namespace ? `${row.namespace}.` : ""}${row.key}. Reopen the entry and save it again.`,
+            );
+          const pluralModeChange = pluralModeRequest
+            ? {
+                action: "enable",
+                original_is_plural:
+                  typeof row._originalIsPlural === "boolean"
+                    ? row._originalIsPlural
+                    : null,
+                original_plural_arg_name:
+                  typeof row._originalPluralArgName === "string"
+                    ? row._originalPluralArgName
+                    : null,
+                is_plural: true,
+                plural_arg_name: pluralModeRequest.plural_arg_name,
+                rule_type: pluralModeRequest.rule_type,
+              }
+            : null;
+          const changeSource = !targetChanged
+            ? null
+            : status === "edited"
+              ? "human_edit"
+              : status === "accepted" && !acceptedUnchanged
+                ? "accepted_proposal"
+                : status === "rejected" &&
+                    typeof row.finalEnglish === "string"
+                  ? "rejected_final_adjustment"
+                  : "sentence_case_normalization";
+          entry[targetField] = finalTarget;
+          if (reviewed) {
+            if (Object.prototype.hasOwnProperty.call(entry, "translation_state"))
+              entry.translation_state = "REVIEWED";
+            if (
+              Object.prototype.hasOwnProperty.call(
+                entry,
+                "translation_state_raw",
+              )
+            )
+              entry.translation_state_raw = "REVIEWED";
+          }
+          records.push({
+            original_order_index: index,
+            object_id: row.object_id ?? null,
+            key_id: row.key_id ?? null,
+            key: row.key,
+            namespace: row.namespace ?? null,
+            decision: status,
+            reviewed,
+            accepted_unchanged: acceptedUnchanged,
+            unable_to_translate: !!row.unable_to_translate,
+            original_target: originalTarget,
+            final_target: finalTarget,
+            target_changed: targetChanged,
+            change_source: changeSource,
+            icu: icuCheck.isIcu,
+            icu_valid: !icuCheck.isIcu || icuCheck.valid,
+            icu_created: icuCreated,
+            icu_rules: icuCheck.analysis?.rules?.map((rule) => ({
+              variable: rule.variable,
+              type: rule.type,
+              branches: rule.options,
+            })) || [],
+            original_is_plural:
+              typeof row._originalIsPlural === "boolean"
+                ? row._originalIsPlural
+                : null,
+            original_plural_arg_name:
+              typeof row._originalPluralArgName === "string"
+                ? row._originalPluralArgName
+                : null,
+            plural_mode_change: pluralModeChange,
+          });
+        });
+        if (usedRows.size !== rows.length)
+          throw Error("Export stopped because not every reviewed row was matched.");
+
+        const count = (predicate) => records.filter(predicate).length;
+        const namespaceSummary = {};
+        records.forEach((record) => {
+          const name = record.namespace ?? "(without namespace)";
+          namespaceSummary[name] ||= {
+            total_keys: 0,
+            reviewed_keys: 0,
+            target_values_changed: 0,
+            humanly_edited: 0,
+          };
+          const summary = namespaceSummary[name];
+          summary.total_keys += 1;
+          if (record.reviewed) summary.reviewed_keys += 1;
+          if (record.target_changed) summary.target_values_changed += 1;
+          if (record.decision === "edited") summary.humanly_edited += 1;
+        });
+        const report = {
           schema_version: 1,
-          operation: "update_translations",
-          project: {
-            id: numericId,
-            name: sourceProject.name || "",
-            branch: exportBranch,
-          },
+          report_type: "translation_review_report",
+          generated_at: new Date().toISOString(),
+          project: clone(finalDocument.project || tolgee.project || {}),
           base_language: exactLanguageTag("base"),
           target_language: exactLanguageTag("target"),
-          updates,
-          reviewed_keys,
+          order_preserved: true,
+          summary: {
+            total_keys: records.length,
+            reviewed_keys: count((record) => record.reviewed),
+            target_values_changed: count((record) => record.target_changed),
+            proposals_accepted: count(
+              (record) =>
+                record.decision === "accepted" &&
+                !record.accepted_unchanged,
+            ),
+            accepted_unchanged: count(
+              (record) => record.accepted_unchanged,
+            ),
+            humanly_edited: count(
+              (record) => record.decision === "edited",
+            ),
+            rejected: count((record) => record.decision === "rejected"),
+            rejected_with_final_value_change: count(
+              (record) =>
+                record.decision === "rejected" && record.target_changed,
+            ),
+            pending_review: count(
+              (record) => record.decision === "pending",
+            ),
+            unchanged_unreviewed: count(
+              (record) => record.decision === "unchanged",
+            ),
+            unable_to_translate: count(
+              (record) => record.unable_to_translate,
+            ),
+            sentence_case_normalized: count(
+              (record) =>
+                record.change_source === "sentence_case_normalization",
+            ),
+            icu_entries: count((record) => record.icu),
+            icu_entries_created: count((record) => record.icu_created),
+            plural_mode_enable_requests: count(
+              (record) => record.plural_mode_change?.action === "enable",
+            ),
+            invalid_icu_entries: count(
+              (record) => record.icu && !record.icu_valid,
+            ),
+          },
+          changes_by_namespace: namespaceSummary,
+          changed_entries: records.filter((record) => record.target_changed),
+          reviewed_entries: records.filter((record) => record.reviewed),
+          plural_metadata_changes: records.filter(
+            (record) => record.plural_mode_change != null,
+          ),
         };
-        const summary = `Export ${updates.length} translation update${updates.length === 1 ? "" : "s"} and ${reviewed_keys.length} review-state update${reviewed_keys.length === 1 ? "" : "s"}?\n\n${reviewed_keys.length} entries explicitly reviewed in this tool are marked translation_state: "REVIEWED" in reviewed_keys for your push workflow to apply.\n${excluded} entries excluded from translation updates because they were unchanged, had no selected final-value change, or were identical to the current target translation.\n\nProject: ${out.project.name} (ID ${out.project.id})\nBase language: ${out.base_language}\nTarget language: ${out.target_language}\nBranch: ${out.project.branch}\n\nChanged accepted/edited translations and glossary-adjusted rejected translations are included in updates. The separate reviewed_keys list includes accepted, rejected, and edited entries.`;
-        if (!confirm(summary)) return;
-        const safe = (out.project.name || "tolgee").replace(/[^\w\-]+/g, "_");
-        download(
-          `${safe}_tolgee_update_translations.json`,
-          JSON.stringify(out, null, 2),
-        );
-        notify(
-          `Tolgee update JSON exported: ${updates.length} translation update${updates.length === 1 ? "" : "s"}; ${reviewed_keys.length} reviewed key${reviewed_keys.length === 1 ? "" : "s"} included for status updates.`,
-        );
+        if (
+          report.summary.icu_entries_created > 0 &&
+          finalDocument.project?.icu_placeholders_enabled === false
+        )
+          throw Error(
+            "Export stopped because this project has Tolgee ICU placeholders disabled. Enable the setting in Tolgee before exporting newly created ICU translations.",
+          );
+        return { finalDocument, report };
+      }
+      function buildReviewPackage(finalDocument, report) {
+        const files = [
+          {
+            name: safeProjectFilename(finalDocument.project, "final_reviewed"),
+            content: JSON.stringify(finalDocument, null, 2),
+          },
+          {
+            name: safeProjectFilename(finalDocument.project, "review_report"),
+            content: JSON.stringify(report, null, 2),
+          },
+        ];
+        return {
+          files,
+          filename: safeProjectFilename(
+            finalDocument.project,
+            "review_package",
+            "zip",
+          ),
+          blob: buildStoredZip(files),
+        };
+      }
+      function exportFinalJson() {
+        try {
+          const { finalDocument, report } = buildFinalDocumentAndReport();
+          const summary = report.summary;
+          const branch = finalDocument.project.branch;
+          const message =
+            languageConfig.toolLanguage === "zh"
+              ? `导出包含最终审核 JSON 和审核报告的 ZIP？\n\n目标分支：${branch}\n共 ${summary.total_keys} 条；${summary.target_values_changed} 条目标译文已更改；${summary.icu_entries_created} 条新建 ICU；${summary.plural_mode_enable_requests} 条请求启用 Tolgee 复数模式；${summary.humanly_edited} 条人工编辑；${summary.reviewed_keys} 条已审核。`
+              : `Export one ZIP containing the final reviewed JSON and matching review report?\n\nDestination branch: ${branch}\n${summary.total_keys} total keys; ${summary.target_values_changed} target values changed; ${summary.icu_entries_created} ICU entries created; ${summary.plural_mode_enable_requests} Tolgee plural-mode enable requests; ${summary.humanly_edited} human edits; ${summary.reviewed_keys} reviewed keys.`;
+          if (!confirm(message)) return;
+          const reviewPackage = buildReviewPackage(finalDocument, report);
+          downloadBlob(reviewPackage.filename, reviewPackage.blob);
+          notify(
+            languageConfig.toolLanguage === "zh"
+              ? `审核包已导出。ZIP 包含最终审核 JSON 和审核报告，目标分支为 ${branch}。`
+              : `Review package exported. The ZIP contains both required JSON files for ${branch}.`,
+            6000,
+          );
+        } catch (error) {
+          notify(
+            (languageConfig.toolLanguage === "zh"
+              ? "无法导出审核包："
+              : "Could not export review package: ") +
+              (error.message || "unknown error"),
+            8000,
+          );
+        }
       }
       /* Backups preserve decisions and screenshot metadata, but omit image data to remain reliable. */
       function exportBackup() {
@@ -4965,7 +6605,10 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
             "This does not look like a progress backup exported by this tool.",
           );
         tolgee = data.tolgee;
-        rows = rowsWithoutScreenshotImages(data.rows);
+        originalTolgeeJson = data.originalTolgeeJson
+          ? clone(data.originalTolgeeJson)
+          : sourceDocumentFallback(data.tolgee);
+        rows = rowsWithoutScreenshotImages(data.rows).map(normalizePersistedRow);
         languageConfig = {
           ...languageConfig,
           ...(data.languageConfig || tolgee.review_config || {}),
@@ -5168,51 +6811,59 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
       });
       $("importFilesTop").addEventListener("click", openImport);
       $("setupImportJsons").addEventListener("click", openImport);
-      const setupRestoreInput = document.createElement("input");
-      setupRestoreInput.type = "file";
-      setupRestoreInput.accept = ".json,application/json";
-      setupRestoreInput.className = "hidden";
-      setupRestoreInput.id = "setupRestoreInput";
-      document.body.appendChild(setupRestoreInput);
-      async function finishRestoredSetup() {
-        setupScreenshotsHandled = screenshotReferenceCount() === 0;
+      function openRestoreBackupModal(context = "workspace") {
+        restoreModalContext = context;
+        $("restoreBackupFile").value = "";
+        $("restoreScreenshotsFolder").value = "";
+        $("restoreBackupError").textContent = "";
+        $("continueRestoreBackup").disabled = true;
+        $("restoreBackupModal").classList.add("open");
+      }
+      function closeRestoreBackupModal() {
+        $("restoreBackupModal").classList.remove("open");
+        $("restoreBackupError").textContent = "";
+      }
+      async function finishRestoredSetup(screenshotResult = null) {
+        setupScreenshotsHandled =
+          screenshotReferenceCount() === 0 || screenshotResult !== null;
         refreshSetup();
         $("setupJsonStatus").textContent =
           `Restored ${rows.length} reviewed entries from ${tolgee.project?.name || "project"} (ID ${tolgee.project?.id ?? "—"}).`;
         $("setupJsonStatus").className = "setup-status ok";
-        $("setupScreenshotStatus").textContent =
-          languageConfig.toolLanguage === "zh"
-            ? "审核决定和截图元数据已恢复。图片文件未包含在备份中；如需查看截图，请在“导入 JSON 文件”中重新选择截图文件夹。"
-            : "Review decisions and screenshot metadata were restored. Image files are not included in backups; use Import JSON files to reselect the screenshot folder when you need to view them.";
+        $("setupScreenshotStatus").textContent = screenshotResult
+          ? languageConfig.toolLanguage === "zh"
+            ? `已恢复审核决定，并匹配 ${screenshotResult.matched} 张截图${screenshotResult.missing ? `；${screenshotResult.missing} 个截图引用未找到` : ""}。`
+            : `Review decisions were restored and ${screenshotResult.matched} screenshot image(s) matched${screenshotResult.missing ? `; ${screenshotResult.missing} reference(s) were not found` : ""}.`
+          : languageConfig.toolLanguage === "zh"
+            ? "审核决定和截图元数据已恢复。未选择截图文件夹；需要时可稍后导入。"
+            : "Review decisions and screenshot metadata were restored. No screenshot folder was selected; it can be imported later.";
         $("setupScreenshotStatus").className = "setup-status ok";
         $("setupSkipScreenshots").hidden = true;
         finishSetup(true);
         await persist();
       }
-      $("setupRestoreBackup").addEventListener("click", async () => {
-        try {
-          if (window.showOpenFilePicker) {
-            const backup = await pickAndRestoreBackup();
-            if (backup) {
-              await finishRestoredSetup();
-              notify(
-                languageConfig.toolLanguage === "zh"
-                  ? "备份已恢复，所选 JSON 文件将直接用作自动保存文件。"
-                  : "Backup restored. The selected JSON file is now the autosave file.",
-              );
-              return;
-            }
-          }
-          setupRestoreInput.click();
-        } catch (e) {
-          if (e.name !== "AbortError")
-            notify("Could not restore backup: " + e.message);
-        }
+      $("setupRestoreBackup").addEventListener("click", () =>
+        openRestoreBackupModal("setup"),
+      );
+      $("restoreBackupFile").addEventListener("change", () => {
+        $("continueRestoreBackup").disabled =
+          !$("restoreBackupFile").files[0];
+        $("restoreBackupError").textContent = "";
       });
-      setupRestoreInput.addEventListener("change", async () => {
-        if (!setupRestoreInput.files[0]) return;
+      ["closeRestoreBackup", "cancelRestoreBackup"].forEach(
+        (id) => ($(id).onclick = closeRestoreBackupModal),
+      );
+      $("restoreBackupModal").addEventListener("click", (event) => {
+        if (event.target.id === "restoreBackupModal")
+          closeRestoreBackupModal();
+      });
+      $("continueRestoreBackup").onclick = async () => {
+        const backupFile = $("restoreBackupFile").files[0];
+        if (!backupFile) return;
+        $("continueRestoreBackup").disabled = true;
+        $("restoreBackupError").textContent = "";
         try {
-          const backup = await readFile(setupRestoreInput.files[0]);
+          const backup = await readFile(backupFile);
           if (
             !backup ||
             backup.backup_schema_version !== 1 ||
@@ -5227,17 +6878,41 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           await clearStoredHandle("autosaveFileHandle");
           await clearStoredHandle("autosaveDirectoryHandle");
           importBackup(backup);
-          await finishRestoredSetup();
+          const screenshotFiles = [
+            ...$("restoreScreenshotsFolder").files,
+          ];
+          const screenshotResult = screenshotFiles.length
+            ? await attachScreenshotFiles(screenshotFiles)
+            : null;
+          closeRestoreBackupModal();
+          if (restoreModalContext === "setup")
+            await finishRestoredSetup(screenshotResult);
+          else {
+            setupScreenshotsHandled =
+              screenshotReferenceCount() === 0 || screenshotResult !== null;
+            document
+              .querySelectorAll(".nav[data-view]")
+              .forEach((button) =>
+                button.classList.toggle(
+                  "active",
+                  button.dataset.view === currentView,
+                ),
+              );
+            refreshSetup();
+            render();
+            await persist();
+          }
           notify(
             languageConfig.toolLanguage === "zh"
-              ? "备份已恢复；此浏览器不支持直接覆盖所选文件，因此使用浏览器自动保存。"
-              : "Backup restored. This browser cannot write back to the selected file, so browser autosave is being used.",
+              ? `备份已恢复${screenshotResult ? `，并匹配 ${screenshotResult.matched} 张截图` : "；未选择截图文件夹"}。`
+              : `Backup restored${screenshotResult ? ` with ${screenshotResult.matched} screenshot image(s) matched` : "; no screenshot folder was selected"}.`,
           );
         } catch (e) {
-          notify("Could not restore backup: " + e.message);
+          $("restoreBackupError").textContent =
+            "Could not restore backup: " + e.message;
+          $("continueRestoreBackup").disabled = false;
         }
-        setupRestoreInput.value = "";
-      });
+      };
       $("setupImportScreenshots").addEventListener("click", () =>
         $("setupScreenshotsInput").click(),
       );
@@ -5287,7 +6962,8 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           let sourceData = null;
           if (tf) sourceData = await readFile(tf);
           if (sourceData) {
-            const parsed = parseTolgee(sourceData);
+            originalTolgeeJson = clone(sourceData);
+            const parsed = parseTolgee(clone(sourceData));
             tolgee = parsed.data;
             syncExactLanguageTagsFromProject(tolgee);
             tolgee.review_config = clone(languageConfig);
@@ -5381,7 +7057,7 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           $("modalError").textContent = e.message;
         }
       };
-      $("exportTop").onclick = exportTolgee;
+      $("exportTop").onclick = exportFinalJson;
       $("replaceTermsTop").onclick = openTermReplacement;
       ["closeReplaceTerms", "cancelReplaceTerms"].forEach(
         (id) =>
@@ -5407,6 +7083,11 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           $("replaceTermsModal").classList.contains("open")
         )
           $("replaceTermsModal").classList.remove("open");
+        if (
+          event.key === "Escape" &&
+          $("restoreBackupModal").classList.contains("open")
+        )
+          closeRestoreBackupModal();
       });
       $("autosaveFileTop").onclick = () => chooseAutosaveFile(false);
       document.querySelectorAll("[data-stat-view]").forEach((el) => {
@@ -5420,64 +7101,7 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
         });
       });
       $("backupTop").onclick = exportBackup;
-      const restoreInput = document.createElement("input");
-      restoreInput.type = "file";
-      restoreInput.accept = ".json,application/json";
-      restoreInput.className = "hidden";
-      restoreInput.id = "restoreInput";
-      document.body.appendChild(restoreInput);
-      restoreInput.addEventListener("change", async () => {
-        if (!restoreInput.files[0]) return;
-        try {
-          const backup = await readFile(restoreInput.files[0]);
-          if (
-            !backup ||
-            backup.backup_schema_version !== 1 ||
-            !backup.tolgee ||
-            !Array.isArray(backup.rows)
-          )
-            throw Error(
-              "This file is not a valid Translation Review Desk progress backup.",
-            );
-          autosaveFileHandle = null;
-          autosaveDirectoryHandle = null;
-          await clearStoredHandle("autosaveFileHandle");
-          await clearStoredHandle("autosaveDirectoryHandle");
-          importBackup(backup);
-          document
-            .querySelectorAll(".nav[data-view]")
-            .forEach((b) =>
-              b.classList.toggle("active", b.dataset.view === currentView),
-            );
-          await persist();
-          notify(
-            languageConfig.toolLanguage === "zh"
-              ? "备份已恢复；此浏览器使用浏览器自动保存。"
-              : "Backup restored; browser autosave is being used because this file picker cannot write back to the selected file.",
-          );
-        } catch (e) {
-          notify(e.message);
-        }
-        restoreInput.value = "";
-      });
-      $("restoreTop").onclick = async () => {
-        try {
-          if (window.showOpenFilePicker) {
-            const backup = await pickAndRestoreBackup();
-            if (backup) {
-              document
-                .querySelectorAll(".nav[data-view]")
-                .forEach((b) =>
-                  b.classList.toggle("active", b.dataset.view === currentView),
-                );
-              return;
-            }
-          }
-          restoreInput.click();
-        } catch (e) {
-          if (e.name !== "AbortError") notify(e.message);
-        }
-      };
+      $("restoreTop").onclick = () => openRestoreBackupModal("workspace");
       $("resetTop").onclick = async () => {
         if (
           !confirm(
@@ -5486,6 +7110,7 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
         )
           return;
         tolgee = null;
+        originalTolgeeJson = null;
         rows = [];
         currentView = "pending";
         page = 1;
@@ -5514,7 +7139,6 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
         "q",
         "confidence",
         "onlyIssues",
-        "onlyUntranslatable",
         "sort",
         "pageSize",
       ].forEach((id) =>
@@ -5523,59 +7147,64 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           render();
         }),
       );
-      function selectedDecisionFilters() {
+      function selectedSearchScopes() {
         return [
           ...document.querySelectorAll(
-            "#decisionFilterMenu input[type=checkbox]:checked",
+            "#searchScopeMenu input[type=checkbox]:checked",
           ),
         ].map((el) => el.value);
       }
-      function updateDecisionFilterCaption() {
-        const selected = selectedDecisionFilters(),
-          caption = $("decisionFilterCaption");
+      function updateSearchScopeCaption() {
+        const selected = selectedSearchScopes(),
+          allScopes = document.querySelectorAll(
+            "#searchScopeMenu input[type=checkbox]",
+          ),
+          caption = $("searchScopeCaption");
         if (!caption) return;
-        const zh = languageConfig.toolLanguage === "zh";
-        if (!selected.length) caption.textContent = tr("anyDecision");
+        if (selected.length === allScopes.length)
+          caption.textContent = tr("searchInAll");
         else if (selected.length === 1) {
           const input = document.querySelector(
-            `#decisionFilterMenu input[value="${selected[0]}"]`,
+            `#searchScopeMenu input[value="${selected[0]}"]`,
           );
           caption.textContent =
             input?.parentElement?.querySelector("span")?.textContent ||
-            tr("anyDecision");
+            tr("searchInAll");
         } else
-          caption.textContent = zh
-            ? `已选择 ${selected.length} 项筛选`
-            : `${selected.length} decision filters selected`;
+          caption.textContent = tr("searchInCount").replace(
+            "{count}",
+            selected.length,
+          );
       }
-      $("decisionFilterTrigger").addEventListener("click", () => {
-        const wrap = $("decisionFilter"),
+      $("searchScopeTrigger").addEventListener("click", () => {
+        const wrap = $("searchScope"),
           open = !wrap.classList.contains("open");
         wrap.classList.toggle("open", open);
-        $("decisionFilterTrigger").setAttribute("aria-expanded", String(open));
+        $("searchScopeTrigger").setAttribute("aria-expanded", String(open));
       });
       document
-        .querySelectorAll("#decisionFilterMenu input[type=checkbox]")
+        .querySelectorAll("#searchScopeMenu input[type=checkbox]")
         .forEach((el) =>
-          el.addEventListener("change", () => {
+          el.addEventListener("change", (event) => {
+            if (!selectedSearchScopes().length) event.target.checked = true;
             page = 1;
-            updateDecisionFilterCaption();
+            updateSearchScopeCaption();
             render();
           }),
         );
-      $("clearDecisionFilters").addEventListener("click", () => {
+      $("selectAllSearchScopes").addEventListener("click", () => {
         document
-          .querySelectorAll("#decisionFilterMenu input[type=checkbox]")
-          .forEach((el) => (el.checked = false));
+          .querySelectorAll("#searchScopeMenu input[type=checkbox]")
+          .forEach((el) => (el.checked = true));
         page = 1;
-        updateDecisionFilterCaption();
+        updateSearchScopeCaption();
         render();
       });
       document.addEventListener("click", (e) => {
-        const wrap = $("decisionFilter");
+        const wrap = $("searchScope");
         if (wrap && !wrap.contains(e.target)) {
           wrap.classList.remove("open");
-          $("decisionFilterTrigger").setAttribute("aria-expanded", "false");
+          $("searchScopeTrigger").setAttribute("aria-expanded", "false");
         }
       });
       document
@@ -5688,6 +7317,9 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
         let old = await restoreAutosave();
         if (old && old.tolgee && Array.isArray(old.rows) && old.rows.length) {
           tolgee = old.tolgee;
+          originalTolgeeJson = old.originalTolgeeJson
+            ? clone(old.originalTolgeeJson)
+            : sourceDocumentFallback(old.tolgee);
           languageConfig = {
             ...languageConfig,
             ...(old.languageConfig || tolgee.review_config || {}),
@@ -5697,7 +7329,7 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           $("setupTargetLanguage").value = languageConfig.targetCode;
           $("setupToolLanguage").value = languageConfig.toolLanguage;
           applyToolLanguage();
-          rows = old.rows;
+          rows = rowsWithoutScreenshotImages(old.rows).map(normalizePersistedRow);
           currentView =
             old.currentView === "needs"
               ? "pending"
