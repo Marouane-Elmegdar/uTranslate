@@ -4005,6 +4005,11 @@
         const backupPayload = tolgee
           ? workspaceSnapshot({ backup: true, persistedRows })
           : null;
+        const saveResult = {
+          browserSaved: false,
+          fileSaved: false,
+          fileError: "",
+        };
         persistQueue = persistQueue.then(async () => {
           let browserSaved = false;
           try {
@@ -4027,6 +4032,7 @@
               browserSaved = true;
             } catch (_) {}
           }
+          saveResult.browserSaved = browserSaved;
           if (autosaveFileHandle && tolgee) {
             try {
               let permission = await autosaveFileHandle.queryPermission({
@@ -4045,15 +4051,21 @@
                 JSON.stringify(backupPayload, null, 2),
               );
               await writable.close();
+              const savedFile = await autosaveFileHandle.getFile();
+              if (!savedFile.size)
+                throw Error("The selected backup file is empty after writing");
+              saveResult.fileSaved = true;
               lastSavedAt = new Date();
               setAutosaveStatus(
                 `Saved directly to ${autosaveFileHandle.name} at ${lastSavedAt.toLocaleTimeString()}`,
                 "ok",
               );
             } catch (e) {
+              saveResult.fileError =
+                e.message || "permission or disk error";
               setAutosaveStatus(
                 "Backup-file autosave failed: " +
-                  (e.message || "permission or disk error") +
+                  saveResult.fileError +
                   ". Browser autosave may still be available; download a backup.",
                 "error",
               );
@@ -4079,15 +4091,21 @@
                 JSON.stringify(backupPayload, null, 2),
               );
               await writable.close();
+              const savedFile = await fileHandle.getFile();
+              if (!savedFile.size)
+                throw Error("The selected folder produced an empty backup file");
+              saveResult.fileSaved = true;
               lastSavedAt = new Date();
               setAutosaveStatus(
                 `Saved to save/${filename} at ${lastSavedAt.toLocaleTimeString()}`,
                 "ok",
               );
             } catch (e) {
+              saveResult.fileError =
+                e.message || "permission or disk error";
               setAutosaveStatus(
                 "File autosave failed: " +
-                  (e.message || "permission or disk error") +
+                  saveResult.fileError +
                   ". Browser autosave may still be available; download a backup.",
                 "error",
               );
@@ -4096,7 +4114,8 @@
           if (!browserSaved && !autosaveDirectoryHandle && !autosaveFileHandle)
             notify("Auto-save failed. Download a progress backup now.");
         });
-        return persistQueue;
+        await persistQueue;
+        return saveResult;
       }
       function setAutosaveStatus(message, kind = "") {
         const el = $("autosaveFileStatus");
@@ -4190,14 +4209,32 @@
           const destination = looksLikeToolFolder
             ? "save/ subfolder"
             : "selected folder";
-          setAutosaveStatus(
-            "Saving location selected: " +
-              (handle.name || "folder") +
-              " — project JSON will be written to the " +
-              destination,
-            "ok",
-          );
-          if (tolgee) await persist();
+          let saveResult = null;
+          if (tolgee) saveResult = await persist();
+          else
+            setAutosaveStatus(
+              "Saving location selected: " +
+                (handle.name || "folder") +
+                " — project JSON will be written to the " +
+                destination,
+              "ok",
+            );
+          if (tolgee && !saveResult?.fileSaved) {
+            const reason =
+              saveResult?.fileError ||
+              "The backup file could not be verified after writing";
+            $("setupFolderStatus").textContent =
+              "Saving folder selected, but the first backup could not be verified: " +
+              reason;
+            $("setupFolderStatus").className = "setup-status error";
+            notify(
+              "Saving location was not confirmed: " +
+                reason +
+                ". Grant folder access again or choose another folder.",
+              9000,
+            );
+            return false;
+          }
           $("setupFolderStatus").textContent =
             "Saving folder selected: " +
             (handle.name || "folder") +
@@ -6877,6 +6914,9 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           autosaveDirectoryHandle = null;
           await clearStoredHandle("autosaveFileHandle");
           await clearStoredHandle("autosaveDirectoryHandle");
+          setAutosaveStatus(
+            "Backup restored. Choose Project → Change saving location to enable file autosave on this device.",
+          );
           importBackup(backup);
           const screenshotFiles = [
             ...$("restoreScreenshotsFolder").files,
