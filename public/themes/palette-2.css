@@ -1,0 +1,231 @@
+/* Palette trial 2: shadow grey, grape, lavender, and steel blue. */
+      :root {
+        --bg: #f1f2f6;
+        --navy: #272838;
+        --ink: #272838;
+        --muted: #6d7084;
+        --line: #dde0ea;
+        --blue: #347fc4;
+        --blue2: #eaf2fa;
+        --green: #2f7764;
+        --greenbg: #e8f3ef;
+        --red: #a8545b;
+        --redbg: #f9ecee;
+        --amber: #765b25;
+        --amberbg: #f8f0dc;
+      }
+      .appbar,
+      aside {
+        background: #272838;
+      }
+      .appbar {
+        box-shadow: 0 4px 14px rgba(39, 40, 56, 0.24);
+      }
+      .bar-actions .utility,
+      .project-menu summary {
+        background: #3a3a4d;
+        border-color: #686579;
+        color: #f4f4f8;
+      }
+      .bar-actions .utility:hover,
+      .project-menu[open] summary,
+      .project-menu summary:hover {
+        background: #5d536b;
+        border-color: #80758d;
+      }
+      .bar-actions .action-import {
+        background: #e6e8f4;
+        border-color: #989fce;
+        color: #3d4775;
+      }
+      .bar-actions .action-import:hover {
+        background: #d6d9ed;
+        border-color: #7d86ba;
+      }
+      .bar-actions .action-export {
+        background: #347fc4;
+        border-color: #347fc4;
+        color: #fff;
+      }
+      .bar-actions .action-export:hover {
+        background: #286aa5;
+        border-color: #286aa5;
+      }
+      aside .nav {
+        color: #d6d7e3;
+      }
+      aside .nav-all,
+      aside .nav-all.active {
+        background: #3a3a4d;
+        border-color: #5d536b;
+        box-shadow:
+          0 5px 14px rgba(12, 13, 24, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      }
+      aside .nav-all .count {
+        background: #dfe2f1;
+        color: #272838;
+      }
+      aside .nav:not(.nav-all):hover {
+        background: #443f51;
+        border-color: #6c6378;
+        color: #fff;
+      }
+      aside .nav:not(.nav-all).active {
+        background: #347fc4;
+        border-color: #6ba4d6;
+        color: #fff;
+        box-shadow: 0 3px 10px rgba(32, 84, 132, 0.3);
+      }
+      aside .count {
+        background: #5d536b;
+      }
+      .navtitle,
+      .nav-group-label {
+        color: #b8b7c9;
+      }
+      .nav-divider {
+        background: #4b4a5e;
+      }
+      .sidebox,
+      .sidebar-help {
+        background: #333445;
+        border-color: #4b4a5e;
+        color: #d2d3de;
+      }
+      .sidebar-help summary {
+        color: #f1f1f6;
+      }
+      .progress-stat::after {
+        background: linear-gradient(
+          to right,
+          #347fc4 0 var(--progress, 0%),
+          #dfe2eb var(--progress, 0%) 100%
+        );
+      }
+      .item.review-edited {
+        border-color: #b8aec6;
+        box-shadow: inset 4px 0 0 #7d6b91;
+      }
+      .item.review-edited .itemhead,
+      .chip.edited {
+        background: #f0edf4;
+      }
+      .chip.edited {
+        color: #5d536b;
+      }
+      .item.review-accepted {
+        border-color: #9fc5b8;
+        box-shadow: inset 4px 0 0 #2f7764;
+      }
+      .item.review-accepted .itemhead {
+        background: #edf6f3;
+      }
+      .item.review-rejected {
+        border-color: #d9aaae;
+        box-shadow: inset 4px 0 0 #a8545b;
+      }
+      .item.review-rejected .itemhead,
+      .chip.bad {
+        background: #f9ecee;
+      }
+      .bad,
+      .chip.bad {
+        color: #93474f;
+      }
+      .sentence-warning,
+      .placeholder-warning {
+        border-color: #d8c187;
+        background: #f8f0dc;
+        color: #674f20;
+      }
+
+      body.double-check-mode,
+      body.double-check-mode .app-shell,
+      body.double-check-mode .main {
+        background: #eef0f6;
+      }
+      .double-check-mode .appbar {
+        background: #5d536b;
+        color: #fff;
+        box-shadow: 0 4px 14px rgba(50, 43, 61, 0.24);
+      }
+      .double-check-mode .bar-actions .utility,
+      .double-check-mode .project-menu summary {
+        background: #746781;
+        border-color: #989fce;
+        color: #fff;
+      }
+      .double-check-mode .bar-actions .utility:hover,
+      .double-check-mode .project-menu[open] summary,
+      .double-check-mode .project-menu summary:hover {
+        background: #7d6b91;
+        border-color: #b0b5da;
+      }
+.double-check-mode .live-language-label,
+.double-check-mode .live-theme-label,
+      .double-check-mode .top-autosave {
+        color: #f4f4f8;
+      }
+      .double-check-mode aside {
+        background: #e1e3ef;
+        color: #272838;
+        border-right: 1px solid #c2c6dc;
+      }
+      .double-check-mode aside .nav,
+      .double-check-mode .navtitle,
+      .double-check-mode .nav-group-label {
+        color: #4b4d64;
+      }
+      .double-check-mode aside .nav-all,
+      .double-check-mode aside .nav-all.active {
+        background: #d1d4e7;
+        border-color: #989fce;
+        color: #272838;
+        box-shadow: 0 4px 12px rgba(56, 57, 80, 0.14);
+      }
+      .double-check-mode aside .nav-all .count {
+        background: #f6f6fa;
+        color: #272838;
+      }
+      .double-check-mode aside .nav:not(.nav-all):hover {
+        background: #d3d6e8;
+        border-color: #aab0d1;
+        color: #272838;
+        box-shadow: 0 4px 10px rgba(76, 82, 126, 0.13);
+      }
+      .double-check-mode aside .nav:not(.nav-all).active {
+        background: #7d6b91;
+        border-color: #7d6b91;
+        color: #fff;
+      }
+      .double-check-mode aside .count {
+        background: #c7cbe1;
+        color: #272838;
+      }
+      .double-check-mode aside .nav.active .count {
+        background: #eef0f6;
+      }
+      .double-check-mode .nav-divider {
+        background: #c2c6dc;
+      }
+      .double-check-mode .sidebox,
+      .double-check-mode .sidebar-help {
+        background: #f3f4f9;
+        border-color: #c2c6dc;
+        color: #4b4d64;
+      }
+      .double-check-mode .sidebar-help summary,
+      .double-check-mode .sidebox b {
+        color: #272838;
+      }
+      .double-check-mode .toolbar,
+      .double-check-mode .item,
+      .double-check-mode .notice {
+        border-color: #cfd2e2;
+      }
+      .double-check-mode .double-check-note {
+        border-left-color: #989fce;
+        background: #eceaf1;
+        color: #51485f;
+      }

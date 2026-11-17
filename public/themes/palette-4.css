@@ -1,0 +1,190 @@
+/* Palette 4: dark raspberry, crimson violet, black, forest, and dark teal. */
+:root {
+  --bg: #f0f4f3;
+  --navy: #020202;
+  --ink: #202b2b;
+  --muted: #667877;
+  --line: #d5dfdc;
+  --blue: #005c69;
+  --blue2: #e2eff0;
+  --green: #12613d;
+  --greenbg: #e6f1eb;
+  --red: #950952;
+  --redbg: #f8e8f0;
+  --amber: #765221;
+  --amberbg: #f7efde;
+}
+.appbar {
+  background: #020202;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+aside {
+  background: #023618;
+}
+.bar-actions .utility,
+.project-menu summary {
+  background: #5e0035;
+  border-color: #8c3b68;
+  color: #fff;
+}
+.bar-actions .utility:hover,
+.project-menu[open] summary,
+.project-menu summary:hover {
+  background: #760345;
+  border-color: #ae5d89;
+}
+.bar-actions .action-import {
+  background: #f4e1eb;
+  border-color: #c982a9;
+  color: #6f063e;
+}
+.bar-actions .action-import:hover {
+  background: #eccddd;
+  border-color: #b35d8c;
+}
+.bar-actions .action-export {
+  background: #005c69;
+  border-color: #1b8290;
+  color: #fff;
+}
+.bar-actions .action-export:hover {
+  background: #004752;
+  border-color: #006f7e;
+}
+aside .nav {
+  color: #d4e4db;
+}
+aside .nav-all,
+aside .nav-all.active {
+  background: #005c69;
+  border-color: #318894;
+  box-shadow: 0 5px 14px rgba(0, 24, 28, 0.34);
+}
+aside .nav-all .count {
+  background: #e3f1ef;
+  color: #023618;
+}
+aside .nav:not(.nav-all):hover {
+  background: #0b4a29;
+  border-color: #3d7054;
+  color: #fff;
+}
+aside .nav:not(.nav-all).active {
+  background: #950952;
+  border-color: #c64e8d;
+  color: #fff;
+}
+aside .count {
+  background: #005c69;
+}
+.navtitle,
+.nav-group-label {
+  color: #a9c6b5;
+}
+.nav-divider {
+  background: #295d40;
+}
+.sidebox,
+.sidebar-help {
+  background: #062a16;
+  border-color: #295d40;
+  color: #cce0d4;
+}
+.progress-stat::after {
+  background: linear-gradient(
+    to right,
+    #005c69 0 var(--progress, 0%),
+    #d8e5e2 var(--progress, 0%) 100%
+  );
+}
+.item.review-edited {
+  border-color: #d69aba;
+  box-shadow: inset 4px 0 0 #950952;
+}
+.item.review-edited .itemhead,
+.chip.edited {
+  background: #f8e8f0;
+}
+.chip.edited {
+  color: #760642;
+}
+.item.review-accepted {
+  border-color: #86b69a;
+  box-shadow: inset 4px 0 0 #023618;
+}
+.item.review-accepted .itemhead {
+  background: #ebf4ee;
+}
+.item.review-rejected {
+  border-color: #d69aba;
+  box-shadow: inset 4px 0 0 #5e0035;
+}
+.item.review-rejected .itemhead,
+.chip.bad {
+  background: #f8e8f0;
+}
+.bad,
+.chip.bad {
+  color: #760642;
+}
+
+body.double-check-mode,
+body.double-check-mode .app-shell,
+body.double-check-mode .main {
+  background: #edf3f1;
+}
+.double-check-mode .appbar {
+  background: #005c69;
+  color: #fff;
+}
+.double-check-mode .bar-actions .utility,
+.double-check-mode .project-menu summary {
+  background: #176f7a;
+  border-color: #5b9ca4;
+  color: #fff;
+}
+.double-check-mode .live-language-label,
+.double-check-mode .live-theme-label,
+.double-check-mode .top-autosave {
+  color: #fff;
+}
+.double-check-mode aside {
+  background: #deebe5;
+  color: #023618;
+  border-right: 1px solid #b4cec1;
+}
+.double-check-mode aside .nav,
+.double-check-mode .navtitle,
+.double-check-mode .nav-group-label {
+  color: #28513d;
+}
+.double-check-mode aside .nav-all,
+.double-check-mode aside .nav-all.active {
+  background: #cce0d6;
+  border-color: #91b7a4;
+  color: #023618;
+  box-shadow: 0 4px 12px rgba(2, 54, 24, 0.13);
+}
+.double-check-mode aside .nav:not(.nav-all).active {
+  background: #950952;
+  border-color: #950952;
+  color: #fff;
+}
+.double-check-mode aside .count {
+  background: #bed6ca;
+  color: #023618;
+}
+.double-check-mode .nav-divider {
+  background: #b4cec1;
+}
+.double-check-mode .sidebox,
+.double-check-mode .sidebar-help {
+  background: #f2f7f4;
+  border-color: #b4cec1;
+  color: #28513d;
+}
+.double-check-mode .double-check-note {
+  border-left-color: #950952;
+  background: #f5e6ee;
+  color: #5e0035;
+}

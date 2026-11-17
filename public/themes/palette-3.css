@@ -1,0 +1,177 @@
+/* Palette 3: orange, blue bell, imperial blue, shadow grey, and Alice blue. */
+:root {
+  --bg: #eaf6ff;
+  --navy: #232528;
+  --ink: #232528;
+  --muted: #617180;
+  --line: #d2e2ee;
+  --blue: #009ffd;
+  --blue2: #e1f4ff;
+  --green: #287668;
+  --greenbg: #e6f3ef;
+  --red: #a85252;
+  --redbg: #faeeee;
+  --amber: #805500;
+  --amberbg: #fff0ce;
+}
+.appbar,
+aside {
+  background: #232528;
+}
+.appbar {
+  box-shadow: 0 4px 14px rgba(35, 37, 40, 0.26);
+}
+.bar-actions .utility,
+.project-menu summary {
+  background: #2a2a72;
+  border-color: #5555a1;
+  color: #fff;
+}
+.bar-actions .utility:hover,
+.project-menu[open] summary,
+.project-menu summary:hover {
+  background: #3b3b8b;
+  border-color: #7777bd;
+}
+.bar-actions .action-import {
+  background: #eaf6ff;
+  border-color: #85cffe;
+  color: #17699e;
+}
+.bar-actions .action-import:hover {
+  background: #d6eeff;
+  border-color: #4db7f7;
+}
+.bar-actions .action-export {
+  background: #009ffd;
+  border-color: #009ffd;
+  color: #fff;
+}
+.bar-actions .action-export:hover {
+  background: #0084d3;
+  border-color: #0084d3;
+}
+aside .nav {
+  color: #d8e2ea;
+}
+aside .nav-all,
+aside .nav-all.active {
+  background: #2a2a72;
+  border-color: #5555a1;
+  box-shadow: 0 5px 14px rgba(6, 7, 24, 0.32);
+}
+aside .nav-all .count {
+  background: #eaf6ff;
+  color: #232528;
+}
+aside .nav:not(.nav-all):hover {
+  background: #34364a;
+  border-color: #565a72;
+  color: #fff;
+}
+aside .nav:not(.nav-all).active {
+  background: #009ffd;
+  border-color: #55c0ff;
+  color: #fff;
+}
+aside .count {
+  background: #2a2a72;
+}
+.navtitle,
+.nav-group-label {
+  color: #aebbc6;
+}
+.nav-divider {
+  background: #454850;
+}
+.sidebox,
+.sidebar-help {
+  background: #2c2f33;
+  border-color: #454850;
+  color: #d6dee5;
+}
+.progress-stat::after {
+  background: linear-gradient(
+    to right,
+    #009ffd 0 var(--progress, 0%),
+    #d8e7f1 var(--progress, 0%) 100%
+  );
+}
+.item.review-edited {
+  border-color: #f0bd64;
+  box-shadow: inset 4px 0 0 #ffa400;
+}
+.item.review-edited .itemhead,
+.chip.edited {
+  background: #fff1d2;
+}
+.chip.edited {
+  color: #805500;
+}
+.sentence-warning,
+.placeholder-warning {
+  border-color: #ffa400;
+  background: #fff1d2;
+  color: #6f4a00;
+}
+
+body.double-check-mode,
+body.double-check-mode .app-shell,
+body.double-check-mode .main {
+  background: #f1f8fd;
+}
+.double-check-mode .appbar {
+  background: #2a2a72;
+  color: #fff;
+}
+.double-check-mode .bar-actions .utility,
+.double-check-mode .project-menu summary {
+  background: #3c3c87;
+  border-color: #7474b8;
+  color: #fff;
+}
+.double-check-mode .live-language-label,
+.double-check-mode .live-theme-label,
+.double-check-mode .top-autosave {
+  color: #fff;
+}
+.double-check-mode aside {
+  background: #dfeff9;
+  color: #232528;
+  border-right: 1px solid #b8d6e9;
+}
+.double-check-mode aside .nav,
+.double-check-mode .navtitle,
+.double-check-mode .nav-group-label {
+  color: #3f596b;
+}
+.double-check-mode aside .nav-all,
+.double-check-mode aside .nav-all.active {
+  background: #cfe8f7;
+  border-color: #91c5e6;
+  color: #232528;
+  box-shadow: 0 4px 12px rgba(33, 82, 113, 0.14);
+}
+.double-check-mode aside .nav:not(.nav-all).active {
+  background: #009ffd;
+  border-color: #009ffd;
+  color: #fff;
+}
+.double-check-mode aside .count {
+  background: #bdddef;
+  color: #232528;
+}
+.double-check-mode .nav-divider {
+  background: #b8d6e9;
+}
+.double-check-mode .sidebox,
+.double-check-mode .sidebar-help {
+  background: #f4faff;
+  border-color: #b8d6e9;
+  color: #3f596b;
+}
+.double-check-mode .double-check-note {
+  border-left-color: #ffa400;
+  background: #fff1d2;
+  color: #684600;
+}
