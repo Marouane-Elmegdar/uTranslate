@@ -1,0 +1,196 @@
+/* Palette 7: Qwen-inspired violet, lilac, sky blue, and frosted surfaces. */
+:root {
+  --bg: #f2f4ff;
+  --navy: #29275f;
+  --ink: #242442;
+  --muted: #686985;
+  --line: #dcdef1;
+  --blue: #7160e8;
+  --blue2: #e9eaff;
+  --green: #287a68;
+  --greenbg: #e6f3ef;
+  --red: #a84661;
+  --redbg: #faeaf0;
+  --amber: #7d5900;
+  --amberbg: #fff3d5;
+  --workspace-bg: #d9daf8;
+}
+.appbar {
+  background: #29275f;
+  box-shadow: 0 4px 14px rgba(41, 39, 95, 0.27);
+}
+aside {
+  background: #353276;
+}
+.bar-actions .utility,
+.project-menu summary {
+  background: #5148a8;
+  border-color: #786fd0;
+  color: #fff;
+}
+.bar-actions .utility:hover,
+.project-menu[open] summary,
+.project-menu summary:hover {
+  background: #6156c5;
+  border-color: #9188e4;
+}
+.bar-actions .action-import {
+  background: #e9eaff;
+  border-color: #b8baf5;
+  color: #4c43a3;
+}
+.bar-actions .action-import:hover {
+  background: #dfe1ff;
+  border-color: #957efd;
+}
+.bar-actions .action-export {
+  background: #7160e8;
+  border-color: #957efd;
+  color: #fff;
+}
+.bar-actions .action-export:hover {
+  background: #5d4bd8;
+  border-color: #7160e8;
+}
+aside .nav {
+  color: #dddff8;
+}
+aside .nav-all,
+aside .nav-all.active {
+  background: #7160e8;
+  border-color: #957efd;
+  box-shadow: 0 5px 14px rgba(23, 20, 74, 0.32);
+}
+aside .nav-all .count {
+  background: #f0f0ff;
+  color: #353276;
+}
+aside .nav:not(.nav-all):hover {
+  background: #484593;
+  border-color: #6c68b4;
+  color: #fff;
+}
+aside .nav:not(.nav-all).active {
+  background: #957efd;
+  border-color: #ab90fe;
+  color: #fff;
+}
+aside .count {
+  background: #7160e8;
+}
+.navtitle,
+.nav-group-label {
+  color: #b8baf0;
+}
+.nav-divider {
+  background: #5956a0;
+}
+.sidebox,
+.sidebar-help {
+  background: #302e69;
+  border-color: #5956a0;
+  color: #e2e3fa;
+}
+.progress-stat::after {
+  background: linear-gradient(
+    to right,
+    #7160e8 0 var(--progress, 0%),
+    #dfe1f3 var(--progress, 0%) 100%
+  );
+}
+.item.review-edited {
+  border-color: #bdb1fd;
+  box-shadow: inset 4px 0 0 #7160e8;
+}
+.item.review-edited .itemhead,
+.chip.edited {
+  background: #eeebff;
+}
+.chip.edited {
+  color: #5143b2;
+}
+.item.review-accepted {
+  border-color: #82b9aa;
+  box-shadow: inset 4px 0 0 #287a68;
+}
+.item.review-accepted .itemhead {
+  background: #e6f3ef;
+}
+.item.review-rejected {
+  border-color: #d99aac;
+  box-shadow: inset 4px 0 0 #a84661;
+}
+.item.review-rejected .itemhead,
+.chip.bad {
+  background: #faeaf0;
+}
+.bad,
+.chip.bad {
+  color: #87354d;
+}
+.sentence-warning,
+.placeholder-warning {
+  border-color: #957efd;
+  background: #eeebff;
+  color: #5143a8;
+}
+body.double-check-mode,
+body.double-check-mode .app-shell,
+body.double-check-mode .main {
+  background: #d9daf3;
+}
+.double-check-mode .appbar {
+  background: #7160e8;
+  color: #fff;
+}
+.double-check-mode .bar-actions .utility,
+.double-check-mode .project-menu summary {
+  background: #8574ef;
+  border-color: #b4a8ff;
+  color: #fff;
+}
+.double-check-mode .live-language-label,
+.double-check-mode .live-theme-label,
+.double-check-mode .top-autosave {
+  color: #fff;
+}
+.double-check-mode aside {
+  background: #c3c4e7;
+  color: #373568;
+  border-right: 1px solid #c9caf5;
+}
+.double-check-mode aside .nav,
+.double-check-mode .navtitle,
+.double-check-mode .nav-group-label {
+  color: #504f78;
+}
+.double-check-mode aside .nav-all,
+.double-check-mode aside .nav-all.active {
+  background: #d7d7ff;
+  border-color: #b8baf5;
+  color: #373568;
+  box-shadow: 0 4px 12px rgba(71, 64, 164, 0.13);
+}
+.double-check-mode aside .nav:not(.nav-all).active {
+  background: #7160e8;
+  border-color: #7160e8;
+  color: #fff;
+}
+.double-check-mode aside .count {
+  background: #c7c9f7;
+  color: #373568;
+}
+.double-check-mode .nav-divider {
+  background: #c4c5ed;
+}
+.double-check-mode .sidebox,
+.double-check-mode .sidebar-help {
+  background: #f8f8ff;
+  border-color: #c9caf5;
+  color: #504f78;
+}
+.double-check-mode .double-check-note {
+  border-left-color: #7160e8;
+  background: #eeebff;
+  color: #4e419e;
+}

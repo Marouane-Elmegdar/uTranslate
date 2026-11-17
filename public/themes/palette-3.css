@@ -13,6 +13,7 @@
   --redbg: #faeeee;
   --amber: #805500;
   --amberbg: #fff0ce;
+  --workspace-bg: #cfe3f0;
 }
 .appbar,
 aside {
@@ -43,13 +44,13 @@ aside {
   border-color: #4db7f7;
 }
 .bar-actions .action-export {
-  background: #009ffd;
-  border-color: #009ffd;
-  color: #fff;
+  background: #ffa400;
+  border-color: #ffc04f;
+  color: #232528;
 }
 .bar-actions .action-export:hover {
-  background: #0084d3;
-  border-color: #0084d3;
+  background: #e99300;
+  border-color: #ffa400;
 }
 aside .nav {
   color: #d8e2ea;
@@ -70,12 +71,13 @@ aside .nav:not(.nav-all):hover {
   color: #fff;
 }
 aside .nav:not(.nav-all).active {
-  background: #009ffd;
-  border-color: #55c0ff;
-  color: #fff;
+  background: #ffa400;
+  border-color: #ffc04f;
+  color: #232528;
 }
 aside .count {
   background: #2a2a72;
+  color: #fff;
 }
 .navtitle,
 .nav-group-label {
@@ -118,7 +120,7 @@ aside .count {
 body.double-check-mode,
 body.double-check-mode .app-shell,
 body.double-check-mode .main {
-  background: #f1f8fd;
+  background: #cfe3f0;
 }
 .double-check-mode .appbar {
   background: #2a2a72;
@@ -136,7 +138,7 @@ body.double-check-mode .main {
   color: #fff;
 }
 .double-check-mode aside {
-  background: #dfeff9;
+  background: #b8d4e4;
   color: #232528;
   border-right: 1px solid #b8d6e9;
 }
@@ -153,9 +155,9 @@ body.double-check-mode .main {
   box-shadow: 0 4px 12px rgba(33, 82, 113, 0.14);
 }
 .double-check-mode aside .nav:not(.nav-all).active {
-  background: #009ffd;
-  border-color: #009ffd;
-  color: #fff;
+  background: #ffa400;
+  border-color: #e99300;
+  color: #232528;
 }
 .double-check-mode aside .count {
   background: #bdddef;

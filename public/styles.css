@@ -350,11 +350,14 @@
         padding: 20px 13px;
         color: #d4def0;
         position: sticky;
-        top: 0;
         align-self: start;
-        height: 100vh;
         overflow-y: auto;
         z-index: 5;
+        display: flex;
+        flex-direction: column;
+        top: 62px;
+        height: calc(100vh - 62px);
+        height: calc(100dvh - 62px);
       }
       .navtitle {
         font-size: 10px;
@@ -1193,6 +1196,15 @@
         .layout.mobile-nav-open aside {
           display: block;
         }
+        aside .live-theme-label {
+          margin-top: auto;
+          padding-top: 18px;
+          width: 100%;
+        }
+        aside .live-theme-label select {
+        flex: 1;
+        min-width: 0;
+        }
         .mobile-nav-toggle {
           display: flex;
           width: calc(100% - 20px);
@@ -1456,6 +1468,17 @@
       .app-shell {
         min-height: 100vh;
       }
+      .app-shell,
+      .main {
+        background: var(--workspace-bg, var(--bg));
+      }
+      /* Controls moved from the dark app bar into the light double-check sidebar need dark text. */
+      .double-check-mode aside .live-theme-label,
+      .double-check-mode aside .sidebar-help summary,
+      .double-check-mode aside .sidebar-help summary::after,
+      .double-check-mode aside .sidebox b {
+        color: inherit;
+      }
       .app-shell.hidden {
         display: none !important;
       }
@@ -1533,6 +1556,7 @@
         font-weight: 650;
         color: #d6e0f0;
         white-space: nowrap;
+        margin-top: auto
       }
       .live-language-label select,
       .live-theme-label select {

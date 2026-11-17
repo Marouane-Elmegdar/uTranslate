@@ -13,10 +13,11 @@
   --redbg: #f8e8f0;
   --amber: #765221;
   --amberbg: #f7efde;
+  --workspace-bg: #d3e1dc;
 }
 .appbar {
-  background: #020202;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  background: #023618;
+  box-shadow: 0 4px 14px rgba(2, 54, 24, 0.3);
 }
 aside {
   background: #023618;
@@ -43,13 +44,13 @@ aside {
   border-color: #b35d8c;
 }
 .bar-actions .action-export {
-  background: #005c69;
-  border-color: #1b8290;
+  background: #950952;
+  border-color: #c64e8d;
   color: #fff;
 }
 .bar-actions .action-export:hover {
-  background: #004752;
-  border-color: #006f7e;
+  background: #760345;
+  border-color: #ae5d89;
 }
 aside .nav {
   color: #d4e4db;
@@ -131,16 +132,16 @@ aside .count {
 body.double-check-mode,
 body.double-check-mode .app-shell,
 body.double-check-mode .main {
-  background: #edf3f1;
+  background: #d3e1dc;
 }
 .double-check-mode .appbar {
-  background: #005c69;
+  background: #023618;
   color: #fff;
 }
 .double-check-mode .bar-actions .utility,
 .double-check-mode .project-menu summary {
-  background: #176f7a;
-  border-color: #5b9ca4;
+  background: #0b4a29;
+  border-color: #4f8969;
   color: #fff;
 }
 .double-check-mode .live-language-label,
@@ -149,7 +150,7 @@ body.double-check-mode .main {
   color: #fff;
 }
 .double-check-mode aside {
-  background: #deebe5;
+  background: #bdd3c7;
   color: #023618;
   border-right: 1px solid #b4cec1;
 }

@@ -13,6 +13,7 @@
         --redbg: #fff0eb;
         --amber: #866117;
         --amberbg: #fff4cf;
+        --workspace-bg: #d6e7e2;
       }
       .appbar,
       aside {
@@ -144,7 +145,7 @@
       body.double-check-mode,
       body.double-check-mode .app-shell,
       body.double-check-mode .main {
-        background: #fff7df;
+        background: #f1e2bd;
       }
       .double-check-mode .appbar {
         background: #e9c46a;
@@ -169,7 +170,7 @@
         color: #264653;
       }
       .double-check-mode aside {
-        background: #dff2ed;
+        background: #c4ddd6;
         color: #264653;
         border-right: 1px solid #aed8cf;
       }

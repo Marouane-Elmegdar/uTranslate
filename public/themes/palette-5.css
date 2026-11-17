@@ -1,0 +1,196 @@
+/* Palette 5: Deep Twilight, Raspberry Red, Teal, Honey Bronze, and Frosted Blue. */
+:root {
+  --bg: #f1f7f9;
+  --navy: #031069;
+  --ink: #172442;
+  --muted: #64708a;
+  --line: #d8e1ee;
+  --blue: #218380;
+  --blue2: #e2f4f5;
+  --green: #218380;
+  --greenbg: #e4f3f1;
+  --red: #d81159;
+  --redbg: #fde7ef;
+  --amber: #8a5b00;
+  --amberbg: #fff2d3;
+  --workspace-bg: #cfe5e6;
+}
+.appbar,
+aside {
+  background: #031069;
+}
+.appbar {
+  box-shadow: 0 4px 14px rgba(3, 16, 105, 0.28);
+}
+.bar-actions .utility,
+.project-menu summary {
+  background: #218380;
+  border-color: #4eaaa7;
+  color: #fff;
+}
+.bar-actions .utility:hover,
+.project-menu[open] summary,
+.project-menu summary:hover {
+  background: #176b69;
+  border-color: #79c3c0;
+}
+.bar-actions .action-import {
+  background: #e2f4f5;
+  border-color: #81cfce;
+  color: #155c5a;
+}
+.bar-actions .action-import:hover {
+  background: #cceaea;
+  border-color: #58b3b1;
+}
+.bar-actions .action-export {
+  background: #d81159;
+  border-color: #ed4d85;
+  color: #fff;
+}
+.bar-actions .action-export:hover {
+  background: #b20c49;
+  border-color: #d81159;
+}
+aside .nav {
+  color: #d9e2f2;
+}
+aside .nav-all,
+aside .nav-all.active {
+  background: #218380;
+  border-color: #4eaaa7;
+  box-shadow: 0 5px 14px rgba(1, 9, 58, 0.34);
+}
+aside .nav-all .count {
+  background: #e2f4f5;
+  color: #031069;
+}
+aside .nav:not(.nav-all):hover {
+  background: #10247e;
+  border-color: #3f55a2;
+  color: #fff;
+}
+aside .nav:not(.nav-all).active {
+  background: #d81159;
+  border-color: #ed4d85;
+  color: #fff;
+}
+aside .count {
+  background: #218380;
+}
+.navtitle,
+.nav-group-label {
+  color: #aebbe0;
+}
+.nav-divider {
+  background: #2e3e8a;
+}
+.sidebox,
+.sidebar-help {
+  background: #0a1a68;
+  border-color: #2e3e8a;
+  color: #d8e2f2;
+}
+.progress-stat::after {
+  background: linear-gradient(
+    to right,
+    #218380 0 var(--progress, 0%),
+    #d9e9eb var(--progress, 0%) 100%
+  );
+}
+.item.review-edited {
+  border-color: #ed8eaf;
+  box-shadow: inset 4px 0 0 #d81159;
+}
+.item.review-edited .itemhead,
+.chip.edited {
+  background: #fde7ef;
+}
+.chip.edited {
+  color: #a90b47;
+}
+.item.review-accepted {
+  border-color: #7fc2bd;
+  box-shadow: inset 4px 0 0 #218380;
+}
+.item.review-accepted .itemhead {
+  background: #e4f3f1;
+}
+.item.review-rejected {
+  border-color: #ed8eaf;
+  box-shadow: inset 4px 0 0 #d81159;
+}
+.item.review-rejected .itemhead,
+.chip.bad {
+  background: #fde7ef;
+}
+.bad,
+.chip.bad {
+  color: #a90b47;
+}
+.sentence-warning,
+.placeholder-warning {
+  border-color: #f0b94f;
+  background: #fff2d3;
+  color: #755000;
+}
+body.double-check-mode,
+body.double-check-mode .app-shell,
+body.double-check-mode .main {
+  background: #cfe5e6;
+}
+.double-check-mode .appbar {
+  background: #218380;
+  color: #fff;
+}
+.double-check-mode .bar-actions .utility,
+.double-check-mode .project-menu summary {
+  background: #2e9290;
+  border-color: #77c4c1;
+  color: #fff;
+}
+.double-check-mode .live-language-label,
+.double-check-mode .live-theme-label,
+.double-check-mode .top-autosave {
+  color: #fff;
+}
+.double-check-mode aside {
+  background: #b8d8d8;
+  color: #123e3f;
+  border-right: 1px solid #b8d9da;
+}
+.double-check-mode aside .nav,
+.double-check-mode .navtitle,
+.double-check-mode .nav-group-label {
+  color: #285a5b;
+}
+.double-check-mode aside .nav-all,
+.double-check-mode aside .nav-all.active {
+  background: #cce8e9;
+  border-color: #8fc8c8;
+  color: #123e3f;
+  box-shadow: 0 4px 12px rgba(33, 131, 128, 0.14);
+}
+.double-check-mode aside .nav:not(.nav-all).active {
+  background: #d81159;
+  border-color: #d81159;
+  color: #fff;
+}
+.double-check-mode aside .count {
+  background: #b9dcdc;
+  color: #123e3f;
+}
+.double-check-mode .nav-divider {
+  background: #b8d9da;
+}
+.double-check-mode .sidebox,
+.double-check-mode .sidebar-help {
+  background: #f4fbfb;
+  border-color: #b8d9da;
+  color: #285a5b;
+}
+.double-check-mode .double-check-note {
+  border-left-color: #d81159;
+  background: #fde7ef;
+  color: #8b0a3c;
+}

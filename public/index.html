@@ -23,7 +23,7 @@
           ><span class="brand-text">Translation Review</span
           ><span class="tag">SETUP</span>
           <div class="setup-workflow-actions">
-            <!-- Theme picker: remove these comment markers to show it again.
+             <!--Theme picker: remove these comment markers to show it again.-->
             <label class="setup-theme-label" for="setupTheme">
               <span>Theme</span>
               <select
@@ -32,13 +32,16 @@
                 aria-label="Color theme"
               >
                 <option value="original">Original</option>
-                <option value="palette-1">Palette 1 · Verdigris</option>
-                <option value="palette-2">Palette 2 · Lavender</option>
-                <option value="palette-3" selected>Palette 3 · Orange / Blue</option>
-                <option value="palette-4">Palette 4 · Raspberry / Forest</option>
+                <option value="palette-1">Verdigris</option>
+                <option value="palette-2">Lavender</option>
+                <option value="palette-3" selected>Orange / Blue</option>
+                <option value="palette-4">Raspberry / Forest</option>
+                <option value="palette-5">Twilight / Teal</option>
+                <option value="palette-6">Ocean / Berry</option>
+                <option value="palette-7">Qwen Violet</option>
               </select>
             </label>
-            -->
+            
             <button id="setupDoubleCheck" class="utility">
               Conduct double check
             </button>
@@ -160,6 +163,7 @@
     </section>
     <div id="appShell" class="app-shell hidden">
       <header class="appbar">
+        
         <div class="brand">
           <span
             class="brand-logo"
@@ -190,18 +194,6 @@
               </button>
             </div>
           </details>
-          <!-- Theme picker: remove these comment markers to show it again.
-          <label class="live-theme-label" for="liveTheme">
-            <span>Theme</span>
-            <select id="liveTheme" data-theme-selector aria-label="Color theme">
-              <option value="original">Original</option>
-              <option value="palette-1">Palette 1 · Verdigris</option>
-              <option value="palette-2">Palette 2 · Lavender</option>
-              <option value="palette-3" selected>Palette 3 · Orange / Blue</option>
-              <option value="palette-4">Palette 4 · Raspberry / Forest</option>
-            </select>
-          </label>
-          -->
           <label class="live-language-label" for="liveToolLanguage"
             ><span id="liveLanguageLabelText">Interface</span>
             <select id="liveToolLanguage" aria-label="Tool interface language">
@@ -283,6 +275,20 @@
               </div>
             </div>
           </details>
+          <!--Theme picker: remove these comment markers to show it again.-->
+          <label class="live-theme-label" for="liveTheme">
+            <span>Theme</span>
+            <select id="liveTheme" data-theme-selector aria-label="Color theme">
+              <option value="original">Original</option>
+              <option value="palette-1">Verdigris</option>
+              <option value="palette-2"> Lavender</option>
+              <option value="palette-3" selected>Orange / Blue</option>
+              <option value="palette-4">Raspberry / Forest</option>
+              <option value="palette-5">Twilight / Teal</option>
+              <option value="palette-6">Ocean / Berry</option>
+              <option value="palette-7">Qwen Violet</option>
+            </select>
+          </label>
         </aside>
         <main class="main">
           <div class="head">

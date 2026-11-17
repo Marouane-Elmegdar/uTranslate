@@ -9,6 +9,9 @@
         "palette-2",
         "palette-3",
         "palette-4",
+        "palette-5",
+        "palette-6",
+        "palette-7",
       ]);
       function applyTheme(value, persist = true) {
         const theme = VALID_THEMES.has(value) ? value : DEFAULT_THEME;
@@ -523,7 +526,7 @@
               "USB",
               "NFC",
               "SAML",
-              "OAuth",
+              "OAuth","4G","PPT",
               "ULearning","uClass","uLms","uRecord"
             ].includes(word.toLocaleUpperCase()) ||
               /^[A-Z0-9]+(?:[-_][A-Z0-9]+)*$/.test(word);
