@@ -252,9 +252,16 @@
         );
         return output.some((part) => part == null) ? null : output.join("");
       }
-      function icuSampleValues(value, sampleNumber = 2) {
+      function icuSampleValues(
+        value,
+        sampleNumber = 2,
+        languageKind = "target",
+      ) {
         try {
-          const analysis = ICU.analyze(String(value ?? ""), icuLocale("target"));
+          const analysis = ICU.analyze(
+            String(value ?? ""),
+            icuLocale(languageKind),
+          );
           return Object.fromEntries(
             Object.entries(analysis.arguments || {}).map(([name, type]) => [
               name,
@@ -269,15 +276,24 @@
         value,
         showRaw = false,
         previewNumber = icuPreviewNumber,
+        languageKind = "target",
       ) {
         const text = String(value ?? "");
         if (!looksLikeIcuRule(text) || showRaw)
           return { text: stripBidiControls(text), note: "", preview: false };
         try {
-          const values = icuSampleValues(text, previewNumber);
+          const values = icuSampleValues(
+            text,
+            previewNumber,
+            languageKind,
+          );
+          const languageCode =
+            languageKind === "base"
+              ? languageConfig.baseCode
+              : languageConfig.targetCode;
           const formatted = ICU.format(
-            protectRtlIcuBidi(text),
-            icuLocale("target"),
+            protectRtlIcuBidi(text, languageCode),
+            icuLocale(languageKind),
             values,
           );
           const assignments = Object.entries(values)
@@ -307,6 +323,7 @@
         rows = [],
         currentView = "pending",
         page = 1,
+        pageByView = {},
          activeEditKey = null,
          activeEditSource = null,
         activeIcuToolsExpanded = false,
@@ -599,7 +616,7 @@
           reviewed: "Reviewed keys",
           untranslatable: "Unable to translate",
           all: "All strings",
-          importTop: "Import JSON files",
+          importTop: "Import screenshots folder",
           replaceTerms: "Replace glossary terms",
           chooseToolFolder: "Change saving location",
           backup: "Download backup",
@@ -724,7 +741,7 @@
           reviewed: "已审核条目",
           untranslatable: "无法翻译",
           all: "全部字符串",
-          importTop: "导入 JSON 文件",
+          importTop: "导入截图文件夹",
           replaceTerms: "替换术语表术语",
           chooseToolFolder: "更改保存位置",
           backup: "下载备份",
@@ -1481,6 +1498,8 @@
           originalTolgeeJson,
           rows: persistedRows,
           currentView,
+          page,
+          pageByView: { ...pageByView, [currentView]: page },
           pageSize: $("pageSize").value,
           languageConfig,
           screenshot_images_included: false,
@@ -2169,8 +2188,9 @@
         return r.placeholderMismatch;
       }
       function setView(v) {
+        pageByView[currentView] = page;
         currentView = v;
-        page = 1;
+        page = Math.max(1, Number(pageByView[currentView]) || 1);
         document
           .querySelectorAll(".nav[data-view]")
           .forEach((b) => b.classList.toggle("active", b.dataset.view === v));
@@ -2236,7 +2256,20 @@
         const finalValue = doubleCheckFinalValue(r);
         const proposalDiffers = hasProposal(r) && finalValue !== r.proposal;
         const unable = !!r.unable_to_translate;
-        return `<article class="item double-check-card${checked ? " double-checked" : ""}${reviewerEdited && checked ? " review-edited" : ""}"><div class="itemhead"><div style="min-width:0"><div class="source-line"><div class="zh">${esc(r.chinese || tr("noSource"))}</div></div><div class="key">${esc(r.key)}${r.namespace ? ` · namespace: ${esc(r.namespace)}` : ""} · ID: ${esc(r.key_id ?? "—")}</div></div><div class="chips"><span class="chip ${unable ? "bad" : reviewerEdited && checked ? "edited" : checked ? "accepted" : "pending"}">${esc(unable ? (languageConfig.toolLanguage === "zh" ? "无法翻译" : "Unable to translate") : reviewerEdited && checked ? (languageConfig.toolLanguage === "zh" ? "复核者已编辑" : "Reviewer edited") : checked ? (languageConfig.toolLanguage === "zh" ? "已复核" : "Checked") : (languageConfig.toolLanguage === "zh" ? "待复核" : "To be checked"))}</span></div></div><div class="cols"><div class="panelwrap"><div class="label">${esc(languageConfig.toolLanguage === "zh" ? "原始译文" : "ORIGINAL TRANSLATION")}</div><div class="panel" dir="auto">${esc(r.english || "") || `<span class="missing">${esc(tr("emptyTarget"))}</span>`}</div></div><div class="panelwrap"><div class="label">${esc(languageConfig.toolLanguage === "zh" ? "最终译文" : "FINAL TRANSLATION")}</div><div class="panel" dir="auto">${esc(finalValue || "") || `<span class="missing">${esc(tr("emptyTarget"))}</span>`}</div></div></div>${proposalDiffers ? `<div class="proposal-reference"><b>${esc(languageConfig.toolLanguage === "zh" ? "ChatGPT 提案参考" : "ChatGPT proposal reference")}</b><div dir="auto">${esc(r.proposal)}</div></div>` : ""}${r.reason ? `<div class="reason">${esc(r.reason)}</div>` : ""}${screenshotHTML(r)}<div class="cardfoot"><span class="finalnote">${esc(unable ? (languageConfig.toolLanguage === "zh" ? "此条目在备份中已标记为无法翻译。" : "This entry was flagged unable to translate in the backup.") : reviewerEdited && checked ? (languageConfig.toolLanguage === "zh" ? "复核者已编辑最终译文。" : "Reviewer edited the final translation.") : checked ? (languageConfig.toolLanguage === "zh" ? "已完成复核。" : "Double check completed.") : (languageConfig.toolLanguage === "zh" ? "请核对原始译文与最终译文。" : "Compare the original and final translations."))}</span><div class="actions">${unable ? `<button class="small bad" data-act="toggleUntranslatable" data-key="${esc(rowIdentity(r))}">${tr("flagged")}</button>` : `<button class="small ${checked ? "" : "good"}" data-act="doubleCheckToggle" data-key="${esc(rowIdentity(r))}">${checked ? (languageConfig.toolLanguage === "zh" ? "撤销复核" : "Undo check") : (languageConfig.toolLanguage === "zh" ? "标记已复核" : "Mark checked")}</button>`}</div></div></article>`;
+        const previewNumber =
+          icuPreviewNumbers.get(rowIdentity(r)) ?? icuPreviewNumber;
+        const sourceView = cardIcuView(
+          r.chinese,
+          false,
+          previewNumber,
+          "base",
+        );
+        const sourceDirection =
+          hasRtlScript(sourceView.text) ||
+          (isRtlLanguage(languageConfig.baseCode) && sourceView.preview)
+            ? "rtl"
+            : "ltr";
+        return `<article class="item double-check-card${checked ? " double-checked" : ""}${reviewerEdited && checked ? " review-edited" : ""}"><div class="itemhead"><div style="min-width:0"><div class="source-line"><div class="zh" dir="${sourceDirection}">${esc(sourceView.text || tr("noSource"))}</div></div><div class="key">${esc(r.key)}${r.namespace ? ` · namespace: ${esc(r.namespace)}` : ""} · ID: ${esc(r.key_id ?? "—")}</div></div><div class="chips"><span class="chip ${unable ? "bad" : reviewerEdited && checked ? "edited" : checked ? "accepted" : "pending"}">${esc(unable ? (languageConfig.toolLanguage === "zh" ? "无法翻译" : "Unable to translate") : reviewerEdited && checked ? (languageConfig.toolLanguage === "zh" ? "复核者已编辑" : "Reviewer edited") : checked ? (languageConfig.toolLanguage === "zh" ? "已复核" : "Checked") : (languageConfig.toolLanguage === "zh" ? "待复核" : "To be checked"))}</span></div></div><div class="cols"><div class="panelwrap"><div class="label">${esc(languageConfig.toolLanguage === "zh" ? "原始译文" : "ORIGINAL TRANSLATION")}</div><div class="panel" dir="auto">${esc(r.english || "") || `<span class="missing">${esc(tr("emptyTarget"))}</span>`}</div></div><div class="panelwrap"><div class="label">${esc(languageConfig.toolLanguage === "zh" ? "最终译文" : "FINAL TRANSLATION")}</div><div class="panel" dir="auto">${esc(finalValue || "") || `<span class="missing">${esc(tr("emptyTarget"))}</span>`}</div></div></div>${proposalDiffers ? `<div class="proposal-reference"><b>${esc(languageConfig.toolLanguage === "zh" ? "ChatGPT 提案参考" : "ChatGPT proposal reference")}</b><div dir="auto">${esc(r.proposal)}</div></div>` : ""}${r.reason ? `<div class="reason">${esc(r.reason)}</div>` : ""}${screenshotHTML(r)}<div class="cardfoot"><span class="finalnote">${esc(unable ? (languageConfig.toolLanguage === "zh" ? "此条目在备份中已标记为无法翻译。" : "This entry was flagged unable to translate in the backup.") : reviewerEdited && checked ? (languageConfig.toolLanguage === "zh" ? "复核者已编辑最终译文。" : "Reviewer edited the final translation.") : checked ? (languageConfig.toolLanguage === "zh" ? "已完成复核。" : "Double check completed.") : (languageConfig.toolLanguage === "zh" ? "请核对原始译文与最终译文。" : "Compare the original and final translations."))}</span><div class="actions">${unable ? `<button class="small bad" data-act="toggleUntranslatable" data-key="${esc(rowIdentity(r))}">${tr("flagged")}</button>` : `<button class="small ${checked ? "" : "good"}" data-act="doubleCheckToggle" data-key="${esc(rowIdentity(r))}">${checked ? (languageConfig.toolLanguage === "zh" ? "撤销复核" : "Undo check") : (languageConfig.toolLanguage === "zh" ? "标记已复核" : "Mark checked")}</button>`}</div></div></article>`;
       }
       function doubleCheckCardWithIdentity(r) {
         let html = doubleCheckCardHTML(r);
@@ -2272,7 +2305,7 @@
         if (confidenceControl) confidenceControl.hidden = doubleCheckMode;
         const importScreenshotsTop = $("importScreenshotsTop");
         if (importScreenshotsTop)
-          importScreenshotsTop.hidden = !doubleCheckMode;
+          importScreenshotsTop.hidden = true;
         const clarificationControl = $("onlyIssues")?.closest("label");
         if (clarificationControl) {
           clarificationControl.hidden = doubleCheckMode;
@@ -2315,7 +2348,9 @@
           if (count) count.textContent = "0";
         });
         if (doubleCheckMode) {
+          pageByView[currentView] = page;
           currentView = "doubleToCheck";
+          page = Math.max(1, Number(pageByView[currentView]) || 1);
           $("notice").textContent = languageConfig.toolLanguage === "zh" ? "双重复核模式：只核对备份中的原始译文和最终译文。" : "Double-check mode: compare only the backup's original and final translations.";
         }
       }
@@ -2334,6 +2369,7 @@
         const size = Number($("pageSize").value) || 20;
         const pages = Math.max(1, Math.ceil(arr.length / size));
         page = Math.max(1, Math.min(page, pages));
+        pageByView[currentView] = page;
         const start = (page - 1) * size;
         const chunk = arr.slice(start, start + size);
         $("shown").textContent = arr.length ? `Showing ${start + 1}–${Math.min(start + size, arr.length)} of ${arr.length} matching strings (${all} total)` : `0 matching strings (${all} total)`;
@@ -2568,6 +2604,7 @@
           size = Number($("pageSize").value) || 20,
           pages = Math.max(1, Math.ceil(arr.length / size));
         page = Math.max(1, Math.min(page, pages));
+        pageByView[currentView] = page;
         const start = (page - 1) * size,
           chunk = arr.slice(start, start + size);
         $("shown").textContent =
@@ -2753,7 +2790,7 @@
         const previewNumber =
           icuPreviewNumbers.get(rowIdentity(r)) ?? icuPreviewNumber;
         const targetDirAttr = isRtlLanguage() ? ' dir="rtl"' : "";
-        const hasIcu = [r.english, r.proposal, finalEnglish(r)].some(
+        const hasIcu = [r.chinese, r.english, r.proposal, finalEnglish(r)].some(
           looksLikeIcuRule,
         );
         const showRawIcu = icuRawVisible.has(rowIdentity(r));
@@ -2795,10 +2832,12 @@
             : "");
         const proposalText = hasProposal(r) ? r.proposal : tr("noProposal");
         const selected = finalEnglish(r);
-        const sentenceTarget = sentenceCaseTarget(r);
-        const sentenceCaseButton = needsSentenceCase(sentenceTarget.value)
-          ? `<button class="small" data-act="sentenceCase" data-key="${esc(rowIdentity(r))}" title="${esc(zhUI ? "仅将所选译文转换为句首字母大写；不会自动更改原文" : "Apply sentence case manually to the current translation")}">${esc(zhUI ? "句首字母大写" : "Sentence case")}</button>`
-          : "";
+        const sourceView = cardIcuView(
+          r.chinese,
+          showRawIcu,
+          previewNumber,
+          "base",
+        );
         const existingValue = r.editedFrom === "editOriginal" && typeof r.editedText === "string" ? r.editedText : r.english;
         const proposalValue = r.editedFrom === "editProposal" && typeof r.editedText === "string" ? r.editedText : proposalText;
         const existingView = cardIcuView(existingValue, showRawIcu, previewNumber);
@@ -2821,6 +2860,13 @@
           proposalView,
         );
         const finalPanelDirAttr = panelDirectionAttr(selected, finalView);
+        const sourcePanelDirAttr =
+          showRawIcu && looksLikeIcuRule(r.chinese)
+            ? ' dir="ltr"'
+            : hasRtlScript(sourceView.text) ||
+                (isRtlLanguage(languageConfig.baseCode) && sourceView.preview)
+              ? ' dir="rtl"'
+              : ' dir="ltr"';
         const decisionText =
           s === "accepted"
             ? zhUI
@@ -2835,7 +2881,7 @@
                   r.finalEnglish !== r.english
                   ? zhUI
                     ? "提案已拒绝；将导出经过术语表统一的原目标译文。"
-                    : "Rejected proposal; the glossary-adjusted existing translation will be exported."
+                    : "Rejected proposal; the adjusted existing translation will be exported."
                   : zhUI
                     ? "提案已拒绝；保留原目标译文。"
                     : "Rejected proposal; original target translation will be retained."
@@ -2856,11 +2902,7 @@
           actions = `<button class="small good" data-act="accept" data-key="${esc(rowIdentity(r))}">${tr("accept")}</button><button class="small" data-act="reject" data-key="${esc(rowIdentity(r))}">${tr("rejectBtn")}</button>`;
         else if (differs(r) && ["accepted", "rejected", "edited"].includes(s))
           actions = `<button class="small" data-act="undo" data-key="${esc(rowIdentity(r))}">${tr("undo")}</button>`;
-         actions += sentenceCaseButton;
          actions += `<button class="small ${r.unable_to_translate ? "bad" : ""}" data-act="toggleUntranslatable" data-key="${esc(rowIdentity(r))}">${r.unable_to_translate ? tr("flagged") : tr("unableFlag")}</button>`;
-         if (needsSentenceCase(sentenceTarget.value)) {
-           warning += `<div class="sentence-warning">${esc(zhUI ? "此译文不是句首字母大写格式。需要时可点击“句首字母大写”；工具不会自动修改。" : "This translation is not in sentence case. Apply it only when appropriate; the tool will not change it automatically.")}</div>`;
-         }
         const reviewedClass =
           s === "accepted"
             ? " review-accepted"
@@ -2874,7 +2916,7 @@
            ? ""
            : `<div class="panelwrap"${targetDirAttr}><div class="label">${esc(zhUI ? "CHATGPT 翻译提案" : "CHATGPT " + tr("proposal"))}</div><div class="panel proposal edit-source"${proposalPanelDirAttr} role="button" tabindex="0" title="${esc(zhUI ? "点击后从 ChatGPT 提案开始编辑" : "Click to edit starting from the ChatGPT proposal")}" data-act="editProposal" data-key="${esc(rowIdentity(r))}">${esc(proposalView.text)}${icuPreviewNoteHTML(proposalView, previewNumber, rowIdentity(r))}</div><div class="edit-hint">${esc(tr("clickProposal"))}</div>${warning}</div>`;
         const finalPanel = `<div class="panelwrap"${targetDirAttr}><div class="label">${esc((zhUI ? "最终" : "FINAL") + " " + targetName.toUpperCase() + " · " + tr("exportResult"))}</div><div class="panel edit-source"${finalPanelDirAttr} role="button" tabindex="0" title="${esc(zhUI ? "编辑当前最终译文" : "Edit the current final translation")}" data-act="editFinal" data-key="${esc(rowIdentity(r))}">${esc(finalView.text || "") || `<span class="missing">${esc(tr("emptyTarget"))}</span>`}${icuPreviewNoteHTML(finalView, previewNumber, rowIdentity(r))}</div><div class="finalnote" style="margin-top:6px">${esc(decisionText)}</div></div>`;
-        return `<article class="item${reviewedClass}${unchangedProposal ? " item-unchanged-proposal" : ""}"><div class="itemhead"><div style="min-width:0"><div class="source-line"><div class="zh">${esc(r.chinese || tr("noSource"))}</div><button type="button" class="copy-source" data-act="copySource" data-key="${esc(rowIdentity(r))}" title="${esc(zhUI ? "复制显示的源文本" : `Copy displayed ${baseName} source text`)}">${esc(zhUI ? "复制源文" : `Copy ${baseName}`)}</button></div><div class="key" title="Tolgee key: ${esc(r.key)} · Object ID: ${esc(r.object_id ?? "—")} · ID: ${esc(r.key_id ?? "—")}">${esc(r.key)}${r.namespace ? ` · namespace: ${esc(r.namespace)}` : ""}${r.object_id ? ` · object: ${esc(r.object_id)}` : ""} · ID: ${esc(r.key_id ?? "—")}</div></div><div class="chips"><span class="chip ${esc(s)}">${esc(statusLabel)}</span>${conf}${icuChip}${tolgeePluralChip}${icuViewButton}<span class="chip">Tolgee: ${esc(r.translation_state || "unknown")}</span>${r.clarification_needed ? `<span class="chip pending" title="A human needs to clarify the meaning or context.">${esc(tr("clarificationNeeded"))}</span>` : ""}${r.unable_to_translate ? '<span class="chip bad">Unable to translate</span>' : ""}</div></div>
+        return `<article class="item${reviewedClass}${unchangedProposal ? " item-unchanged-proposal" : ""}"><div class="itemhead"><div style="min-width:0"><div class="source-line"><div class="zh"${sourcePanelDirAttr}>${esc(sourceView.text || tr("noSource"))}</div><button type="button" class="copy-source" data-act="copySource" data-key="${esc(rowIdentity(r))}" title="${esc(zhUI ? "复制显示的源文本" : `Copy displayed ${baseName} source text`)}">${esc(zhUI ? "复制源文" : `Copy ${baseName}`)}</button></div><div class="key" title="Tolgee key: ${esc(r.key)} · Object ID: ${esc(r.object_id ?? "—")} · ID: ${esc(r.key_id ?? "—")}">${esc(r.key)}${r.namespace ? ` · namespace: ${esc(r.namespace)}` : ""}${r.object_id ? ` · object: ${esc(r.object_id)}` : ""} · ID: ${esc(r.key_id ?? "—")}</div></div><div class="chips"><span class="chip ${esc(s)}">${esc(statusLabel)}</span>${conf}${icuChip}${tolgeePluralChip}${icuViewButton}<span class="chip">Tolgee: ${esc(r.translation_state || "unknown")}</span>${r.clarification_needed ? `<span class="chip pending" title="A human needs to clarify the meaning or context.">${esc(tr("clarificationNeeded"))}</span>` : ""}${r.unable_to_translate ? '<span class="chip bad">Unable to translate</span>' : ""}</div></div>
  <div class="cols ${unchangedProposal ? "cols-unchanged" : ""}">${existingPanel}${proposalPanel}${finalPanel}</div>
  ${r.reason ? `<div class="reason"><b>${esc(r.issue_category || (zhUI ? "审核备注" : "Reviewer note"))}:</b> ${esc(r.reason)}</div>` : ""}${screenshotHTML(r)}<details class="context"><summary>${esc(tr("context"))}</summary><div>${esc(r.context_description || "(No context description)")}
 
@@ -3181,32 +3223,54 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
         render();
         persist();
       }
-      function sentenceCaseTarget(r) {
-        const status = statusOf(r);
-        if (["accepted", "edited", "rejected"].includes(status) && typeof r.finalEnglish === "string")
-          return { field: "finalEnglish", value: r.finalEnglish };
-        if (hasProposal(r)) return { field: "proposal", value: r.proposal };
-        return { field: "finalEnglish", value: r.english };
+      let sentenceCasePromptResolve = null;
+      function finishSentenceCasePrompt(choice) {
+        $("sentenceCaseModal").classList.remove("open");
+        const resolve = sentenceCasePromptResolve;
+        sentenceCasePromptResolve = null;
+        if (resolve) resolve(choice);
       }
-      function applySentenceCase(r) {
-        const target = sentenceCaseTarget(r);
-        const next = sentenceCaseCandidate(target.value);
-        if (!next || next === target.value) return false;
-        if (target.field === "proposal") {
-          r.proposal = next;
-          if (r.decision === "unchanged") r.decision = "pending";
-          r.decisionAt = null;
-          checkPlaceholders(r);
-        } else {
-          r.finalEnglish = next;
-          r.decision = "edited";
-          r.decisionAt = new Date().toISOString();
-          clearUnableFlag(r);
-          markReviewed(r);
-        }
-        return true;
+      function requestSentenceCaseChoice(value) {
+        const current = String(value ?? "");
+        if (!needsSentenceCase(current))
+          return Promise.resolve({ choice: "proceed", value: current });
+        const suggested = sentenceCaseCandidate(current);
+        const zh = languageConfig.toolLanguage === "zh";
+        $("sentenceCaseTitle").textContent = zh
+          ? "句首字母大写检查"
+          : "Sentence case check";
+        $("sentenceCaseMessage").textContent = zh
+          ? "此条目仍不符合句首字母大写格式。仍要继续吗？"
+          : "This entry still lacks sentence case. Proceed anyway?";
+        $("sentenceCaseCurrentLabel").textContent = zh ? "当前文本" : "Current text";
+        $("sentenceCaseSuggestedLabel").textContent = zh
+          ? "应用句首字母大写后"
+          : "With sentence case";
+        $("sentenceCaseCurrent").textContent = current;
+        $("sentenceCaseSuggested").textContent = suggested;
+        $("proceedWithoutSentenceCase").textContent = zh
+          ? "是，仍然继续"
+          : "Yes, proceed anyway";
+        $("applySentenceCaseChoice").textContent = zh
+          ? "应用句首字母大写"
+          : "Apply sentence case";
+        if (sentenceCasePromptResolve) sentenceCasePromptResolve("cancel");
+        $("sentenceCaseModal").classList.add("open");
+        return new Promise((resolve) => {
+          sentenceCasePromptResolve = (choice) =>
+            resolve({
+              choice,
+              value: choice === "apply" ? suggested : current,
+            });
+        });
       }
-      function act(key, action) {
+      $("closeSentenceCase").onclick = () => finishSentenceCasePrompt("cancel");
+      $("proceedWithoutSentenceCase").onclick = () =>
+        finishSentenceCasePrompt("proceed");
+      $("applySentenceCaseChoice").onclick = () =>
+        finishSentenceCasePrompt("apply");
+
+      async function act(key, action) {
         const r = findRow(key);
         if (!r) return;
         if (action === "toggleIcuView") {
@@ -3216,6 +3280,15 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           return;
         }
         if (action === "doubleCheckToggle") {
+          if (!r.doubleChecked) {
+            const sentenceChoice = await requestSentenceCaseChoice(finalEnglish(r));
+            if (sentenceChoice.choice === "cancel") return;
+            if (sentenceChoice.choice === "apply") {
+              r.finalEnglish = sentenceChoice.value;
+              r.doubleCheckEdited = true;
+              r.doubleCheckEditedAt = new Date().toISOString();
+            }
+          }
           r.doubleChecked = !r.doubleChecked;
           notify(
             r.doubleChecked
@@ -3226,25 +3299,16 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           persist();
           return;
         }
-        if (action === "sentenceCase") {
-          const before = decisionSnapshot(r);
-          if (!applySentenceCase(r)) return;
-          notify(
-            languageConfig.toolLanguage === "zh"
-              ? "已应用句首字母大写；原文未自动更改。"
-              : "Sentence case applied manually; the original text was not changed.",
-            3000,
-            async () => {
-              restoreDecisionSnapshot(r, before);
-              notify(languageConfig.toolLanguage === "zh" ? "已撤销句首字母大写。" : "Sentence-case change undone.");
-            },
-          );
-          render();
-          persist();
-          return;
-        }
         if (action === "copySource") {
-          copyText(r.chinese || "").then(
+          const previewNumber =
+            icuPreviewNumbers.get(rowIdentity(r)) ?? icuPreviewNumber;
+          const displayedSource = cardIcuView(
+            r.chinese,
+            icuRawVisible.has(rowIdentity(r)),
+            previewNumber,
+            "base",
+          ).text;
+          copyText(displayedSource || "").then(
             () =>
               notify(
                 languageConfig.toolLanguage === "zh"
@@ -3275,11 +3339,23 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           return;
         } else if (action === "acceptUnchanged") {
           if (!isUnchangedProposal(r)) return;
+          const sentenceChoice = await requestSentenceCaseChoice(
+            hasProposal(r) ? r.proposal : r.english,
+          );
+          if (sentenceChoice.choice === "cancel") return;
           const before = decisionSnapshot(r);
           clearUnableFlag(r);
-          r.decision = "accepted";
+          r.decision =
+            sentenceChoice.choice === "apply" ? "edited" : "accepted";
           r.decisionAt = new Date().toISOString();
-          r.finalEnglish = undefined;
+          r.finalEnglish =
+            sentenceChoice.choice === "apply"
+              ? sentenceChoice.value
+              : undefined;
+          if (sentenceChoice.choice === "apply") {
+            r.editedFrom = "sentenceCase";
+            r.editedText = sentenceChoice.value;
+          }
           r.pluralModeRequest = null;
           markReviewed(r);
           notify(
@@ -3298,7 +3374,13 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
             notify(`Cannot accept this ICU proposal: ${icuCheck.error}`, 7000);
             return;
           }
+          const sentenceChoice = await requestSentenceCaseChoice(r.proposal);
+          if (sentenceChoice.choice === "cancel") return;
           const before = decisionSnapshot(r);
+          if (sentenceChoice.choice === "apply") {
+            r.proposal = sentenceChoice.value;
+            checkPlaceholders(r);
+          }
           clearUnableFlag(r);
           r.decision = "accepted";
           r.decisionAt = new Date().toISOString();
@@ -3317,11 +3399,16 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
             },
           );
         } else if (action === "reject") {
+          const sentenceChoice = await requestSentenceCaseChoice(r.english);
+          if (sentenceChoice.choice === "cancel") return;
           const before = decisionSnapshot(r);
           clearUnableFlag(r);
           r.decision = "rejected";
           r.decisionAt = new Date().toISOString();
-          r.finalEnglish = undefined;
+          r.finalEnglish =
+            sentenceChoice.choice === "apply"
+              ? sentenceChoice.value
+              : undefined;
           r.pluralModeRequest = null;
           markReviewed(r);
           notify(
@@ -3530,6 +3617,8 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
                     : "plural",
                 selectors: branches.map((branch) => branch.selector),
                 branches,
+                before: serializeIcuElements(ast.slice(0, elementIndex)),
+                after: serializeIcuElements(ast.slice(elementIndex + 1)),
               });
           });
         }
@@ -3553,11 +3642,7 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
             (model, ruleIndex) =>
               `<section class="icu-rule-section" data-icu-rule-section="${ruleIndex}"><div class="icu-rule-heading"><span>${esc(model.variable)}</span><span class="icu-rule-kind">${esc(model.type === "selectordinal" ? "Ordinal plural" : "Cardinal plural")}</span></div><div class="icu-branch-grid">${model.branches
                 .map((branch) => {
-                  const mixedBranch =
-                    branchDir === "rtl" &&
-                    /[A-Za-z0-9]/.test(branch.text || "");
-                  const fieldDir = mixedBranch ? "ltr" : branchDir;
-                  return `<label dir="${fieldDir}">${esc(branch.selector)}<textarea data-icu-rule-index="${ruleIndex}" data-icu-branch="${esc(branch.selector)}" dir="${fieldDir}">${esc(branch.text)}</textarea></label>`;
+                  return `<label class="icu-branch-card"><span class="icu-branch-selector">${esc(branch.selector)}</span><span class="icu-branch-composed-editor" dir="${branchDir}"><span class="icu-shared-context">${esc(model.before || "")}</span><span class="icu-editable-branch" data-icu-rule-index="${ruleIndex}" data-icu-branch="${esc(branch.selector)}" dir="${branchDir}" contenteditable="plaintext-only" role="textbox" aria-multiline="true" spellcheck="true">${esc(branch.text)}</span><span class="icu-shared-context">${esc(model.after || "")}</span></span></label>`;
                 })
                 .join("")}</div></section>`,
           )
@@ -3578,17 +3663,12 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
       $("icuBranchEditor").addEventListener("input", (event) => {
         if (!event.target.matches("[data-icu-branch]") || !icuBranchModel)
           return;
-        if (isRtlLanguage()) {
-          const mixedBranch = /[A-Za-z0-9]/.test(event.target.value || "");
-          const fieldDirection = mixedBranch ? "ltr" : "rtl";
-          event.target.dir = fieldDirection;
-          if (event.target.parentElement) event.target.parentElement.dir = fieldDirection;
-        }
+        event.target.dir = isRtlLanguage() ? "rtl" : "ltr";
         const branchText = Object.fromEntries(
           [...$("icuBranchEditor").querySelectorAll("[data-icu-branch]")].map(
             (field) => [
               `${field.dataset.icuRuleIndex}\u0000${field.dataset.icuBranch}`,
-              field.value,
+              field.textContent,
             ],
           ),
         );
@@ -3813,7 +3893,7 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           output.textContent = `Preview error: ${error.message || error}`;
         }
       };
-      $("saveEdit").onclick = () => {
+      $("saveEdit").onclick = async () => {
         const r = findRow(activeEditKey);
         if (!r) return;
         const before = decisionSnapshot(r);
@@ -3834,6 +3914,15 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           );
           return;
         }
+        const sentenceChoice = await requestSentenceCaseChoice(
+          $("editText").value,
+        );
+        if (sentenceChoice.choice === "cancel") return;
+        const editedValue = sentenceChoice.value;
+        if (sentenceChoice.choice === "apply") {
+          $("editText").value = editedValue;
+          showPlaceholderWarning(r, editedValue);
+        }
         r.pluralModeRequest =
           r._originalIsPlural !== true && activePluralModeDraft
             ? {
@@ -3842,7 +3931,6 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
                 rule_type: pluralEligibility.type,
               }
             : null;
-        const editedValue = $("editText").value;
         if (activeEditSource === "doubleCheckEdit") {
           // A double-check edit changes the final translation without rewriting
           // the original review decision or labeling it as a human edit.
@@ -4097,7 +4185,7 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           throw Error("The original JSON is missing project.id.");
         finalDocument.project = {
           ...(finalDocument.project || {}),
-          branch: `${projectId}-branch`,
+          branch: "main",
         };
         if (!Array.isArray(finalDocument.translations))
           throw Error("The original JSON no longer contains translations[].");
@@ -4465,7 +4553,15 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
               ? "pending"
               : restoredView || "pending";
         $("pageSize").value = String(data.pageSize || 20);
-        page = 1;
+        pageByView =
+          data.pageByView && typeof data.pageByView === "object"
+            ? { ...data.pageByView }
+            : {};
+        page = Math.max(
+          1,
+          Number(pageByView[currentView] ?? data.page) || 1,
+        );
+        pageByView[currentView] = page;
         syncProject();
         render();
         persist();
@@ -4656,11 +4752,12 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
             : "Interface language changed.",
         );
       });
-      $("importFilesTop").addEventListener("click", openImport);
-      $("importScreenshotsTop").addEventListener("click", () => {
+      function chooseWorkspaceScreenshots() {
         $("setupScreenshotsInput").value = "";
         $("setupScreenshotsInput").click();
-      });
+      }
+      $("importFilesTop").addEventListener("click", chooseWorkspaceScreenshots);
+      $("importScreenshotsTop").addEventListener("click", chooseWorkspaceScreenshots);
       $("setupImportJsons").addEventListener("click", openImport);
       function openRestoreBackupModal(context = "workspace") {
         restoreModalContext = context;
@@ -4878,7 +4975,9 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
             setupScreenshotsHandled = false;
             proposalCount = 0;
             page = 1;
+            pageByView = {};
             currentView = "pending";
+            pageByView[currentView] = page;
             if (pf) {
               const proposalData = await readFile(pf);
               if (
@@ -4993,6 +5092,11 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           $("restoreBackupModal").classList.contains("open")
         )
           closeRestoreBackupModal();
+        if (
+          event.key === "Escape" &&
+          $("sentenceCaseModal").classList.contains("open")
+        )
+          finishSentenceCasePrompt("cancel");
       });
       $("autosaveFileTop").onclick = () => chooseAutosaveFile(false);
       document.querySelectorAll("[data-stat-view]").forEach((el) => {
@@ -5020,6 +5124,7 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
         rows = [];
         currentView = "pending";
         page = 1;
+        pageByView = {};
         proposalCount = 0;
         setupScreenshotsHandled = false;
         try {
@@ -5050,6 +5155,7 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
       ].forEach((id) =>
         $(id).addEventListener(id === "q" ? "input" : "change", () => {
           page = 1;
+          pageByView[currentView] = page;
           render();
         }),
       );
@@ -5094,6 +5200,7 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           el.addEventListener("change", (event) => {
             if (!selectedSearchScopes().length) event.target.checked = true;
             page = 1;
+            pageByView[currentView] = page;
             updateSearchScopeCaption();
             render();
           }),
@@ -5103,6 +5210,7 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           .querySelectorAll("#searchScopeMenu input[type=checkbox]")
           .forEach((el) => (el.checked = true));
         page = 1;
+        pageByView[currentView] = page;
         updateSearchScopeCaption();
         render();
       });
@@ -5144,17 +5252,19 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           }),
         );
       function movePage(n) {
-        let arr = visibleRows(),
+        let arr = doubleCheckMode ? doubleCheckVisibleRows() : visibleRows(),
           pages = Math.max(
             1,
             Math.ceil(arr.length / (Number($("pageSize").value) || 20)),
           );
         page = Math.max(1, Math.min(pages, page + n));
+        pageByView[currentView] = page;
         render();
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
       $("firstPage").onclick = () => {
         page = 1;
+        pageByView[currentView] = page;
         render();
         window.scrollTo({ top: 0, behavior: "smooth" });
       };
@@ -5163,8 +5273,12 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
       $("lastPage").onclick = () => {
         page = Math.max(
           1,
-          Math.ceil(visibleRows().length / (Number($("pageSize").value) || 20)),
+          Math.ceil(
+            (doubleCheckMode ? doubleCheckVisibleRows() : visibleRows()).length /
+              (Number($("pageSize").value) || 20),
+          ),
         );
+        pageByView[currentView] = page;
         render();
         window.scrollTo({ top: 0, behavior: "smooth" });
       };
@@ -5241,6 +5355,15 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
               ? "pending"
               : old.currentView || "pending";
           $("pageSize").value = String(old.pageSize || 20);
+          pageByView =
+            old.pageByView && typeof old.pageByView === "object"
+              ? { ...old.pageByView }
+              : {};
+          page = Math.max(
+            1,
+            Number(pageByView[currentView] ?? old.page) || 1,
+          );
+          pageByView[currentView] = page;
           syncProject();
           document
             .querySelectorAll(".nav[data-view]")

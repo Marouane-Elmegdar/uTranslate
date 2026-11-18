@@ -175,7 +175,7 @@
         <div class="bar-actions">
           <!-- Keep daily review actions visible; maintenance actions live in the Project menu. -->
           <button id="importFilesTop" class="action-import">
-            Import JSON files
+            Import screenshots folder
           </button>
           <button id="replaceTermsTop" class="utility">
             Replace glossary terms
@@ -718,6 +718,41 @@
         <div class="modalfoot">
           <button id="cancelEdit">Cancel</button
           ><button class="primary" id="saveEdit">Save edit</button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="modalbg"
+      id="sentenceCaseModal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="sentenceCaseTitle"
+    >
+      <div class="modal sentence-case-modal">
+        <div class="modalhead">
+          <h2 id="sentenceCaseTitle">Sentence case check</h2>
+          <button id="closeSentenceCase" aria-label="Cancel">✕</button>
+        </div>
+        <div class="modalbody">
+          <p id="sentenceCaseMessage">
+            This entry still lacks sentence case. Proceed anyway?
+          </p>
+          <div class="sentence-case-preview">
+            <div>
+              <strong id="sentenceCaseCurrentLabel">Current text</strong>
+              <p id="sentenceCaseCurrent" dir="auto"></p>
+            </div>
+            <div>
+              <strong id="sentenceCaseSuggestedLabel">With sentence case</strong>
+              <p id="sentenceCaseSuggested" dir="auto"></p>
+            </div>
+          </div>
+        </div>
+        <div class="modalfoot">
+          <button id="proceedWithoutSentenceCase">Yes, proceed anyway</button>
+          <button class="primary" id="applySentenceCaseChoice">
+            Apply sentence case
+          </button>
         </div>
       </div>
     </div>

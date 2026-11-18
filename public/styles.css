@@ -878,6 +878,37 @@
       .modalbody {
         padding: 17px;
       }
+
+.sentence-case-modal {
+  max-width: 680px;
+}
+
+.sentence-case-preview {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.sentence-case-preview > div {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel-soft, #f7f9fc);
+}
+
+.sentence-case-preview p {
+  margin: 8px 0 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  .sentence-case-preview {
+    grid-template-columns: 1fr;
+  }
+}
       .modalbody p {
         color: var(--muted);
         margin-top: 0;
@@ -1965,6 +1996,51 @@
       #icuTestValues[dir="rtl"] {
         direction: rtl;
         text-align: right;
+      }
+      .icu-branch-selector {
+        direction: ltr;
+        text-align: left;
+        unicode-bidi: isolate;
+      }
+      .icu-branch-composed-editor {
+        display: block;
+        width: 100%;
+        min-height: 72px;
+        padding: 9px 10px;
+        border: 1px solid #c8d5e5;
+        border-radius: 6px;
+        background: #fff;
+        color: #17253a;
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 1.6;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        unicode-bidi: plaintext;
+        cursor: text;
+      }
+      .icu-branch-composed-editor:focus-within {
+        border-color: #4f8cff;
+        box-shadow: 0 0 0 2px rgba(79, 140, 255, 0.14);
+      }
+      .icu-branch-composed-editor[dir="rtl"] {
+        direction: rtl;
+        text-align: right;
+      }
+      .icu-shared-context {
+        color: inherit;
+        font-weight: inherit;
+        user-select: text;
+      }
+      .icu-editable-branch {
+        min-width: 1ch;
+        border-radius: 3px;
+        background: rgba(79, 140, 255, 0.08);
+        outline: none;
+        unicode-bidi: isolate;
+      }
+      .icu-editable-branch:focus {
+        background: rgba(79, 140, 255, 0.16);
       }
       .icu-preview-output[dir="rtl"] {
         direction: rtl;
