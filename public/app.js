@@ -65,14 +65,14 @@
           if (
             !analysis.isIcu ||
             rules.length !== 1 ||
-            !["plural", "selectordinal"].includes(rules[0].type)
+            rules[0].type !== "plural"
           )
             return {
               eligible: false,
               variable: null,
               type: null,
               reason:
-                "Tolgee plural mode requires exactly one cardinal or ordinal plural rule.",
+                "Tolgee Use plural forms requires exactly one cardinal plural rule. Ordinal ICU remains valid raw ICU without this key setting.",
             };
           return {
             eligible: true,
@@ -254,7 +254,7 @@
       }
       function icuSampleValues(
         value,
-        sampleNumber = 2,
+        requestedValues = {},
         languageKind = "target",
       ) {
         try {
@@ -263,10 +263,23 @@
             icuLocale(languageKind),
           );
           return Object.fromEntries(
-            Object.entries(analysis.arguments || {}).map(([name, type]) => [
-              name,
-              type === "select" ? "other" : sampleNumber,
-            ]),
+            Object.entries(analysis.arguments || {}).map(([name, type]) => {
+              const hasRequestedValue = Object.prototype.hasOwnProperty.call(
+                requestedValues || {},
+                name,
+              );
+              return [
+                name,
+                hasRequestedValue
+                  ? ["number", "plural", "selectordinal"].includes(type) &&
+                    requestedValues[name] !== ""
+                    ? Number(requestedValues[name])
+                    : requestedValues[name]
+                  : type === "select"
+                    ? "other"
+                    : DEFAULT_ICU_PREVIEW_VALUE,
+              ];
+            }),
           );
         } catch (_) {
           return {};
@@ -275,18 +288,15 @@
       function cardIcuView(
         value,
         showRaw = false,
-        previewNumber = icuPreviewNumber,
+        previewValues = {},
         languageKind = "target",
       ) {
         const text = String(value ?? "");
         if (!looksLikeIcuRule(text) || showRaw)
           return { text: stripBidiControls(text), note: "", preview: false };
         try {
-          const values = icuSampleValues(
-            text,
-            previewNumber,
-            languageKind,
-          );
+          const analysis = ICU.analyze(text, icuLocale(languageKind));
+          const values = icuSampleValues(text, previewValues, languageKind);
           const languageCode =
             languageKind === "base"
               ? languageConfig.baseCode
@@ -307,6 +317,8 @@
                 ? "ICU 预览"
                 : "ICU preview",
             preview: true,
+            previewValues: values,
+            previewTypes: analysis.arguments || {},
           };
         } catch (_) {
           return { text: stripBidiControls(text), note: "", preview: false };
@@ -341,8 +353,11 @@
         setupScreenshotsHandled = false,
         icuRawVisible = new Set(),
          replacementGlossary = storedReplacementGlossary();
-      let icuPreviewNumber = 6;
-      const icuPreviewNumbers = new Map();
+      const DEFAULT_ICU_PREVIEW_VALUE = 6;
+      const icuPreviewValuesByRow = new Map();
+      function rowIcuPreviewValues(row) {
+        return icuPreviewValuesByRow.get(rowIdentity(row)) || {};
+      }
       let doubleCheckMode = false;
       let pendingToastUndo = null;
       let languageConfig = {
@@ -393,6 +408,7 @@
         if (
           !value ||
           value.action !== "enable" ||
+          (value.rule_type && value.rule_type !== "plural") ||
           typeof value.plural_arg_name !== "string" ||
           !value.plural_arg_name.trim()
         )
@@ -400,9 +416,7 @@
         return {
           action: "enable",
           plural_arg_name: value.plural_arg_name.trim(),
-          rule_type: ["plural", "selectordinal"].includes(value.rule_type)
-            ? value.rule_type
-            : "plural",
+          rule_type: "plural",
         };
       }
       function normalizePersistedRow(row) {
@@ -629,14 +643,16 @@
           approvedStat: "Accepted / edited",
           rejectedStat: "Rejected",
           progress: "Decision progress",
-          search: "Search selected text fields…",
-          searchInAll: "Search in: all text",
+          search: "Search selected fields…",
+          searchInAll: "Search in: all fields",
           searchInCount: "Search in {count} fields",
           searchSource: "Source text",
           searchOriginal: "Original translation",
           searchProposal: "ChatGPT proposal",
           searchFinal: "Final result",
-          selectAllSearch: "Select all text fields",
+          searchKeyName: "Key name",
+          searchKeyId: "Key ID",
+          selectAllSearch: "Select all fields",
           unchangedGroup: "Unchanged proposal review",
           changedGroup: "Changed proposal review",
           attentionGroup: "Attention",
@@ -754,14 +770,16 @@
           approvedStat: "已接受 / 已编辑",
           rejectedStat: "已拒绝",
           progress: "审核进度",
-          search: "搜索所选文本字段…",
-          searchInAll: "搜索范围：全部文本",
+          search: "搜索所选字段…",
+          searchInAll: "搜索范围：全部字段",
           searchInCount: "搜索 {count} 个字段",
           searchSource: "源文本",
           searchOriginal: "原始译文",
           searchProposal: "ChatGPT 提案",
           searchFinal: "最终结果",
-          selectAllSearch: "选择全部文本字段",
+          searchKeyName: "键名",
+          searchKeyId: "键 ID",
+          selectAllSearch: "选择全部字段",
           unchangedGroup: "未更改提案审核",
           changedGroup: "已更改提案审核",
           attentionGroup: "需要关注",
@@ -1043,12 +1061,12 @@
         text("cancelEdit", "cancel");
         text("closeEdit", zh ? "✕" : "✕");
         updateIcuToolsVisibility();
-        text("icuToolsTitle", zh ? "ICU 复数工具" : "ICU plural tools");
+        text("icuToolsTitle", zh ? "ICU 规则工具" : "ICU rule tools");
         text(
           "icuToolsHelp",
           zh
-            ? "为每个数量变量添加一条复数规则，然后在保存前测试并验证组合消息。"
-            : "Add one plural rule for each quantity variable, then test and validate the combined message before saving.",
+            ? "为每个适用变量添加基数或序数规则，然后在保存前分别测试每个变量并验证组合消息。"
+            : "Add a cardinal or ordinal rule to each applicable variable, then test every variable independently and validate the combined message before saving.",
         );
         text("icuVariableLabel", zh ? "数量变量" : "Quantity variable");
         text("icuRuleTypeLabel", zh ? "规则类型" : "Rule type");
@@ -1056,7 +1074,7 @@
         text("validateIcuRule", zh ? "验证 ICU" : "Validate ICU");
         text(
           "icuTestValuesLabel",
-          zh ? "用 JSON 输入预览值" : "Preview values as JSON",
+          zh ? "分别设置每个变量的预览值" : "Preview each variable independently",
         );
         text("previewIcuRule", zh ? "预览结果" : "Preview result");
         text(
@@ -2246,6 +2264,8 @@
             original: r.english,
             proposal: r.proposal,
             final: doubleCheckFinalValue(r),
+            keyName: r.key,
+            keyId: String(r.key_id ?? ""),
           };
           return !q || scopes.map((scope) => searchable[scope]).join(" ").toLowerCase().includes(q);
         });
@@ -2256,12 +2276,11 @@
         const finalValue = doubleCheckFinalValue(r);
         const proposalDiffers = hasProposal(r) && finalValue !== r.proposal;
         const unable = !!r.unable_to_translate;
-        const previewNumber =
-          icuPreviewNumbers.get(rowIdentity(r)) ?? icuPreviewNumber;
+        const previewValues = rowIcuPreviewValues(r);
         const sourceView = cardIcuView(
           r.chinese,
           false,
-          previewNumber,
+          previewValues,
           "base",
         );
         const sourceDirection =
@@ -2441,6 +2460,8 @@
               original: r.english,
               proposal: r.proposal,
               final: finalEnglish(r),
+              keyName: r.key,
+              keyId: String(r.key_id ?? ""),
             };
             let hay = searchScopes
               .map((scope) => searchable[scope])
@@ -2773,12 +2794,18 @@
 
       function icuPreviewNoteHTML(
         view,
-        previewNumber = icuPreviewNumber,
         rowKey = "",
       ) {
         if (!view?.note || !view.preview) return view?.note ? `<div class="icu-card-preview-note">${esc(view.note)}</div>` : "";
-        const label = languageConfig.toolLanguage === "zh" ? "预览数字" : "Preview number";
-        return `<div class="icu-card-preview-note"><span>${esc(view.note)}</span><label>${esc(label)} <input class="icu-preview-number" type="number" min="0" step="1" value="${esc(previewNumber)}" data-icu-preview-input data-icu-preview-key="${esc(rowKey)}" aria-label="${esc(label)}"></label></div>`;
+        const label = languageConfig.toolLanguage === "zh" ? "预览值" : "Preview value";
+        const controls = Object.entries(view.previewValues || {})
+          .map(([variable, value]) => {
+            const argumentType = view.previewTypes?.[variable] || "argument";
+            const numeric = ["number", "plural", "selectordinal"].includes(argumentType);
+            return `<label><span>${esc(variable)}</span><input class="icu-preview-number" type="${numeric ? "number" : "text"}"${numeric ? ' step="1"' : ""} value="${esc(value)}" data-icu-preview-input data-icu-preview-key="${esc(rowKey)}" data-icu-preview-variable="${esc(variable)}" data-icu-preview-type="${esc(argumentType)}" aria-label="${esc(`${label}: ${variable}`)}"></label>`;
+          })
+          .join("");
+        return `<div class="icu-card-preview-note"><span>${esc(view.note)}</span><div class="icu-card-preview-values">${controls}</div></div>`;
       }
 
       function cardHTML(r) {
@@ -2787,8 +2814,7 @@
           targetName = languageLabel(languageConfig.targetCode),
           zhUI = languageConfig.toolLanguage === "zh",
           unchangedProposal = isUnchangedProposal(r);
-        const previewNumber =
-          icuPreviewNumbers.get(rowIdentity(r)) ?? icuPreviewNumber;
+        const previewValues = rowIcuPreviewValues(r);
         const targetDirAttr = isRtlLanguage() ? ' dir="rtl"' : "";
         const hasIcu = [r.chinese, r.english, r.proposal, finalEnglish(r)].some(
           looksLikeIcuRule,
@@ -2835,14 +2861,14 @@
         const sourceView = cardIcuView(
           r.chinese,
           showRawIcu,
-          previewNumber,
+          previewValues,
           "base",
         );
         const existingValue = r.editedFrom === "editOriginal" && typeof r.editedText === "string" ? r.editedText : r.english;
         const proposalValue = r.editedFrom === "editProposal" && typeof r.editedText === "string" ? r.editedText : proposalText;
-        const existingView = cardIcuView(existingValue, showRawIcu, previewNumber);
-        const proposalView = cardIcuView(proposalValue, showRawIcu, previewNumber);
-        const finalView = cardIcuView(selected, showRawIcu, previewNumber);
+        const existingView = cardIcuView(existingValue, showRawIcu, previewValues);
+        const proposalView = cardIcuView(proposalValue, showRawIcu, previewValues);
+        const finalView = cardIcuView(selected, showRawIcu, previewValues);
         const panelDirectionAttr = (sourceValue, view) => {
           if (showRawIcu && looksLikeIcuRule(sourceValue))
             return ' dir="ltr"';
@@ -2911,11 +2937,11 @@
               : s === "edited"
                 ? " review-edited"
                 : "";
-        const existingPanel = `<div class="panelwrap"${targetDirAttr}><div class="label">${esc((zhUI ? "现有 " : "EXISTING ") + targetName.toUpperCase() + " · " + (zhUI ? "原译文" : "ORIGINAL"))}</div><div class="panel edit-source"${existingPanelDirAttr} role="button" tabindex="0" title="${esc(zhUI ? "点击后从原有目标译文开始编辑" : "Click to edit starting from the original target translation")}" data-act="editOriginal" data-key="${esc(rowIdentity(r))}">${esc(existingView.text || "") || `<span class="missing">${esc(tr("emptyTarget"))}</span>`}${icuPreviewNoteHTML(existingView, previewNumber, rowIdentity(r))}</div><div class="edit-hint">${esc(tr("clickOriginal"))}</div></div>`;
+        const existingPanel = `<div class="panelwrap"${targetDirAttr}><div class="label">${esc((zhUI ? "现有 " : "EXISTING ") + targetName.toUpperCase() + " · " + (zhUI ? "原译文" : "ORIGINAL"))}</div><div class="panel edit-source"${existingPanelDirAttr} role="button" tabindex="0" title="${esc(zhUI ? "点击后从原有目标译文开始编辑" : "Click to edit starting from the original target translation")}" data-act="editOriginal" data-key="${esc(rowIdentity(r))}">${esc(existingView.text || "") || `<span class="missing">${esc(tr("emptyTarget"))}</span>`}${icuPreviewNoteHTML(existingView, rowIdentity(r))}</div><div class="edit-hint">${esc(tr("clickOriginal"))}</div></div>`;
         const proposalPanel = unchangedProposal
            ? ""
-           : `<div class="panelwrap"${targetDirAttr}><div class="label">${esc(zhUI ? "CHATGPT 翻译提案" : "CHATGPT " + tr("proposal"))}</div><div class="panel proposal edit-source"${proposalPanelDirAttr} role="button" tabindex="0" title="${esc(zhUI ? "点击后从 ChatGPT 提案开始编辑" : "Click to edit starting from the ChatGPT proposal")}" data-act="editProposal" data-key="${esc(rowIdentity(r))}">${esc(proposalView.text)}${icuPreviewNoteHTML(proposalView, previewNumber, rowIdentity(r))}</div><div class="edit-hint">${esc(tr("clickProposal"))}</div>${warning}</div>`;
-        const finalPanel = `<div class="panelwrap"${targetDirAttr}><div class="label">${esc((zhUI ? "最终" : "FINAL") + " " + targetName.toUpperCase() + " · " + tr("exportResult"))}</div><div class="panel edit-source"${finalPanelDirAttr} role="button" tabindex="0" title="${esc(zhUI ? "编辑当前最终译文" : "Edit the current final translation")}" data-act="editFinal" data-key="${esc(rowIdentity(r))}">${esc(finalView.text || "") || `<span class="missing">${esc(tr("emptyTarget"))}</span>`}${icuPreviewNoteHTML(finalView, previewNumber, rowIdentity(r))}</div><div class="finalnote" style="margin-top:6px">${esc(decisionText)}</div></div>`;
+           : `<div class="panelwrap"${targetDirAttr}><div class="label">${esc(zhUI ? "CHATGPT 翻译提案" : "CHATGPT " + tr("proposal"))}</div><div class="panel proposal edit-source"${proposalPanelDirAttr} role="button" tabindex="0" title="${esc(zhUI ? "点击后从 ChatGPT 提案开始编辑" : "Click to edit starting from the ChatGPT proposal")}" data-act="editProposal" data-key="${esc(rowIdentity(r))}">${esc(proposalView.text)}${icuPreviewNoteHTML(proposalView, rowIdentity(r))}</div><div class="edit-hint">${esc(tr("clickProposal"))}</div>${warning}</div>`;
+        const finalPanel = `<div class="panelwrap"${targetDirAttr}><div class="label">${esc((zhUI ? "最终" : "FINAL") + " " + targetName.toUpperCase() + " · " + tr("exportResult"))}</div><div class="panel edit-source"${finalPanelDirAttr} role="button" tabindex="0" title="${esc(zhUI ? "编辑当前最终译文" : "Edit the current final translation")}" data-act="editFinal" data-key="${esc(rowIdentity(r))}">${esc(finalView.text || "") || `<span class="missing">${esc(tr("emptyTarget"))}</span>`}${icuPreviewNoteHTML(finalView, rowIdentity(r))}</div><div class="finalnote" style="margin-top:6px">${esc(decisionText)}</div></div>`;
         return `<article class="item${reviewedClass}${unchangedProposal ? " item-unchanged-proposal" : ""}"><div class="itemhead"><div style="min-width:0"><div class="source-line"><div class="zh"${sourcePanelDirAttr}>${esc(sourceView.text || tr("noSource"))}</div><button type="button" class="copy-source" data-act="copySource" data-key="${esc(rowIdentity(r))}" title="${esc(zhUI ? "复制显示的源文本" : `Copy displayed ${baseName} source text`)}">${esc(zhUI ? "复制源文" : `Copy ${baseName}`)}</button></div><div class="key" title="Tolgee key: ${esc(r.key)} · Object ID: ${esc(r.object_id ?? "—")} · ID: ${esc(r.key_id ?? "—")}">${esc(r.key)}${r.namespace ? ` · namespace: ${esc(r.namespace)}` : ""}${r.object_id ? ` · object: ${esc(r.object_id)}` : ""} · ID: ${esc(r.key_id ?? "—")}</div></div><div class="chips"><span class="chip ${esc(s)}">${esc(statusLabel)}</span>${conf}${icuChip}${tolgeePluralChip}${icuViewButton}<span class="chip">Tolgee: ${esc(r.translation_state || "unknown")}</span>${r.clarification_needed ? `<span class="chip pending" title="A human needs to clarify the meaning or context.">${esc(tr("clarificationNeeded"))}</span>` : ""}${r.unable_to_translate ? '<span class="chip bad">Unable to translate</span>' : ""}</div></div>
  <div class="cols ${unchangedProposal ? "cols-unchanged" : ""}">${existingPanel}${proposalPanel}${finalPanel}</div>
  ${r.reason ? `<div class="reason"><b>${esc(r.issue_category || (zhUI ? "审核备注" : "Reviewer note"))}:</b> ${esc(r.reason)}</div>` : ""}${screenshotHTML(r)}<details class="context"><summary>${esc(tr("context"))}</summary><div>${esc(r.context_description || "(No context description)")}
@@ -3300,12 +3326,11 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           return;
         }
         if (action === "copySource") {
-          const previewNumber =
-            icuPreviewNumbers.get(rowIdentity(r)) ?? icuPreviewNumber;
+          const previewValues = rowIcuPreviewValues(r);
           const displayedSource = cardIcuView(
             r.chinese,
             icuRawVisible.has(rowIdentity(r)),
-            previewNumber,
+            previewValues,
             "base",
           ).text;
           copyText(displayedSource || "").then(
@@ -3496,6 +3521,7 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
               ).map((name) => [name, 1]),
             ),
           );
+          renderIcuPreviewValueFields($("editText").value);
           $("icuPreviewOutput").classList.add("hidden");
           $("icuPreviewOutput").textContent = "";
           applyIcuEditorDirection();
@@ -3560,18 +3586,28 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
         const zh = languageConfig.toolLanguage === "zh";
         const originalEnabled = r?._originalIsPlural === true;
         const eligibility = tolgeePluralEligibility(value);
+        let containsOrdinalOnly = false;
+        try {
+          const rules = ICU.analyze(String(value ?? ""), icuLocale("target")).rules || [];
+          containsOrdinalOnly =
+            rules.length === 1 && rules[0].type === "selectordinal";
+        } catch {}
         activePluralModeDraft = eligibility.eligible;
         checkbox.checked = activePluralModeDraft;
         checkbox.disabled = true;
         setting.classList.add("disabled");
         if (!eligibility.eligible) {
-          help.textContent = zh
-            ? originalEnabled
+          help.textContent = containsOrdinalOnly
+            ? zh
+              ? "检测到一条有效的序数 ICU 规则。它会以 selectordinal ICU 代码导出；Tolgee 的“使用复数形式”基数设置保持关闭。"
+              : "A valid ordinal ICU rule was detected. It will export as selectordinal ICU code; Tolgee's cardinal Use plural forms setting stays off."
+            : zh
+              ? originalEnabled
               ? "当前内容没有恰好一条有效复数规则，因此自动指示器已关闭。Tolgee 中原有的设置不会由本工具自动移除。"
               : "没有复数规则或存在多条复数规则，因此此设置自动关闭。"
-            : originalEnabled
-              ? "The current text does not have exactly one valid plural rule, so the automatic indicator is off. This tool will not remove an existing Tolgee setting."
-              : "This is automatically off when there is no plural rule or more than one plural rule.";
+              : originalEnabled
+                ? "The current text does not have exactly one valid cardinal plural rule, so the automatic indicator is off. This tool will not remove an existing Tolgee setting."
+                : "This is automatically off when there is no cardinal plural rule or more than one rule.";
           return;
         }
         help.textContent = originalEnabled
@@ -3583,6 +3619,41 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
             : `Exactly one valid plural rule was detected for “${eligibility.variable}”; the review report will automatically request the Tolgee setting.`;
       }
       let icuBranchModel = null;
+      function readIcuPreviewValues() {
+        try {
+          const parsed = JSON.parse($("icuTestValues").value || "{}");
+          return parsed && typeof parsed === "object" ? parsed : {};
+        } catch (_) {
+          return {};
+        }
+      }
+      function renderIcuPreviewValueFields(value, reset = false) {
+        const container = $("icuPreviewValueFields");
+        if (!container) return;
+        let analysis;
+        try {
+          analysis = ICU.analyze(String(value ?? ""), icuLocale("target"));
+        } catch (_) {
+          container.innerHTML = "";
+          $("icuTestValues").value = "{}";
+          return;
+        }
+        const previous = reset ? {} : readIcuPreviewValues();
+        const values = {};
+        container.innerHTML = Object.entries(analysis.arguments || {})
+          .map(([name, type]) => {
+            const numeric = ["number", "plural", "selectordinal"].includes(type);
+            const value = Object.prototype.hasOwnProperty.call(previous, name)
+              ? previous[name]
+              : type === "select"
+                ? "other"
+                : 1;
+            values[name] = value;
+            return `<label class="icu-preview-value-field"><span>${esc(name)} · ${esc(type)}</span><input type="${numeric ? "number" : "text"}"${numeric ? ' step="1"' : ""} value="${esc(value)}" data-icu-modal-preview-variable="${esc(name)}" data-icu-modal-preview-type="${esc(type)}"></label>`;
+          })
+          .join("");
+        $("icuTestValues").value = JSON.stringify(values);
+      }
       function simpleIcuBranchText(elements) {
         let output = "";
         for (const element of elements || []) {
@@ -3592,6 +3663,120 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           else return null;
         }
         return stripBidiControls(output);
+      }
+      function icuSelectorPreviewValue(selector, ruleType) {
+        const exact = String(selector || "").match(/^=(-?\d+(?:\.\d+)?)$/);
+        if (exact) return Number(exact[1]);
+        const type = ruleType === "selectordinal" ? "ordinal" : "cardinal";
+        try {
+          const rules = new Intl.PluralRules(icuLocale("target"), { type });
+          const preferred = {
+            zero: [0],
+            one: [1, 21, 101],
+            two: [2, 22, 102],
+            few: [3, 4, 5, 23],
+            many: [11, 12, 13, 99],
+            other: [2, 10, 20, 100, 0],
+          }[selector] || [];
+          const candidates = [...preferred, ...Array.from({ length: 201 }, (_, i) => i)];
+          const match = candidates.find((number) => rules.select(number) === selector);
+          if (match != null) return match;
+        } catch {}
+        return DEFAULT_ICU_PREVIEW_VALUE;
+      }
+      function icuBranchPreview(value, model, selector) {
+        try {
+          const values = icuSampleValues(
+            value,
+            readIcuPreviewValues(),
+            "target",
+          );
+          values[model.variable] = icuSelectorPreviewValue(
+            selector,
+            model.type,
+          );
+          return {
+            text: stripBidiControls(
+              ICU.format(
+                protectRtlIcuBidi(value, languageConfig.targetCode),
+                icuLocale("target"),
+                values,
+              ),
+            ),
+            value: values[model.variable],
+          };
+        } catch (_) {
+          return { text: "Preview unavailable", value: "" };
+        }
+      }
+      function refreshIcuBranchPreviews(value) {
+        if (!icuBranchModel) return;
+        icuBranchModel.rules.forEach((model, ruleIndex) => {
+          model.selectors.forEach((selector) => {
+            const preview = icuBranchPreview(value, model, selector);
+            const output = [
+              ...$("icuBranchEditor").querySelectorAll(
+                "[data-icu-branch-preview]",
+              ),
+            ].find(
+              (element) =>
+                element.dataset.icuRuleIndex === String(ruleIndex) &&
+                element.dataset.icuBranchPreview === selector,
+            );
+            if (!output) return;
+            output.textContent = preview.text;
+            output.dataset.previewValue = String(preview.value);
+          });
+        });
+      }
+      function serializeRemovedIcuBranch(elements, variable) {
+        const parts = (elements || []).map((element) =>
+          element?.type === 7 ? `{${variable}}` : serializeIcuElement(element),
+        );
+        return parts.some((part) => part == null) ? null : parts.join("");
+      }
+      function removeTopLevelIcuRule(ruleIndex) {
+        if (!icuBranchModel) return;
+        const model = icuBranchModel.rules[ruleIndex];
+        if (!model) return;
+        const element = icuBranchModel.ast[model.elementIndex];
+        const fallbackOption =
+          element?.options?.other || Object.values(element?.options || {})[0];
+        const replacement = serializeRemovedIcuBranch(
+          fallbackOption?.value,
+          model.variable,
+        );
+        if (replacement == null) {
+          notify(
+            "This ICU rule is too complex to remove automatically. Edit the raw ICU message instead.",
+            6500,
+          );
+          return;
+        }
+        const zh = languageConfig.toolLanguage === "zh";
+        const confirmed = confirm(
+          zh
+            ? `删除变量“${model.variable}”的 ICU 规则？将保留 other 分支作为普通文本，并丢弃其他分支。`
+            : `Remove the ICU rule for “${model.variable}”? The other branch will be kept as normal text and the remaining branch variants will be discarded.`,
+        );
+        if (!confirmed) return;
+        const rebuilt = icuBranchModel.ast.map((astElement, elementIndex) =>
+          elementIndex === model.elementIndex
+            ? replacement
+            : serializeIcuElement(astElement),
+        );
+        if (rebuilt.some((part) => part == null)) return;
+        $("editText").value = rebuilt.join("");
+        const row = findRow(activeEditKey);
+        if (row) showPlaceholderWarning(row, $("editText").value);
+        renderIcuBranchEditor(row, $("editText").value);
+        renderIcuPreviewValueFields($("editText").value);
+        applyIcuEditorDirection();
+        notify(
+          zh
+            ? `已删除变量“${model.variable}”的 ICU 规则。`
+            : `Removed the ICU rule for “${model.variable}”.`,
+        );
       }
       function renderIcuBranchEditor(r, value) {
         const editor = $("icuBranchEditor");
@@ -3640,9 +3825,13 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
         editor.innerHTML = `<h4>${esc(zh ? "分别填写每个变量的复数分支" : "Edit plural branches for each variable")}</h4>${ruleModels
           .map(
             (model, ruleIndex) =>
-              `<section class="icu-rule-section" data-icu-rule-section="${ruleIndex}"><div class="icu-rule-heading"><span>${esc(model.variable)}</span><span class="icu-rule-kind">${esc(model.type === "selectordinal" ? "Ordinal plural" : "Cardinal plural")}</span></div><div class="icu-branch-grid">${model.branches
+              `<section class="icu-rule-section" data-icu-rule-section="${ruleIndex}"><div class="icu-rule-heading"><span>${esc(model.variable)}</span><span class="icu-rule-heading-actions"><span class="icu-rule-kind">${esc(model.type === "selectordinal" ? "Ordinal plural" : "Cardinal plural")}</span><button type="button" class="small bad" data-remove-icu-rule="${ruleIndex}">${esc(zh ? "删除 ICU 规则" : "Remove ICU rule")}</button></span></div><div class="icu-branch-grid">${model.branches
                 .map((branch) => {
-                  return `<label class="icu-branch-card"><span class="icu-branch-selector">${esc(branch.selector)}</span><span class="icu-branch-composed-editor" dir="${branchDir}"><span class="icu-shared-context">${esc(model.before || "")}</span><span class="icu-editable-branch" data-icu-rule-index="${ruleIndex}" data-icu-branch="${esc(branch.selector)}" dir="${branchDir}" contenteditable="plaintext-only" role="textbox" aria-multiline="true" spellcheck="true">${esc(branch.text)}</span><span class="icu-shared-context">${esc(model.after || "")}</span></span></label>`;
+                  const preview = icuBranchPreview(value, model, branch.selector);
+                  const previewLabel = zh ? "完整句子预览" : "Full sentence preview";
+                  const editLabel = zh ? "编辑分支文本" : "Edit branch wording";
+                  const sampleLabel = zh ? "示例" : "Sample";
+                  return `<div class="icu-branch-card"><span class="icu-branch-selector">${esc(branch.selector)}</span><span class="icu-branch-preview-label">${esc(previewLabel)} · ${esc(sampleLabel)} ${esc(preview.value)}</span><span class="icu-branch-preview" data-icu-rule-index="${ruleIndex}" data-icu-branch-preview="${esc(branch.selector)}" data-preview-value="${esc(preview.value)}" dir="${branchDir}">${esc(preview.text)}</span><details class="icu-branch-edit-details"><summary>${esc(editLabel)}</summary><span class="icu-editable-branch" data-icu-rule-index="${ruleIndex}" data-icu-branch="${esc(branch.selector)}" dir="${branchDir}" contenteditable="plaintext-only" role="textbox" aria-multiline="true" spellcheck="true">${esc(branch.text)}</span></details></div>`;
                 })
                 .join("")}</div></section>`,
           )
@@ -3655,11 +3844,22 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
         const direction = mixedIcu ? "ltr" : rtl ? "rtl" : "ltr";
         $("editText").dir = direction;
         $("editText").style.direction = direction;
-        $("icuTestValues").dir = "ltr";
-        $("icuTestValues").style.direction = "ltr";
+        $("icuPreviewValueFields").dir = "ltr";
+        $("icuPreviewValueFields").style.direction = "ltr";
         $("icuPreviewOutput").dir = rtl ? "rtl" : "ltr";
         $("icuPreviewOutput").classList.toggle("rtl", rtl);
       }
+      $("icuPreviewValueFields").addEventListener("input", (event) => {
+        if (!event.target.matches("[data-icu-modal-preview-variable]")) return;
+        const values = readIcuPreviewValues();
+        const name = event.target.dataset.icuModalPreviewVariable;
+        const type = event.target.dataset.icuModalPreviewType;
+        values[name] = ["number", "plural", "selectordinal"].includes(type)
+          ? Number(event.target.value)
+          : event.target.value;
+        $("icuTestValues").value = JSON.stringify(values);
+        refreshIcuBranchPreviews($("editText").value);
+      });
       $("icuBranchEditor").addEventListener("input", (event) => {
         if (!event.target.matches("[data-icu-branch]") || !icuBranchModel)
           return;
@@ -3693,12 +3893,19 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
         $("editText").value = rebuilt.join("");
         const r = findRow(activeEditKey);
         if (r) showPlaceholderWarning(r, $("editText").value);
+        refreshIcuBranchPreviews($("editText").value);
+      });
+      $("icuBranchEditor").addEventListener("click", (event) => {
+        const button = event.target.closest("[data-remove-icu-rule]");
+        if (!button) return;
+        removeTopLevelIcuRule(Number(button.dataset.removeIcuRule));
       });
       $("editText").addEventListener("input", () => {
         const r = findRow(activeEditKey);
         if (r) {
           showPlaceholderWarning(r, $("editText").value);
           renderIcuBranchEditor(r, $("editText").value);
+          renderIcuPreviewValueFields($("editText").value);
           applyIcuEditorDirection();
         }
       });
@@ -3711,6 +3918,7 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
         updateIcuToolsVisibility();
         showPlaceholderWarning(r, $("editText").value);
         renderIcuBranchEditor(r, $("editText").value);
+        renderIcuPreviewValueFields($("editText").value, true);
         applyIcuEditorDirection();
       };
       $("editFromOriginal").onclick = () => {
@@ -3722,6 +3930,7 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
         updateIcuToolsVisibility();
         showPlaceholderWarning(r, $("editText").value);
         renderIcuBranchEditor(r, $("editText").value);
+        renderIcuPreviewValueFields($("editText").value, true);
         applyIcuEditorDirection();
       };
       function splitIcuConnector(value) {
@@ -3768,8 +3977,12 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           connector = split.connector;
           segmentEnd += 1;
         }
+        const segmentElements = ast.slice(argumentIndex, segmentEnd);
+        if (ruleType === "selectordinal")
+          segmentElements[0] = { type: 7, location: segmentElements[0]?.location };
         const segment = serializeIcuElements(
-          ast.slice(argumentIndex, segmentEnd),
+          segmentElements,
+          ruleType === "selectordinal",
         );
         const before = serializeIcuElements(ast.slice(0, argumentIndex));
         const after = serializeIcuElements(ast.slice(segmentEnd));
@@ -3782,8 +3995,18 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           icuLocale("target"),
           ordinal ? "ordinal" : "cardinal",
         );
+        const ordinalSegment = (selector) => {
+          if (!ordinal || !/^en(?:-|$)/i.test(languageConfig.targetCode || ""))
+            return segment;
+          const suffix =
+            { one: "st", two: "nd", few: "rd", other: "th" }[selector] ||
+            "th";
+          return /#(?:st|nd|rd|th)\b/i.test(segment)
+            ? segment.replace(/#(?:st|nd|rd|th)\b/i, `#${suffix}`)
+            : segment.replace("#", `#${suffix}`);
+        };
         const rule = `{${variable}, ${ruleType}, ${selectors
-          .map((selector) => `${selector} {${segment}}`)
+          .map((selector) => `${selector} {${ordinalSegment(selector)}}`)
           .join(" ")}}`;
         return {
           value: `${before}${rule}${serializeIcuLiteral(connector)}${after}`,
@@ -3822,10 +4045,7 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
             ruleType,
           );
           $("editText").value = added.value;
-          let previewValues = {};
-          try {
-            previewValues = JSON.parse($("icuTestValues").value || "{}");
-          } catch {}
+          const previewValues = readIcuPreviewValues();
           const combinedAnalysis = ICU.analyze(
             $("editText").value,
             icuLocale("target"),
@@ -3837,6 +4057,7 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           $("icuTestValues").value = JSON.stringify(previewValues);
           showPlaceholderWarning(r, $("editText").value);
           renderIcuBranchEditor(r, $("editText").value);
+          renderIcuPreviewValueFields($("editText").value);
           applyIcuEditorDirection();
           const managedVariables = new Set(
             (combinedAnalysis.rules || []).map((rule) => rule.variable),
@@ -3992,6 +4213,10 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
         if (e.key === "ArrowRight") navigateScreenshot(1);
       });
       $("list").addEventListener("click", (e) => {
+        if (e.target.matches("[data-icu-preview-input]")) {
+          e.stopPropagation();
+          return;
+        }
         if (doubleCheckMode) {
           const card = e.target.closest(".double-check-card");
           const finalPanel = e.target.closest(".double-check-card .cols .panelwrap:nth-child(2) .panel");
@@ -4010,12 +4235,19 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
       });
       $("list").addEventListener("change", (e) => {
         if (!e.target.matches("[data-icu-preview-input]")) return;
-        const next = Number(e.target.value);
-        if (!Number.isFinite(next) || next < 0) return;
-        const previewNumber = Math.floor(next);
         const previewKey = e.target.dataset.icuPreviewKey;
-        if (previewKey) icuPreviewNumbers.set(previewKey, previewNumber);
-        else icuPreviewNumber = previewNumber;
+        const variable = e.target.dataset.icuPreviewVariable;
+        const argumentType = e.target.dataset.icuPreviewType;
+        if (!previewKey || !variable) return;
+        const values = { ...(icuPreviewValuesByRow.get(previewKey) || {}) };
+        if (["number", "plural", "selectordinal"].includes(argumentType)) {
+          const next = Number(e.target.value);
+          if (!Number.isFinite(next)) return;
+          values[variable] = next;
+        } else {
+          values[variable] = e.target.value;
+        }
+        icuPreviewValuesByRow.set(previewKey, values);
         render();
       });
       $("list").addEventListener("keydown", (e) => {
@@ -4279,20 +4511,32 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
             throw Error(
               `Export stopped because the Tolgee plural-mode request is no longer compatible with the ICU message for ${row.namespace ? `${row.namespace}.` : ""}${row.key}. Reopen the entry and save it again.`,
             );
-          const pluralModeChange = pluralModeRequest
+          const effectivePluralMode = pluralEligibility.eligible
+            ? {
+                plural_arg_name: pluralEligibility.variable,
+                rule_type: pluralEligibility.type,
+              }
+            : null;
+          const originalIsPlural =
+            typeof row._originalIsPlural === "boolean"
+              ? row._originalIsPlural
+              : null;
+          const originalPluralArgName =
+            typeof row._originalPluralArgName === "string"
+              ? row._originalPluralArgName
+              : null;
+          const pluralMetadataNeedsUpdate =
+            effectivePluralMode &&
+            (originalIsPlural !== true ||
+              originalPluralArgName !== effectivePluralMode.plural_arg_name);
+          const pluralModeChange = pluralMetadataNeedsUpdate
             ? {
                 action: "enable",
-                original_is_plural:
-                  typeof row._originalIsPlural === "boolean"
-                    ? row._originalIsPlural
-                    : null,
-                original_plural_arg_name:
-                  typeof row._originalPluralArgName === "string"
-                    ? row._originalPluralArgName
-                    : null,
+                original_is_plural: originalIsPlural,
+                original_plural_arg_name: originalPluralArgName,
                 is_plural: true,
-                plural_arg_name: pluralModeRequest.plural_arg_name,
-                rule_type: pluralModeRequest.rule_type,
+                plural_arg_name: effectivePluralMode.plural_arg_name,
+                rule_type: effectivePluralMode.rule_type,
               }
             : null;
           const changeSource = !targetChanged
@@ -4308,6 +4552,14 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
                   ? "rejected_final_adjustment"
                   : "sentence_case_normalization";
           entry[targetField] = finalTarget;
+          if (effectivePluralMode) {
+            entry.is_plural = true;
+            entry.plural_arg_name = effectivePluralMode.plural_arg_name;
+            if (Object.prototype.hasOwnProperty.call(entry, "isPlural"))
+              entry.isPlural = true;
+            if (Object.prototype.hasOwnProperty.call(entry, "pluralArgName"))
+              entry.pluralArgName = effectivePluralMode.plural_arg_name;
+          }
           if (reviewed) {
             if (Object.prototype.hasOwnProperty.call(entry, "translation_state"))
               entry.translation_state = "REVIEWED";

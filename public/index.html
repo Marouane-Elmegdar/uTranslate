@@ -366,7 +366,7 @@
             <div class="search">
               <input
                 id="q"
-                placeholder="Search Chinese, English, key, context, or reviewer note…"
+                placeholder="Search selected fields…"
               />
             </div>
             <div class="search-scope" id="searchScope">
@@ -377,21 +377,21 @@
                 aria-haspopup="true"
                 aria-expanded="false"
               >
-                <span id="searchScopeCaption">Search in: all text</span
+                <span id="searchScopeCaption">Search in: all fields</span
                 ><span aria-hidden="true">▾</span>
               </button>
               <div
                 class="search-scope-menu"
                 id="searchScopeMenu"
                 role="group"
-                aria-label="Search text fields"
+                aria-label="Search fields"
               >
                 <button
                   type="button"
                   class="filter-clear"
                   id="selectAllSearchScopes"
                 >
-                  Select all text fields
+                  Select all fields
                 </button>
                 <label class="search-scope-option"
                   ><input
@@ -424,6 +424,22 @@
                     data-search-label="searchFinal"
                     checked
                   /><span>Final result</span></label
+                >
+                <label class="search-scope-option"
+                  ><input
+                    type="checkbox"
+                    value="keyName"
+                    data-search-label="searchKeyName"
+                    checked
+                  /><span>Key name</span></label
+                >
+                <label class="search-scope-option"
+                  ><input
+                    type="checkbox"
+                    value="keyId"
+                    data-search-label="searchKeyId"
+                    checked
+                  /><span>Key ID</span></label
                 >
               </div>
             </div>
@@ -651,12 +667,12 @@
             </button>
             <div id="icuToolsPanel" class="icu-tools-panel hidden">
               <div class="icu-tools-head">
-              <strong id="icuToolsTitle">ICU plural tools</strong>
+              <strong id="icuToolsTitle">ICU rule tools</strong>
               <span id="icuStatusBadge" class="icu-badge">Simple text</span>
               </div>
             <p id="icuToolsHelp" style="font-size: 12px; margin: 0">
-              Add one plural rule for each quantity variable, then test and
-              validate the combined message before saving.
+              Add a cardinal or ordinal rule to each applicable variable, then
+              test every variable independently before saving.
             </p>
             <label class="icu-key-setting" id="tolgeePluralSetting" for="enableTolgeePluralForms">
               <input id="enableTolgeePluralForms" type="checkbox" disabled />
@@ -692,15 +708,14 @@
               </button>
             </div>
             <div id="icuBranchEditor" class="icu-branch-editor hidden"></div>
-            <label class="icu-test-label" for="icuTestValues"
-              ><span id="icuTestValuesLabel">Preview values as JSON</span
-              ><input
-                id="icuTestValues"
-                type="text"
-                value='{"count": 1}'
-                autocomplete="off"
-                spellcheck="false"
-            /></label>
+            <div class="icu-test-label">
+              <span id="icuTestValuesLabel">Preview each variable</span>
+              <div
+                id="icuPreviewValueFields"
+                class="icu-preview-value-fields"
+              ></div>
+              <input id="icuTestValues" type="hidden" value="{}" />
+            </div>
             <div class="icu-actions">
               <button type="button" id="previewIcuRule">Preview result</button>
             </div>
