@@ -262,8 +262,13 @@
             String(value ?? ""),
             icuLocale(languageKind),
           );
+          const ruleVariables = new Set(
+            (analysis.rules || []).map((rule) => rule.variable),
+          );
           return Object.fromEntries(
             Object.entries(analysis.arguments || {}).map(([name, type]) => {
+              if (!ruleVariables.has(name) && type === "argument")
+                return [name, "{" + name + "}"];
               const hasRequestedValue = Object.prototype.hasOwnProperty.call(
                 requestedValues || {},
                 name,
@@ -306,7 +311,18 @@
             icuLocale(languageKind),
             values,
           );
-          const assignments = Object.entries(values)
+          const ruleVariables = new Set(
+            (analysis.rules || []).map((rule) => rule.variable),
+          );
+          const displayedValues = Object.fromEntries(
+            Object.entries(values).filter(([name]) => ruleVariables.has(name)),
+          );
+          const displayedTypes = Object.fromEntries(
+            Object.entries(analysis.arguments || {}).filter(([name]) =>
+              ruleVariables.has(name),
+            ),
+          );
+          const assignments = Object.entries(displayedValues)
             .map(([name, sample]) => `${name}=${sample}`)
             .join(", ");
           return {
@@ -317,8 +333,8 @@
                 ? "ICU 预览"
                 : "ICU preview",
             preview: true,
-            previewValues: values,
-            previewTypes: analysis.arguments || {},
+            previewValues: displayedValues,
+            previewTypes: displayedTypes,
           };
         } catch (_) {
           return { text: stripBidiControls(text), note: "", preview: false };
@@ -421,6 +437,7 @@
       }
       function normalizePersistedRow(row) {
         if (!row || typeof row !== "object") return row;
+        const hasCurrentHumanEdit = row.decision === "edited";
         return {
           ...row,
           _originalIsPlural:
@@ -434,6 +451,8 @@
           pluralModeRequest: normalizedPluralModeRequest(
             row.pluralModeRequest,
           ),
+          editedFrom: hasCurrentHumanEdit ? row.editedFrom : null,
+          editedText: hasCurrentHumanEdit ? row.editedText : null,
           doubleChecked: row.doubleChecked === true,
           doubleCheckEdited: row.doubleCheckEdited === true,
         };
@@ -1074,7 +1093,7 @@
         text("validateIcuRule", zh ? "验证 ICU" : "Validate ICU");
         text(
           "icuTestValuesLabel",
-          zh ? "分别设置每个变量的预览值" : "Preview each variable independently",
+          zh ? "分别设置每个 ICU 变量的预览值" : "Preview ICU variables independently",
         );
         text("previewIcuRule", zh ? "预览结果" : "Preview result");
         text(
@@ -2654,10 +2673,11 @@
           (tolgee?.project?.name || "ULearning") + " — Translation Review Desk";
       }
       function normalizePath(p) {
-        return String(p || "")
-          .replace(/\\/g, "/")
-          .replace(/^\.?\//, "")
-          .toLowerCase();
+        let value = String(p || "").replace(/\\/g, "/").trim();
+        try {
+          value = decodeURIComponent(value);
+        } catch {}
+        return value.replace(/^\.?\//, "").replace(/^\/+/, "").toLowerCase();
       }
       function baseName(p) {
         return normalizePath(p).split("/").pop() || "";
@@ -2666,13 +2686,16 @@
         const files = [...(fileList || [])];
         if (!files.length) return { matched: 0, missing: 0 };
         const pathMap = new Map(),
-          baseMap = new Map();
+          baseMap = new Map(),
+          nameMap = new Map();
         for (const f of files) {
           const rel = normalizePath(f.webkitRelativePath || f.name);
           if (!pathMap.has(rel)) pathMap.set(rel, f);
           const base = baseName(rel);
           if (!baseMap.has(base)) baseMap.set(base, []);
           baseMap.get(base).push(f);
+          const name = normalizePath(f.name);
+          if (!nameMap.has(name)) nameMap.set(name, f);
         }
         let matched = 0,
           missing = 0;
@@ -2680,26 +2703,44 @@
           for (const sc of r.screenshots || []) {
             const local = normalizePath(sc.local_file || ""),
               filename = normalizePath(sc.filename || "");
+            const localBase = baseName(local),
+              filenameBase = baseName(filename),
+              screenshotPrefix = sc.screenshot_id
+                ? `${String(sc.screenshot_id).toLowerCase()}-`
+                : "";
             let f =
               (local && pathMap.get(local)) ||
+              (localBase && nameMap.get(localBase)) ||
               [...files].find((x) => {
                 const rp = normalizePath(x.webkitRelativePath || x.name);
-                return local && rp.endsWith("/" + local);
+                return (
+                  (local && rp.endsWith("/" + local)) ||
+                  (localBase && baseName(rp) === localBase)
+                );
               }) ||
-              (filename && pathMap.get(filename));
+              (filename && pathMap.get(filename)) ||
+              (filenameBase && nameMap.get(filenameBase));
             if (!f && filename) {
-              const candidates = baseMap.get(baseName(filename)) || [];
+              const candidates = baseMap.get(filenameBase) || [];
               f =
                 candidates.find((x) =>
-                  String(x.name).startsWith(String(sc.screenshot_id) + "-"),
-                ) || candidates[0];
+                  normalizePath(x.name).startsWith(screenshotPrefix),
+                ) ||
+                candidates.find((x) =>
+                  normalizePath(x.name).endsWith("-" + filenameBase),
+                ) ||
+                candidates[0];
             }
             if (!f && sc.screenshot_id) {
               f = files.find((x) =>
-                String(x.name).startsWith(String(sc.screenshot_id) + "-"),
+                normalizePath(x.name).startsWith(screenshotPrefix),
               );
             }
-            if (f && /^image\//i.test(f.type || "")) {
+            const imageFile =
+              f &&
+              (/^image\//i.test(f.type || "") ||
+                /\.(?:png|jpe?g|gif|webp|bmp|svg|avif)$/i.test(f.name || ""));
+            if (imageFile) {
               try {
                 sc._previewDataUrl = await readFileAsDataURL(f);
                 sc._loadedFilename = f.name;
@@ -2711,7 +2752,7 @@
             } else missing++;
           }
         }
-        return { matched, missing };
+        return { matched, missing, selected: files.length };
       }
       function readFileAsDataURL(file) {
         return new Promise((resolve, reject) => {
@@ -2864,8 +2905,22 @@
           previewValues,
           "base",
         );
-        const existingValue = r.editedFrom === "editOriginal" && typeof r.editedText === "string" ? r.editedText : r.english;
-        const proposalValue = r.editedFrom === "editProposal" && typeof r.editedText === "string" ? r.editedText : proposalText;
+        // Pending cards must show the imported source/proposal exactly. A
+        // persisted editedText can survive in older backups, but it is only a
+        // current card value after the row has an edited decision.
+        const currentHumanEdit = statusOf(r) === "edited";
+        const existingValue =
+          currentHumanEdit &&
+          r.editedFrom === "editOriginal" &&
+          typeof r.editedText === "string"
+            ? r.editedText
+            : r.english;
+        const proposalValue =
+          currentHumanEdit &&
+          r.editedFrom === "editProposal" &&
+          typeof r.editedText === "string"
+            ? r.editedText
+            : proposalText;
         const existingView = cardIcuView(existingValue, showRawIcu, previewValues);
         const proposalView = cardIcuView(proposalValue, showRawIcu, previewValues);
         const finalView = cardIcuView(selected, showRawIcu, previewValues);
@@ -3451,6 +3506,8 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           r.decisionAt = null;
           r.finalEnglish = undefined;
           r.pluralModeRequest = null;
+          r.editedFrom = null;
+          r.editedText = null;
           restoreOriginalTranslationState(r);
           notify(
             languageConfig.toolLanguage === "zh"
@@ -3640,7 +3697,11 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
         }
         const previous = reset ? {} : readIcuPreviewValues();
         const values = {};
+        const ruleVariables = new Set(
+          (analysis.rules || []).map((rule) => rule.variable),
+        );
         container.innerHTML = Object.entries(analysis.arguments || {})
+          .filter(([name]) => ruleVariables.has(name))
           .map(([name, type]) => {
             const numeric = ["number", "plural", "selectordinal"].includes(type);
             const value = Object.prototype.hasOwnProperty.call(previous, name)
@@ -5045,6 +5106,9 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
         $("setupScreenshotStatus").className = "setup-status ok";
         $("setupSkipScreenshots").hidden = true;
         finishSetup(true);
+        // Screenshot files are attached after importBackup renders the rows.
+        // Render once more so restored cards immediately receive their images.
+        render();
         await persist();
       }
       $("setupRestoreBackup").addEventListener("click", () =>
@@ -5194,9 +5258,13 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           const result = await attachScreenshotFiles(files);
           setupScreenshotsHandled = true;
           refreshSetup();
+          render();
           await persist();
           notify(
-            `${result.matched} screenshot image(s) matched to entries${result.missing ? `; ${result.missing} reference(s) not found` : ""}.`,
+            languageConfig.toolLanguage === "zh"
+              ? `已选择 ${result.selected} 个图片文件；匹配 ${result.matched} 个截图引用${result.missing ? `；${result.missing} 个引用未找到` : ""}。`
+              : `${result.selected} image file(s) selected; ${result.matched} screenshot reference(s) matched${result.missing ? `; ${result.missing} reference(s) not found` : ""}.`,
+            6500,
           );
         } catch (e) {
           notify("Could not load screenshots: " + e.message);
