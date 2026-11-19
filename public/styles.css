@@ -14,6 +14,7 @@
         --amber: #875d00;
         --amberbg: #fff5d9;
         --white: #fff;
+        --workspace-bg: #dbe4f2;
         --ulearning-logo: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOAAAAAyCAMAAAByBSf3AAACdlBMVEUAAABISFBISFBISFBQUFBISFBISFBISFBISFBISFBISFBYWFhISFBQUFBISFBYWFhISFBISFBISFBISFBQUFBISFBQUFhISFBISFBISFBISFBYWFhQUFBQUFBQUFBQUFBQUGhISFBISFDoWEhwcHBQUFBISFhQUGBQUFDoWEhQUFDoWEhgYGBQUFBMTFBISFBISFBISFDoWEjoWEhQUFhQUFBISFBISFDwWEjgSEDoWEjoWEjoWEj/YGBQUFDoWEjoWEjoWEjoWEjwWEhMTFBQUFBQUFDgUEDgUEBMTFDoWEjoWEjoWEhQUFBMTFBQUFhISFBISFjoWEjoWEjoWEjoWEhQUFBQUFBoaGhQUFjgUEDwYFDoWEjwYFBQUFDgSEDoWEjgUEDgUEDwWFDoWEj/cEjoYEhISFhQUFDoWEjoWFDwWEjwYEjwYEjwWEjwWEjoWEjoYFDoYFDwYFj/YEhQUFBMTFBQUFhQUGDoYEjoYEjwWEjoUED/aDD/aFD/cFj/gFhMTFDocGDwYEjoWEjoWEjqWkjqWEhQUFjwWFD/UDjgUEDgUEDwYEjwYFDoWFDwaEjgcFhKSlDpWUf////cRzzoWEj4uLDgSEBISFBMTFDgUEDoYFD/8PD42NDoUED/+PjoaFjgcGjwmJDweGjgWFDwoJjwuLDwqKDwkIj40NDwkIDwcGD/6OjcSDz40MjoiIDwiIDweHDwwLjocGDgaGDokIj44ODgYFDwoKD46ODwyMDwsKjwoJD4yMD48PD48Oj46Oj44NjwsLDogHjgYFjwuLj4wLj42NjoYEjogIDgcGDgUEjwgHD4yMjoeHDwwMD4wMDBtYOFAAAAknRSTlMA0ODoUMj4iHhQkBDAaKAI8KjYgDCwILhwYJgYOGCIKAhIWPgIQBgQIPBI4Ah48DhAIOiwGHAoaBD4oGi4CIDIqGDAYOigWLC4+NCQgBjgKDAwcNhQQOjgCBDgGJgQEPAgwIAoeAgYEJBIODg4MDAgWBAYEAjwsEgYUEhQQAgICAjYCEgwiPj4MBAQSPAYIBAQCAoiZAAAAAcxSURBVHgB5diDfytLG8DxJ7vdNE22sZvU0rHta9vGa9s2n0mmPL62pdf2f/TOdJ/Znd0qn5yr9H4/KIPfGfbAB9BH9lxy8cG9W2655KrvfgfWmn1f3T3GPAN799wHa8mhCRY0cPFnYa245mq2lLF7vglrwb272XIu+gW0vpsPsOVtvhZa3ccn2Ep+cAha22c2s5XxL8PqBsc7Ojo2wDskv6M00vTpcICtZuwTsKo2FGbgndEXRjQuheYcZKub+HFjgQjvDAOFMjTlCFtweso1z/425XmWSQff08AYSlZzBwRtMM/VlL9w9kDN89BJJvCPvqcjaKIQh2ZcxRzP1pQnODuhBb40zZlw+D0N7A8jmnlowq3q9nm2Rp7k/HRN88fpOSZ9+L0MhGyk2AXN2MPIIzVylnPnc3LmqadOMmFLM4Hvvb2MTNXIac5PyY+Pzzsr8ZV6fWGSDuwDR3UGEUO+DW6mbVHg/aWcEZ4xrf2Xg89wZ9y2cu0V6LFCoVAOACZt8YnVE6vuj2+kQ6EcSs6EzVC5AqSAQlGduNWUIX9ut+dB19ufMsJho9B52/iMEALh0wOM/M+boU/Ijyc452/JT+bq9focE64BRwQFA5QwCp2BwN5MEpXUVnBtSs2iw4irc7MLpYJ8QASENgtdNiWGUGgHaXKbiUo4riXuMJFcaKHweRA+xZTHKPBNzt9QgU+Kj6fqkpyku/VAc8XA0RBqjm4AUg2jhgIvRdc6AIiiLtwfCIzZqDN7wDGSQx96ixcz5WV3D+XHa9Ij//m3/PBaXZKTdKLhwO1J9EnSu1iHQWEA2IquCEAR/WavdAO7abL6GAmQEiFcMnALU2SVNM/na7oTdUlO0oFGA7caKJmFaCqNC9IJEPpmlwwc1gOH12OA5Qtsw6AMSHFc5DoQDjDCqecU53TKk9frjpOMf6uhQHqx2UwvCB2XodofYiZK67v7NnZaS4xg2D62UQ3gheVSMYWOH+mBNIBG+3kRSxuoPlwQ6s9fOl7QR3CCEXn00dJ7vKZ7mAKnOd/ZWOAVNBiObFjtSRmUQj0gZWaDgUd7QLBR+vZ2EPqc0dyvBfaGUcrFtBlfUT/H6CBI22a9wAFG1LA9zTkd+eTVOpnjP28sMOr/eRml7XRhNm8ER9QNHEVpdsi7k4WvhAUllFLaJnO5vu4ghdIOgC+hZAOJeoGbGfmXF/io89ljv3VuanXlZEMjSCGFLqWIUj9kUSoBmTT8gbb2bCnfHxGWFrjR9ySb1CL8Igqzm4DETHcNXsSIumsf5/wF+fH3L3D+O/nJmboy/Y2GAmO4lCINxwgocRWY16Z0L0rbALQhCmmBHShlgSRRiAJUUUiDK+ce1Xu9KUrmGX/zrYdOc+YcF6fmvMCvNxTYg0vJOCvGAELnQdINbNMC24B0Lx0YAxKiwG007krGfa3djPBTalNhZH7h6H++7pqGhgI3NRjYSYH0gI0gJVDqANLeUCA9Vw4IPe56EO5hyokaeZQz4fTDdNWuu27XA2di4BjFQGBiBoXLLB87C1X1MBL3j+CGcwmsBv7xCu7XdzPF2ztffujsn4/rpyA5Hxw7UBoCRz9K/W4gvaoFQVmUzgOSMPyBlXMJHELpCiDD673gqxmZpyaf4w/WPV8DSZWE6GafplwvMOLfLgdv0P8qN0e05UVT9NxHMEZviaTQC/w+U7TzndAKJLuA5HFBSr7V23IozXRpgXTbWjcJ0nmmkdXeLVp5kCKzbuCoNoK9zQXS/SB3IwiJMgq0BuF7zPWHWgBdRMmdoNAdySgX40eRDjEtkIYQzQ91lqKWvHeVQLo/idL6zFClSk+hTdHsuYwgVOglI0NDxTQ6aE1uYa43Fk9RbQ+9A5QSBvXrgbTGddtoufpRYE+jgd3LB0IUdXrg3QPM9ehvagH/9G8xxEY/G/yBIxb6hOlgyzQdaK0WCLnlAuEW5pl/6K9O2GuvvvLif8XHf7gr8HPgiVn+vhE9UFsGxKgAKc4u8Tfb5Vpgb9OBUMaANDhu3sw8fPrBM8/8/Yyzef7p4VPPqAl6F+h6IyYq6RKAFkg2FNyG4iS4sjYS8wsqsGdRYFszgTCeRmJepgfCxwZ8hdN1z4Mv0icXQECiGrfSRtoudwDJx4UouIar0VQunqmA3/ZIzgrZ5b7BjYZQAICutPgkPUxv2RCyQEqGkAKAuCFUAbLyY4gOHvp2JyiVaCGUFs+dKFIgOcJ8hfXFboLWEg3cNS5ZpfD2ndBa7MDdFPb8UC+cC45fa/TlJ4GMhp37vebaMabxFU5fAK2gr4C2/xirgO6Th5cp3HUXtIBsGoVUDIRYim6mAV+5SC+cpuE7/yfQCir0/0yZtvGIgQvGYZEjhzlTTsrCXXfeAS0igwFlWMqth7ZsdiL52M8u+Cm0kBz62IOwrF//6r5f7oOW046aYwlYezbkkKTbYG3KlzLxY9HOHvjA+D/d2OzQlWVsSgAAAABJRU5ErkJggg==");
       }
       * {
@@ -1377,8 +1378,44 @@
         );
         color: var(--ink);
       }
+      .setup-layout {
+        width: min(1060px, 100%);
+        display: grid;
+        grid-template-columns: 210px minmax(0, 820px);
+        gap: 18px;
+        align-items: start;
+      }
+      .setup-side-controls {
+        display: grid;
+        gap: 10px;
+        padding: 14px;
+        border: 1px solid var(--line, #dce4ef);
+        border-top: 4px solid var(--blue);
+        border-radius: 8px;
+        background: var(--surface, #fff);
+        box-shadow: 0 10px 30px rgba(25, 43, 73, 0.09);
+      }
+      .setup-side-controls .setup-theme-label {
+        display: grid;
+        gap: 6px;
+        white-space: normal;
+      }
+      .setup-side-controls .setup-theme-label select,
+      .setup-side-controls button {
+        width: 100%;
+        min-width: 0;
+      }
+      .setup-side-controls button {
+        border-color: var(--blue);
+        background: var(--blue);
+        color: #fff;
+      }
+      .setup-side-controls button:hover {
+        border-color: var(--navy);
+        background: var(--navy);
+      }
       .setup-card {
-        width: min(820px, 100%);
+        width: 100%;
         background: #fff;
         border: 1px solid #dce4ef;
         border-radius: 20px;
@@ -1604,6 +1641,10 @@
         max-width: 190px;
         min-width: 142px;
       }
+      .sidebar-package-button {
+        width: 100%;
+        margin-top: 10px;
+      }
       .setup-theme-label {
         display: flex;
         align-items: center;
@@ -1625,14 +1666,18 @@
       /* Let every trial palette cover the setup page as well as both workspaces. */
       .setup-screen {
         background: linear-gradient(
-          135deg,
-          var(--blue2) 0%,
-          #fff 55%,
+          145deg,
+          var(--workspace-bg) 0%,
+          var(--workspace-bg) 42%,
+          var(--blue2) 72%,
           var(--bg) 100%
         );
       }
       .setup-card {
         border-color: var(--line);
+        box-shadow:
+          inset 0 5px 0 var(--blue),
+          0 18px 55px rgba(25, 43, 73, 0.14);
       }
       .setup-brand {
         color: var(--navy);
@@ -2023,6 +2068,11 @@
       .icu-branch-edit-label {
         margin-top: 3px;
       }
+      .icu-branch-edit-field {
+        display: grid;
+        gap: 5px;
+        margin-top: 3px;
+      }
       .icu-branch-edit-details {
         margin-top: 3px;
       }
@@ -2106,14 +2156,26 @@
         user-select: text;
       }
       .icu-editable-branch {
+        display: block;
+        width: 100%;
         min-width: 1ch;
-        border-radius: 3px;
-        background: rgba(79, 140, 255, 0.08);
+        min-height: 42px;
+        padding: 9px 10px;
+        border: 1px solid #c8d5e5;
+        border-radius: 6px;
+        background: #fff;
         outline: none;
+        color: #17253a;
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 1.5;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
         unicode-bidi: isolate;
       }
       .icu-editable-branch:focus {
-        background: rgba(79, 140, 255, 0.16);
+        border-color: #4f8cff;
+        box-shadow: 0 0 0 2px rgba(79, 140, 255, 0.14);
       }
       .icu-preview-output[dir="rtl"] {
         direction: rtl;
@@ -2146,7 +2208,6 @@
         color: #8f2d27;
       }
       .icu-preview-output {
-        margin-top: 8px;
         padding: 10px;
         border: 1px solid #cfd7e3;
         border-radius: 4px;
@@ -2154,11 +2215,37 @@
         color: #1f2937;
         white-space: pre-wrap;
       }
+      .icu-live-preview {
+        display: grid;
+        gap: 5px;
+        margin-top: 10px;
+      }
+      .icu-live-preview > span {
+        color: #44546a;
+        font-size: 11px;
+        font-weight: 750;
+        text-transform: uppercase;
+      }
       @media (max-width: 640px) {
         .icu-builder-grid {
           grid-template-columns: 1fr;
         }
         .icu-branch-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 900px) {
+        .setup-layout {
+          grid-template-columns: 1fr;
+          width: min(820px, 100%);
+        }
+        .setup-side-controls {
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+          align-items: end;
+        }
+      }
+      @media (max-width: 520px) {
+        .setup-side-controls {
           grid-template-columns: 1fr;
         }
       }

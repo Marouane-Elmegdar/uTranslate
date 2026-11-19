@@ -630,6 +630,7 @@
           importJson: "Import JSON files",
           restore: "Restore progress backup",
           doubleCheck: "Conduct double check",
+          generateFinalPackage: "Generate final package",
           screenshotsBtn: "Import screenshots folder",
           skipShots: "No screenshots to import — skip",
           folderTitle: "3. Choose where progress is saved",
@@ -656,7 +657,7 @@
           report: "Download review report",
           restoreTop: "Restore backup",
           clear: "Clear workspace",
-          export: "Export review package",
+          export: "Export final file",
           loaded: "All strings",
           pendingStat: "Pending review",
           approvedStat: "Accepted / edited",
@@ -732,7 +733,7 @@
           tryFilter: "Try another filter or search term.",
           noSourceLoaded: "Import the Tolgee JSON to begin.",
           reviewIntro:
-            "Compare the source, existing translation, and proposal. Accept, reject, or edit each suggestion. Export one review package containing the final JSON and matching report.",
+            "Compare the source, existing translation, and proposal. Accept, reject, or edit each suggestion. Export one final file for handoff; Generate final package creates the final JSON and matching report.",
           exportTarget: "Export target-language update JSON",
           setupFootnote:
             "Your data stays in this browser and the local folder you choose. The tool does not connect to Tolgee or call an AI service.",
@@ -757,6 +758,7 @@
           importJson: "导入 JSON 文件",
           restore: "恢复审核备份",
           doubleCheck: "进行双重复核",
+          generateFinalPackage: "生成最终包",
           screenshotsBtn: "导入截图文件夹",
           skipShots: "无需导入截图，跳过",
           folderTitle: "3. 选择保存位置",
@@ -783,7 +785,7 @@
           report: "下载审核报告",
           restoreTop: "恢复备份",
           clear: "清空工作区",
-          export: "导出审核包",
+          export: "导出最终文件",
           loaded: "全部字符串",
           pendingStat: "待审核",
           approvedStat: "已接受 / 已编辑",
@@ -859,7 +861,7 @@
           tryFilter: "请尝试其他筛选条件或搜索词。",
           noSourceLoaded: "请先导入 Tolgee JSON。",
           reviewIntro:
-            "对照源文本、现有译文和提案。逐条接受、拒绝或编辑建议，然后导出包含最终 JSON 和匹配审核报告的审核包。",
+            "对照源文本、现有译文和提案。逐条接受、拒绝或编辑建议，然后导出单个最终交接文件；“生成最终包”会创建最终 JSON 和匹配的审核报告。",
           exportTarget: "导出目标语言更新 JSON",
           setupFootnote:
             "数据保存在当前浏览器和您选择的本地文件夹中。本工具不会连接 Tolgee，也不会调用 AI 服务。",
@@ -911,6 +913,8 @@
         text("setupImportJsons", "importJson");
         text("setupRestoreBackup", "restore");
         text("setupDoubleCheck", "doubleCheck");
+        text("setupGenerateFinalPackage", "generateFinalPackage");
+        text("workspaceGenerateFinalPackage", "generateFinalPackage");
         text("setupImportScreenshots", "screenshotsBtn");
         text("setupSkipScreenshots", "skipShots");
         text("setupFolderTitle", "folderTitle");
@@ -1090,18 +1094,11 @@
         text("icuVariableLabel", zh ? "数量变量" : "Quantity variable");
         text("icuRuleTypeLabel", zh ? "规则类型" : "Rule type");
         text("createIcuRule", zh ? "添加 ICU 规则" : "Add ICU rule");
-        text("validateIcuRule", zh ? "验证 ICU" : "Validate ICU");
         text(
           "icuTestValuesLabel",
           zh ? "分别设置每个 ICU 变量的预览值" : "Preview ICU variables independently",
         );
-        text("previewIcuRule", zh ? "预览结果" : "Preview result");
-        text(
-          "tolgeePluralSettingLabel",
-          zh
-            ? "Tolgee“使用复数形式”（自动）"
-            : "Tolgee Use plural forms (automatic)",
-        );
+        text("icuLivePreviewLabel", zh ? "实时结果" : "Live result");
         text("restoreBackupTitle", "restoreTitle");
         text("restoreBackupIntro", "restoreIntro");
         text("restoreBackupFileLabel", "restoreFile");
@@ -1176,12 +1173,12 @@
         if (sideboxes.length) {
           if (zh) {
             sideboxes[0].innerHTML =
-              "<b>安全交接流程</b>1. 导入原始 Tolgee JSON。<br>2. 导入 ChatGPT 提案。<br>3. 逐条审核。<br>4. 导出更新 JSON，再通过单独授权的 Tolgee 工作流应用。<br><br>此 HTML 工具不会调用 AI/API，也不使用 Tolgee 凭据。";
+              "<b>安全交接流程</b>1. 导入原始 Tolgee JSON。<br>2. 导入 ChatGPT 提案。<br>3. 逐条审核。<br>4. 导出并分享单个最终文件。<br>5. 使用“生成最终包”创建最终 JSON 和审核报告。<br><br>此 HTML 工具不会调用 AI/API，也不使用 Tolgee 凭据。";
             sideboxes[1].innerHTML =
               "<b>本地保存进度</b>自动保存到当前浏览器。可选文件自动保存会将 save/{项目名称}_{项目ID}.json 写在工具旁边。切换设备或清除浏览器数据前，请先下载备份。";
           } else {
             sideboxes[0].innerHTML =
-              "<b>Safe hand-off workflow</b>1. Import the original Tolgee JSON export.<br>2. Import ChatGPT proposals.<br>3. Decide page by page.<br>4. Export the update JSON and use your separate authorized Tolgee workflow to apply approved changes.<br><br>No AI/API calls or Tolgee credentials are used in this HTML file.";
+              "<b>Safe hand-off workflow</b>1. Import the original Tolgee JSON export.<br>2. Import ChatGPT proposals.<br>3. Decide page by page.<br>4. Export and share the single final file.<br>5. Use Generate final package to create the final JSON and review report.<br><br>No AI/API calls or Tolgee credentials are used in this HTML file.";
             sideboxes[1].innerHTML =
               "<b>Progress is local</b>Auto-saves in this browser profile. Optional file autosave writes save/{project-name}_{project-id}.json beside the tool. Download a progress backup before switching devices or clearing browser data.";
           }
@@ -1197,11 +1194,7 @@
               : "Review Desk";
         const exportButton = $("exportTop");
         if (exportButton)
-          exportButton.textContent = doubleCheckMode
-            ? languageConfig.toolLanguage === "zh"
-              ? "导出最终 JSON + 报告"
-              : "Export final JSON + report"
-            : tr("export");
+          exportButton.textContent = tr("export");
         const setupBrandText = document.querySelector(
           ".setup-brand .brand-text",
         );
@@ -2334,11 +2327,7 @@
               : "Review Desk";
         const exportButton = $("exportTop");
         if (exportButton)
-          exportButton.textContent = doubleCheckMode
-            ? languageConfig.toolLanguage === "zh"
-              ? "导出最终 JSON + 报告"
-              : "Export final JSON + report"
-            : tr("export");
+          exportButton.textContent = tr("export");
         const confidenceControl = $("confidence");
         if (confidenceControl) confidenceControl.hidden = doubleCheckMode;
         const importScreenshotsTop = $("importScreenshotsTop");
@@ -3579,8 +3568,6 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
             ),
           );
           renderIcuPreviewValueFields($("editText").value);
-          $("icuPreviewOutput").classList.add("hidden");
-          $("icuPreviewOutput").textContent = "";
           applyIcuEditorDirection();
           showPlaceholderWarning(r, $("editText").value);
           renderIcuBranchEditor(r, $("editText").value);
@@ -3636,44 +3623,8 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
             : "Add ICU";
       }
       function refreshTolgeePluralControl(r, value) {
-        const setting = $("tolgeePluralSetting");
-        const checkbox = $("enableTolgeePluralForms");
-        const help = $("tolgeePluralSettingHelp");
-        if (!setting || !checkbox || !help) return;
-        const zh = languageConfig.toolLanguage === "zh";
-        const originalEnabled = r?._originalIsPlural === true;
         const eligibility = tolgeePluralEligibility(value);
-        let containsOrdinalOnly = false;
-        try {
-          const rules = ICU.analyze(String(value ?? ""), icuLocale("target")).rules || [];
-          containsOrdinalOnly =
-            rules.length === 1 && rules[0].type === "selectordinal";
-        } catch {}
         activePluralModeDraft = eligibility.eligible;
-        checkbox.checked = activePluralModeDraft;
-        checkbox.disabled = true;
-        setting.classList.add("disabled");
-        if (!eligibility.eligible) {
-          help.textContent = containsOrdinalOnly
-            ? zh
-              ? "检测到一条有效的序数 ICU 规则。它会以 selectordinal ICU 代码导出；Tolgee 的“使用复数形式”基数设置保持关闭。"
-              : "A valid ordinal ICU rule was detected. It will export as selectordinal ICU code; Tolgee's cardinal Use plural forms setting stays off."
-            : zh
-              ? originalEnabled
-              ? "当前内容没有恰好一条有效复数规则，因此自动指示器已关闭。Tolgee 中原有的设置不会由本工具自动移除。"
-              : "没有复数规则或存在多条复数规则，因此此设置自动关闭。"
-              : originalEnabled
-                ? "The current text does not have exactly one valid cardinal plural rule, so the automatic indicator is off. This tool will not remove an existing Tolgee setting."
-                : "This is automatically off when there is no cardinal plural rule or more than one rule.";
-          return;
-        }
-        help.textContent = originalEnabled
-          ? zh
-            ? `检测到一条有效复数规则（变量“${eligibility.variable}”）；Tolgee 已启用此设置。`
-            : `Exactly one valid plural rule was detected for “${eligibility.variable}”; Tolgee already has this setting enabled.`
-          : zh
-            ? `检测到一条有效复数规则（变量“${eligibility.variable}”）；审核报告将自动请求启用 Tolgee 设置。`
-            : `Exactly one valid plural rule was detected for “${eligibility.variable}”; the review report will automatically request the Tolgee setting.`;
       }
       let icuBranchModel = null;
       function readIcuPreviewValues() {
@@ -3714,6 +3665,7 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           })
           .join("");
         $("icuTestValues").value = JSON.stringify(values);
+        refreshIcuCombinedPreview(value);
       }
       function simpleIcuBranchText(elements) {
         let output = "";
@@ -3890,14 +3842,45 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
                 .map((branch) => {
                   const preview = icuBranchPreview(value, model, branch.selector);
                   const previewLabel = zh ? "完整句子预览" : "Full sentence preview";
-                  const editLabel = zh ? "编辑分支文本" : "Edit branch wording";
+                  const editLabel = zh ? "分支文本" : "Branch wording";
                   const sampleLabel = zh ? "示例" : "Sample";
-                  return `<div class="icu-branch-card"><span class="icu-branch-selector">${esc(branch.selector)}</span><span class="icu-branch-preview-label">${esc(previewLabel)} · ${esc(sampleLabel)} ${esc(preview.value)}</span><span class="icu-branch-preview" data-icu-rule-index="${ruleIndex}" data-icu-branch-preview="${esc(branch.selector)}" data-preview-value="${esc(preview.value)}" dir="${branchDir}">${esc(preview.text)}</span><details class="icu-branch-edit-details"><summary>${esc(editLabel)}</summary><span class="icu-editable-branch" data-icu-rule-index="${ruleIndex}" data-icu-branch="${esc(branch.selector)}" dir="${branchDir}" contenteditable="plaintext-only" role="textbox" aria-multiline="true" spellcheck="true">${esc(branch.text)}</span></details></div>`;
+                  return `<div class="icu-branch-card"><span class="icu-branch-selector">${esc(branch.selector)}</span><span class="icu-branch-preview-label">${esc(previewLabel)} · ${esc(sampleLabel)} ${esc(preview.value)}</span><span class="icu-branch-preview" data-icu-rule-index="${ruleIndex}" data-icu-branch-preview="${esc(branch.selector)}" data-preview-value="${esc(preview.value)}" dir="${branchDir}">${esc(preview.text)}</span><label class="icu-branch-edit-field"><span class="icu-branch-edit-label">${esc(editLabel)}</span><span class="icu-editable-branch" data-icu-rule-index="${ruleIndex}" data-icu-branch="${esc(branch.selector)}" dir="${branchDir}" contenteditable="plaintext-only" role="textbox" aria-multiline="true" spellcheck="true">${esc(branch.text)}</span></label></div>`;
                 })
                 .join("")}</div></section>`,
           )
           .join("")}`;
         editor.classList.remove("hidden");
+      }
+      function refreshIcuCombinedPreview(value = $("editText").value) {
+        const container = $("icuLivePreview");
+        const output = $("icuPreviewOutput");
+        if (!container || !output) return;
+        const row = findRow(activeEditKey);
+        const check = row
+          ? validateIcuTranslation(row, value)
+          : { isIcu: false, valid: false };
+        if (!check.isIcu || !check.valid) {
+          container.classList.add("hidden");
+          output.textContent = "";
+          return;
+        }
+        try {
+          const values = icuSampleValues(
+            value,
+            readIcuPreviewValues(),
+            "target",
+          );
+          output.textContent = ICU.format(
+            protectRtlIcuBidi(value, languageConfig.targetCode),
+            icuLocale("target"),
+            values,
+          );
+          container.classList.remove("hidden");
+          applyIcuEditorDirection();
+        } catch (error) {
+          output.textContent = `Preview error: ${error.message || error}`;
+          container.classList.remove("hidden");
+        }
       }
       function applyIcuEditorDirection() {
         const rtl = isRtlLanguage();
@@ -3920,6 +3903,7 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           : event.target.value;
         $("icuTestValues").value = JSON.stringify(values);
         refreshIcuBranchPreviews($("editText").value);
+        refreshIcuCombinedPreview();
       });
       $("icuBranchEditor").addEventListener("input", (event) => {
         if (!event.target.matches("[data-icu-branch]") || !icuBranchModel)
@@ -3955,6 +3939,7 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
         const r = findRow(activeEditKey);
         if (r) showPlaceholderWarning(r, $("editText").value);
         refreshIcuBranchPreviews($("editText").value);
+        refreshIcuCombinedPreview();
       });
       $("icuBranchEditor").addEventListener("click", (event) => {
         const button = event.target.closest("[data-remove-icu-rule]");
@@ -4142,37 +4127,6 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           result.className = "icu-result invalid";
           result.textContent = `Could not create ICU: ${error.message || error}`;
           notify(`Could not create ICU: ${error.message || error}`, 6500);
-        }
-      };
-      $("validateIcuRule").onclick = () => {
-        const r = findRow(activeEditKey);
-        if (r) {
-          showPlaceholderWarning(r, $("editText").value);
-          renderIcuBranchEditor(r, $("editText").value);
-        }
-      };
-      $("previewIcuRule").onclick = () => {
-        const r = findRow(activeEditKey);
-        if (!r) return;
-        const check = showPlaceholderWarning(r, $("editText").value);
-        const output = $("icuPreviewOutput");
-        output.classList.remove("hidden");
-        if (!check.isIcu || !check.valid) {
-          output.textContent = check.isIcu
-            ? "Fix the ICU error before previewing."
-            : "Create an ICU rule before previewing.";
-          return;
-        }
-        try {
-          const values = JSON.parse($("icuTestValues").value || "{}");
-          output.textContent = ICU.format(
-            protectRtlIcuBidi($("editText").value),
-            icuLocale("target"),
-            values,
-          );
-          applyIcuEditorDirection();
-        } catch (error) {
-          output.textContent = `Preview error: ${error.message || error}`;
         }
       };
       $("saveEdit").onclick = async () => {
@@ -4777,38 +4731,157 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
           blob: buildStoredZip(files),
         };
       }
+      function finalTransferReadiness(sourceRows = rows) {
+        const reviewRows = Array.isArray(sourceRows) ? sourceRows : [];
+        return {
+          pendingChanged: reviewRows.filter(
+            (row) => statusOf(row) === "pending" && differs(row),
+          ),
+          unableToTranslate: reviewRows.filter(
+            (row) => row?.unable_to_translate === true,
+          ),
+          uncheckedUnchanged: reviewRows.filter(
+            (row) =>
+              statusOf(row) === "unchanged" &&
+              hasProposal(row) &&
+              row.proposal === row.english &&
+              row?.unable_to_translate !== true,
+          ),
+        };
+      }
+      function finalTransferBlockingMessage(readiness) {
+        const pending = readiness.pendingChanged.length;
+        const unable = readiness.unableToTranslate.length;
+        if (!pending && !unable) return "";
+        if (languageConfig.toolLanguage === "zh")
+          return `无法导出最终文件。\n\n仍有 ${pending} 条已更改提案待审核，${unable} 条标记为无法翻译。\n请先处理这些条目。`;
+        return `Cannot export the final file.\n\nThere are still ${pending} pending changed proposal${pending === 1 ? "" : "s"} and ${unable} unable-to-translate entr${unable === 1 ? "y" : "ies"}.\nResolve these entries first.`;
+      }
+      function confirmUncheckedUnchanged(readiness) {
+        const count = readiness.uncheckedUnchanged.length;
+        if (!count) return true;
+        return confirm(
+          languageConfig.toolLanguage === "zh"
+            ? `仍有 ${count} 条未检查的未更改提案。\n\n这些条目将在最终 JSON 中保留原始译文。仍要导出吗？`
+            : `There ${count === 1 ? "is" : "are"} ${count} unchecked unchanged proposal${count === 1 ? "" : "s"}.\n\nThese entries will keep their original translations in the final JSON. Export anyway?`,
+        );
+      }
+      function buildFinalTransferSnapshot(readiness) {
+        const payload = workspaceSnapshot({ backup: true });
+        payload.tolgee = clone(payload.tolgee || {});
+        payload.tolgee.project = {
+          ...(payload.tolgee.project || {}),
+          branch: "main",
+        };
+        payload.final_transfer_schema_version = 1;
+        payload.final_transfer_ready = true;
+        payload.final_transfer_created_at = new Date().toISOString();
+        payload.final_transfer_note =
+          "Final-ready review handoff. Use Generate final package to create the final reviewed JSON and review report.";
+        payload.final_transfer_summary = {
+          total_entries: rows.length,
+          pending_changed_proposals: readiness.pendingChanged.length,
+          unable_to_translate: readiness.unableToTranslate.length,
+          unchecked_unchanged_proposals:
+            readiness.uncheckedUnchanged.length,
+          unchecked_unchanged_keep_original_translation: true,
+        };
+        return payload;
+      }
       function exportFinalJson() {
         try {
-          const { finalDocument, report } = buildFinalDocumentAndReport();
-          const summary = report.summary;
-          const branch = finalDocument.project.branch;
-          const doubleCheckNote = doubleCheckMode
-            ? languageConfig.toolLanguage === "zh"
-              ? `复核者编辑 ${summary.double_check_edited} 条。`
-              : `${summary.double_check_edited} reviewer edit${summary.double_check_edited === 1 ? "" : "s"}.`
-            : "";
-          const message =
-            languageConfig.toolLanguage === "zh"
-              ? `导出包含最终审核 JSON 和审核报告的 ZIP？\n\n目标分支：${branch}\n共 ${summary.total_keys} 条；${summary.target_values_changed} 条目标译文已更改；${summary.icu_entries_created} 条新建 ICU；${summary.plural_mode_enable_requests} 条请求启用 Tolgee 复数模式；${summary.humanly_edited} 条人工编辑；${summary.reviewed_keys} 条已审核。${doubleCheckNote ? ` ${doubleCheckNote}` : ""}`
-              : `Export one ZIP containing the final reviewed JSON and matching review report?\n\nDestination branch: ${branch}\n${summary.total_keys} total keys; ${summary.target_values_changed} target values changed; ${summary.icu_entries_created} ICU entries created; ${summary.plural_mode_enable_requests} Tolgee plural-mode enable requests; ${summary.humanly_edited} human edits; ${summary.reviewed_keys} reviewed keys.${doubleCheckNote ? ` ${doubleCheckNote}` : ""}`;
-          if (!confirm(message)) return;
-          const reviewPackage = buildReviewPackage(finalDocument, report);
-          downloadBlob(reviewPackage.filename, reviewPackage.blob);
+          if (!tolgee || !rows.length)
+            throw Error("Import or restore a review project first.");
+          const readiness = finalTransferReadiness();
+          const blockingMessage = finalTransferBlockingMessage(readiness);
+          if (blockingMessage) {
+            alert(blockingMessage);
+            return;
+          }
+          if (!confirmUncheckedUnchanged(readiness)) return;
+          // Validate identity, ICU, plural metadata, and source ordering before
+          // creating a handoff file that will later produce push artifacts.
+          buildFinalDocumentAndReport();
+          const payload = buildFinalTransferSnapshot(readiness);
+          const filename = safeProjectFilename(
+            tolgee.project,
+            "final_transfer",
+          );
+          download(filename, JSON.stringify(payload, null, 2));
           notify(
             languageConfig.toolLanguage === "zh"
-              ? `审核包已导出。ZIP 包含最终审核 JSON 和审核报告，目标分支为 ${branch}。`
-              : `Review package exported. The ZIP contains both required JSON files for ${branch}.`,
+              ? `最终文件已导出：${filename}。发送此单个 JSON 文件即可。`
+              : `Final file exported: ${filename}. Send this single JSON file for package generation.`,
             6000,
           );
         } catch (error) {
           notify(
             (languageConfig.toolLanguage === "zh"
-              ? "无法导出审核包："
-              : "Could not export review package: ") +
+              ? "无法导出最终文件："
+              : "Could not export final file: ") +
               (error.message || "unknown error"),
             8000,
           );
         }
+      }
+      function validateFinalTransfer(data) {
+        if (
+          !data ||
+          data.backup_schema_version !== 1 ||
+          data.final_transfer_schema_version !== 1 ||
+          data.final_transfer_ready !== true ||
+          !data.tolgee ||
+          !Array.isArray(data.rows)
+        )
+          throw Error(
+            "This is not a final file created by Export final file.",
+          );
+        if (!data.originalTolgeeJson)
+          throw Error(
+            "The final file is missing the original Tolgee JSON structure.",
+          );
+        const readiness = finalTransferReadiness(data.rows);
+        if (
+          readiness.pendingChanged.length ||
+          readiness.unableToTranslate.length
+        )
+          throw Error(
+            `The final file is incomplete: ${readiness.pendingChanged.length} pending changed proposal(s) and ${readiness.unableToTranslate.length} unable-to-translate entry/entries.`,
+          );
+        return readiness;
+      }
+      function buildPackageFromFinalTransfer(data) {
+        validateFinalTransfer(data);
+        const previousState = {
+          tolgee,
+          originalTolgeeJson,
+          rows,
+          languageConfig,
+        };
+        try {
+          tolgee = clone(data.tolgee);
+          originalTolgeeJson = clone(data.originalTolgeeJson);
+          rows = rowsWithoutScreenshotImages(data.rows).map(
+            normalizePersistedRow,
+          );
+          languageConfig = {
+            ...previousState.languageConfig,
+            ...(data.languageConfig || tolgee.review_config || {}),
+          };
+          syncExactLanguageTagsFromProject(tolgee);
+          const { finalDocument, report } = buildFinalDocumentAndReport();
+          return buildReviewPackage(finalDocument, report);
+        } finally {
+          tolgee = previousState.tolgee;
+          originalTolgeeJson = previousState.originalTolgeeJson;
+          rows = previousState.rows;
+          languageConfig = previousState.languageConfig;
+        }
+      }
+      function chooseFinalTransferFile() {
+        const input = $("finalTransferInput");
+        input.value = "";
+        input.click();
       }
       /* Backups preserve decisions and screenshot metadata, but omit image data to remain reliable. */
       function exportBackup() {
@@ -5117,6 +5190,40 @@ translation_state_raw: ${esc(r.translation_state_raw || "")}</div></details><div
       $("setupDoubleCheck").addEventListener("click", () =>
         openRestoreBackupModal("doubleCheck"),
       );
+      $("setupGenerateFinalPackage").addEventListener(
+        "click",
+        chooseFinalTransferFile,
+      );
+      $("workspaceGenerateFinalPackage").addEventListener(
+        "click",
+        chooseFinalTransferFile,
+      );
+      $("finalTransferInput").addEventListener("change", async () => {
+        const input = $("finalTransferInput");
+        const file = input.files[0];
+        if (!file) return;
+        try {
+          const transfer = await readFile(file);
+          const reviewPackage = buildPackageFromFinalTransfer(transfer);
+          downloadBlob(reviewPackage.filename, reviewPackage.blob);
+          notify(
+            languageConfig.toolLanguage === "zh"
+              ? `最终包已生成：${reviewPackage.filename}。其中包含最终审核 JSON 和审核报告。`
+              : `Final package generated: ${reviewPackage.filename}. It contains the final reviewed JSON and review report.`,
+            7000,
+          );
+        } catch (error) {
+          notify(
+            (languageConfig.toolLanguage === "zh"
+              ? "无法生成最终包："
+              : "Could not generate final package: ") +
+              (error.message || "unknown error"),
+            9000,
+          );
+        } finally {
+          input.value = "";
+        }
+      });
       function validateDoubleCheckBackup(data) {
         const backupRows = Array.isArray(data?.rows) ? data.rows : [];
         const pending = backupRows.filter((row) => {

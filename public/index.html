@@ -13,7 +13,31 @@
   </head>
   <body>
     <section id="setupWizard" class="setup-screen" aria-labelledby="setupTitle">
-      <div class="setup-card">
+      <div class="setup-layout">
+        <div class="setup-side-controls">
+          <!--Theme picker: remove these comment markers to show it again.-->
+          <label class="setup-theme-label" for="setupTheme">
+            <span>Theme</span>
+            <select
+              id="setupTheme"
+              data-theme-selector
+              aria-label="Color theme"
+            >
+              <option value="original">Original</option>
+              <option value="palette-1">Verdigris</option>
+              <option value="palette-2">Lavender</option>
+              <option value="palette-3" selected>Orange / Blue</option>
+              <option value="palette-4">Raspberry / Forest</option>
+              <option value="palette-5">Twilight / Teal</option>
+              <option value="palette-6">Ocean / Berry</option>
+              <option value="palette-7">Qwen Violet</option>
+            </select>
+          </label>
+          <button id="setupGenerateFinalPackage" class="utility">
+            Generate final package
+          </button>
+        </div>
+        <div class="setup-card">
         <div class="setup-brand">
           <span
             class="brand-logo"
@@ -23,25 +47,6 @@
           ><span class="brand-text">Translation Review</span
           ><span class="tag">SETUP</span>
           <div class="setup-workflow-actions">
-             <!--Theme picker: remove these comment markers to show it again.-->
-            <label class="setup-theme-label" for="setupTheme">
-              <span>Theme</span>
-              <select
-                id="setupTheme"
-                data-theme-selector
-                aria-label="Color theme"
-              >
-                <option value="original">Original</option>
-                <option value="palette-1">Verdigris</option>
-                <option value="palette-2">Lavender</option>
-                <option value="palette-3" selected>Orange / Blue</option>
-                <option value="palette-4">Raspberry / Forest</option>
-                <option value="palette-5">Twilight / Teal</option>
-                <option value="palette-6">Ocean / Berry</option>
-                <option value="palette-7">Qwen Violet</option>
-              </select>
-            </label>
-            
             <button id="setupDoubleCheck" class="utility">
               Conduct double check
             </button>
@@ -160,6 +165,7 @@
           tool does not connect to Tolgee or call an AI service.
         </p>
       </div>
+      </div>
     </section>
     <div id="appShell" class="app-shell hidden">
       <header class="appbar">
@@ -209,7 +215,7 @@
             >Local saving</span
           >
           <button id="exportTop" class="primary action-export">
-            Export review package
+            Export final file
           </button>
         </div>
       </header>
@@ -263,9 +269,10 @@
               <div class="sidebox">
                 <b>Safe hand-off workflow</b>1. Import the original Tolgee JSON
                 export.<br />2. Import ChatGPT proposals.<br />3. Decide page by
-                page.<br />4. Export the Tolgee Update JSON and use your separate
-                authorized Tolgee workflow to apply approved changes.<br /><br />No
-                AI/API calls or Tolgee credentials are used in this HTML file.
+                page.<br />4. Export and share the single final file.<br />5. Use
+                Generate final package to create the final JSON and review
+                report.<br /><br />No AI/API calls or Tolgee credentials are used
+                in this HTML file.
               </div>
               <div class="sidebox">
                 <b>Progress is local</b>Auto-saves in this browser profile.
@@ -289,6 +296,12 @@
               <option value="palette-7">Qwen Violet</option>
             </select>
           </label>
+          <button
+            id="workspaceGenerateFinalPackage"
+            class="utility sidebar-package-button"
+          >
+            Generate final package
+          </button>
         </aside>
         <main class="main">
           <div class="head">
@@ -674,13 +687,6 @@
               Add a cardinal or ordinal rule to each applicable variable, then
               test every variable independently before saving.
             </p>
-            <label class="icu-key-setting" id="tolgeePluralSetting" for="enableTolgeePluralForms">
-              <input id="enableTolgeePluralForms" type="checkbox" disabled />
-              <span>
-                <strong id="tolgeePluralSettingLabel">Enable Tolgee Use plural forms when pushed</strong>
-                <small id="tolgeePluralSettingHelp">Available only for a valid ICU message with exactly one plural rule.</small>
-              </span>
-            </label>
             <div class="icu-builder-grid">
               <label for="icuVariableName"
                 ><span id="icuVariableLabel">Quantity variable</span
@@ -703,9 +709,6 @@
               <button type="button" id="createIcuRule">
                 Add ICU rule
               </button>
-              <button type="button" id="validateIcuRule">
-                Validate ICU
-              </button>
             </div>
             <div id="icuBranchEditor" class="icu-branch-editor hidden"></div>
             <div class="icu-test-label">
@@ -716,13 +719,13 @@
               ></div>
               <input id="icuTestValues" type="hidden" value="{}" />
             </div>
-            <div class="icu-actions">
-              <button type="button" id="previewIcuRule">Preview result</button>
-            </div>
             <div id="icuValidationResult" class="icu-result">
               This translation does not contain an ICU rule.
             </div>
-            <div id="icuPreviewOutput" class="icu-preview-output hidden"></div>
+            <div id="icuLivePreview" class="icu-live-preview hidden">
+              <span id="icuLivePreviewLabel">Live result</span>
+              <div id="icuPreviewOutput" class="icu-preview-output"></div>
+            </div>
             </div>
           </section>
           <p style="font-size: 12px; margin: 8px 0 0">
@@ -872,6 +875,13 @@
       directory
       multiple
       aria-label="Choose screenshots folder"
+    />
+    <input
+      type="file"
+      id="finalTransferInput"
+      class="hidden"
+      accept="application/json,.json"
+      aria-label="Choose final transfer JSON"
     />
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="./icu-bundle.js"></script>
